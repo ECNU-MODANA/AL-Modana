@@ -1,5 +1,7 @@
 package util;
 
+import com.sun.org.apache.xpath.internal.functions.FuncFalse;
+
 public class UserFile {
 	//---------------file path prefix--------------------
 	
@@ -38,14 +40,10 @@ public class UserFile {
 	/**
 	 * smartbuilding 15/43
 	 * robot 4/9
+	 * energy 2/6
 	 */
-	/*public static int stateDoubleNum = 2;
-	public static int stateIntNum = 6;*/
-	
 	public static int stateDoubleNum = 0;
 	public static int stateIntNum = 0;
-	
-	
 	//------------------------BIET k c    -----------------------------
 	public static double bietK = 0.02;
 	public static double bietC = 0.95;
@@ -53,9 +51,9 @@ public class UserFile {
     public static int learnTraceNum = 250;
     public static int extractTraceNum = 2;
     public static double extractTraceProbability = 0.5;
-  //------------------------PCAthreshold    -----------------------------
+    //------------------------PCAthreshold    -----------------------------
   	public static double PCAthreshold = 0.5;
-    
-    
+    //------------------------PCAthreshold    -----------------------------
+  	public static boolean fileSwitch = false;  //False:do not write file, True:write file. Files are used to analysis the trace  
 }
 

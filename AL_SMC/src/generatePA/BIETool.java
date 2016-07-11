@@ -126,7 +126,7 @@ public class BIETool {
 		}
 		bietAlgorithms[bietAlgorithms.length-1] = new BIETAlgorithm(UserFile.learnTraceNum, 0, UserFile.bietK, UserFile.bietC);
 		while (count>0) {
-			ExeUppaal.exeCre();
+			ExeUppaal.exeIncre();
 			List<TreeNode> nodeList= selectData.nodeCreList;
 			TreeNode laNode = nodeList.get(nodeList.size()-1);
 			int num = 0;
