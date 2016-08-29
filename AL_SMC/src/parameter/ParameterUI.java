@@ -33,7 +33,7 @@ public class ParameterUI {
 		parameterStage.setWidth(400);
 		parameterStage.setHeight(330);
 		parameterStage.centerOnScreen();
-		parameterStage.setResizable(false);
+	//	parameterStage.setResizable(false);
 		BorderPane parameterRoot = new BorderPane();
 		initPlotPanel(parameterRoot);
 		Scene plotScene = new Scene(parameterRoot);

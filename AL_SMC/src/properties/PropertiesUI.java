@@ -47,7 +47,7 @@ public class PropertiesUI {
 			propertiesStage.setWidth(500);
 			propertiesStage.setHeight(450);
 			propertiesStage.centerOnScreen();
-			propertiesStage.setResizable(false);
+//			propertiesStage.setResizable(false);
 			BorderPane propertiesRoot = new BorderPane();
 			initPlotPanel(propertiesRoot);
 			Scene plotScene = new Scene(propertiesRoot);
