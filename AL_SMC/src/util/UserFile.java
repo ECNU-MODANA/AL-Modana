@@ -6,7 +6,7 @@ public class UserFile {
 	
 	//public static String pathPrefix = "C:/Users/cb219/Desktop/temp/";
 	
-	public static String pathPrefix = "F:\\temp\\";
+	public static String pathPrefix = "traceFolder\\";
 	
 	//-----------------------------------------------------
 	//-----------------------------------------------------
@@ -16,7 +16,7 @@ public class UserFile {
 	public static String modelPath = "C:\\Users\\cb219\\Desktop\\2016硕士论文-程贝\\model\\2room.xml";
 	public static String queryPath = "C:\\Users\\cb219\\Desktop\\2016硕士论文-程贝\\model\\room.q";*/
 	
-	public static String verifytaPath = "C:\\Users\\JKQ\\Desktop\\uppaal-4.1.19\\bin-Win32\\verifyta";
+	public static String verifytaPath = "uppaal-4.1.19\\bin-Win32\\verifyta";
 	
 	/*public static String modelPath = "C:\\Users\\JKQ\\Desktop\\model\\2room.xml";
 	public static String queryPath = "C:\\Users\\JKQ\\Desktop\\model\\room.q";*/

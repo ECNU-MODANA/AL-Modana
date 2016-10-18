@@ -170,7 +170,6 @@ public class ExeUppaal {
 		System.out.println();
 		System.out.println("---------------PCASplittrace finish!---------------");
 	}
-
 	private static void generatePCATrace() {
 		selectData selectData = new selectData();
 		PCA pca = new PCA();

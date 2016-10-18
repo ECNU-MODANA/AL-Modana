@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+broadcast chan off[2],on[2];
+clock T0,T1;
+int p0=1,p1=1;</declaration>
+	<template>
+		<name x="5" y="5">Heater</name>
+		<declaration>// Place local declarations here.
+clock x;</declaration>
+		<location id="id0" x="17" y="-8">
+			<urgent/>
+		</location>
+		<location id="id1" x="8" y="-136">
+			<urgent/>
+		</location>
+		<location id="id2" x="-102" y="-8">
+			<name x="-119" y="-42">ON_1</name>
+			<label kind="exponentialrate" x="-93" y="0">1</label>
+		</location>
+		<location id="id3" x="-110" y="-136">
+			<name x="-120" y="-170">ON_0</name>
+			<label kind="exponentialrate" x="-102" y="-127">2</label>
+		</location>
+		<location id="id4" x="-178" y="-68">
+			<name x="-212" y="-93">OFF</name>
+			<label kind="invariant" x="-212" y="-59">x&lt;=2</label>
+		</location>
+		<branchpoint id="id5" x="-59" y="-68">
+		</branchpoint>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-59" y="-25">on[1]!</label>
+			<label kind="assignment" x="-68" y="-8">p1=p1+1</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-68" y="-153">on[0]!</label>
+			<label kind="assignment" x="-76" y="-136">p0=p0+2</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="probability" x="-25" y="-59">p1</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id1"/>
+			<label kind="probability" x="-25" y="-110">p0</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-170" y="-34">off[1]!</label>
+			<label kind="assignment" x="-161" y="-17">x=0</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-170" y="-136">off[0]!</label>
+			<label kind="assignment" x="-170" y="-119">x=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Room0</name>
+		<declaration>clock K;</declaration>
+		<location id="id6" x="-68" y="-17">
+			<name x="-78" y="-51">ON</name>
+			<label kind="invariant" x="-93" y="0">T0'==K-T0/10
+&amp;&amp; K'==0</label>
+		</location>
+		<location id="id7" x="-187" y="-25">
+			<name x="-229" y="-51">OFF</name>
+			<label kind="invariant" x="-246" y="-8">T0'==-T0/10</label>
+		</location>
+		<location id="id8" x="-187" y="-127">
+			<name x="-197" y="-161">Init</name>
+			<committed/>
+		</location>
+		<init ref="id8"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-144" y="0">off[0]?</label>
+			<nail x="-102" y="17"/>
+			<nail x="-153" y="17"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-144" y="-76">on[0]?</label>
+			<label kind="assignment" x="-170" y="-93">K=9+random(3)</label>
+			<nail x="-153" y="-59"/>
+			<nail x="-102" y="-59"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="assignment" x="-238" y="-119">T0=20</label>
+		</transition>
+	</template>
+	<template>
+		<name>Room1</name>
+		<declaration>clock K;</declaration>
+		<location id="id9" x="51" y="110">
+			<name x="41" y="76">ON</name>
+			<label kind="invariant" x="41" y="127">T1'==K-T1/10&amp;&amp;
+K'==0</label>
+		</location>
+		<location id="id10" x="-119" y="102">
+			<name x="-170" y="76">OFF</name>
+			<label kind="invariant" x="-212" y="93">T1'==-T1/10</label>
+		</location>
+		<location id="id11" x="-119" y="-9">
+			<name x="-129" y="-43">Init</name>
+			<committed/>
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-59" y="153">off[1]?</label>
+			<nail x="17" y="127"/>
+			<nail x="-29" y="166"/>
+			<nail x="-89" y="157"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-42" y="25">on[1]?</label>
+			<label kind="assignment" x="-76" y="42">K=9+random(3)</label>
+			<nail x="-93" y="85"/>
+			<nail x="-34" y="68"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="assignment" x="-195" y="25">T1=20</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+// List one or more processes to be composed into a system.
+system Heater,Room0,Room1;
+    </system>
+	<queries>
+		<query>
+			<formula>simulate 1 [&lt;=48] {T0,T1}
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>Pr[ &lt;= 48](&lt;&gt; T0&gt;=45) &gt;= 0.15
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>Pr[ &lt;= 48](&lt;&gt; T0&gt;31&amp;&amp;T1&lt;4)
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>Pr[ &lt;= 48](&lt;&gt; T0&gt;31&amp;&amp;T1&lt;4) &gt;= 0.5
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>simulate 1 [&lt;=120] {T0,T1,Heater.OFF,Heater.ON_0,Heater.ON_1,Room0.OFF,Room0.ON,Room1.OFF,Room1.ON}
+			</formula>
+			<comment>
+			</comment>
+		</query>
+	</queries>
+</nta>
