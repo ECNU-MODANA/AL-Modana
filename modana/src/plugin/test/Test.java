@@ -6,6 +6,7 @@ import java.math.MathContext;
 public class Test {
 public static void main(String[] args) {
 	try {
+		System.out.println("oe test");
 //		BigDecimal bd1 = new BigDecimal("3464656776868432998434".toCharArray(),2,15);
 //		BigDecimal bigDecimal = new BigDecimal("1688".toCharArray(),4,3);
 //		new MathContext(10).getPrecision();
