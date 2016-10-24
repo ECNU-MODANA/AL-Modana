@@ -1,0 +1,1 @@
+simulate 1 [<=48] {T0,T1,Heater.OFF,Heater.ON_0,Heater.ON_1,Room0.OFF,Room0.ON,Room1.OFF,Room1.ON}

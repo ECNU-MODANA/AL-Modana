@@ -41,7 +41,6 @@ import org.ptolemy.fmi.type.FMIStringType;
 
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
-import com.sun.org.apache.xalan.internal.xsltc.runtime.Hashtable;
 
 /**
  * Given a fmu component, output the current state.

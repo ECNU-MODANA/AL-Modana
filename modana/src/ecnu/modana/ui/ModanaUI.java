@@ -72,6 +72,7 @@ import ecnu.modana.FmiDriver.FMUModelExchange;
 import ecnu.modana.FmiDriver.PrismClient;
 import ecnu.modana.FmiDriver.PrismWrapper;
 import ecnu.modana.abstraction.IUserInterface;
+import ecnu.modana.alsmc.generatePA.TreeShow;
 import ecnu.modana.base.PluginMessage;
 import ecnu.modana.model.AbstractModel;
 import ecnu.modana.model.ModelManager;
@@ -108,7 +109,7 @@ public class ModanaUI extends Application implements IUserInterface {
 	Logger logger = Logger.getRootLogger();
 	
 	//default window size
-	private final int windowWidth = 1080, windowHeight = 700;
+	private final int windowWidth = 1080, windowHeight = 800;
 	//minimum window size
 	private final int winMinWidth = 700, winMinHeight = 480;
 	//default main editor width
@@ -404,16 +405,38 @@ public class ModanaUI extends Application implements IUserInterface {
         Menu menuTool = new Menu("Tool");
         addToolMenuItem(menuTool);
         //properties menu
-        Menu menuProperties = new Menu("Properties");
-        addPropertiesMenuItem(menuProperties);
-        //orter
-        Menu menuOthers = new Menu("Others");
-        addOthersMenuItem(menuOthers);
-        
-        menuBar.getMenus().addAll(menuModel,menuProperties,menuTool, menuHelp,menuOthers);
+       /* Menu menuProperties = new Menu("Properties");
+        addPropertiesMenuItem(menuProperties);*/
+        //Co-Simulation
+        Menu menuSim = new Menu("Co-Simulation");
+        addSimulationMenuItem(menuSim);
+        //Al-Smc Verifier
+        Menu alsmc = new Menu("Al-Smc");
+        addAlSmcMenuItem(alsmc);
+        menuBar.getMenus().addAll(menuModel,menuSim,alsmc,menuTool, menuHelp);
+        //menuBar.getMenus().addAll(menuModel,menuProperties,menuSim,alsmc,menuTool, menuHelp);
         root.getChildren().add(menuBar);
 	}
-	private void addOthersMenuItem(Menu menu) {
+	private void addAlSmcMenuItem(Menu alsmc) {
+		// Add Properties
+				MenuItem addPropertiesList = new MenuItem("Al-smc");
+				addPropertiesList.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent e) {	
+						try {
+							new TreeShow().start(new Stage());
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				});
+		        
+				alsmc.getItems().add(addPropertiesList);
+		
+	}
+
+	private void addSimulationMenuItem(Menu menu) {
 		// Add Properties
 		MenuItem addPropertiesList = new MenuItem("Co-Simulation");
 		addPropertiesList.setOnAction(new EventHandler<ActionEvent>() {
@@ -430,7 +453,7 @@ public class ModanaUI extends Application implements IUserInterface {
         
 		menu.getItems().add(addPropertiesList);
 	}
-	private void addPropertiesMenuItem(Menu menuProperties) {
+	/*private void addPropertiesMenuItem(Menu menuProperties) {
 		// Add Properties
 		MenuItem addPropertiesList = new MenuItem("Add Properties List");
 		addPropertiesList.setOnAction(new EventHandler<ActionEvent>() {
@@ -446,7 +469,7 @@ public class ModanaUI extends Application implements IUserInterface {
 		});
         
 		menuProperties.getItems().add(addPropertiesList);
-	}
+	}*/
 
 	private void addToolMenuItem(Menu menuTool) {
 		//Create PlotComposer

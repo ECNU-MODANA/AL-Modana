@@ -61,7 +61,7 @@ public class CoSimulationUI
     Label resultLable=null;
     public void start(Stage plotComposerStage) throws Exception 
 	 {
-    	   int width=1000,height=900;
+    	   int width=900,height=600;
 			this.propertiesStage = plotComposerStage;
 			plotComposerStage.initModality(Modality.WINDOW_MODAL);
 			plotComposerStage.setOpacity(0.87);
