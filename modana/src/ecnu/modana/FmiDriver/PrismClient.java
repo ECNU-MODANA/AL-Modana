@@ -16,7 +16,7 @@ public class PrismClient
 	PrintWriter out=null;
 	boolean isModelOpened=false;
 	HashMap<String, Integer>varMap=null;
-	String curValuses;
+	String curValuses="";
 	/**
 	 * prism double xiao shu wei,ji wei de int jiu dai biao ji wei xiao shu
 	 */
@@ -28,6 +28,7 @@ public class PrismClient
 	public static int ClientCnt=8;
 	private static List<PrismClient> clientList=new ArrayList<PrismClient>(ClientCnt);
 	private static List<Boolean>isInUse=new ArrayList<>(ClientCnt);
+	private String allVariables="";
 	public static PrismClient getInstance()
 	{  
         if (clientList.size() == 0)
@@ -110,8 +111,11 @@ public class PrismClient
 				isModelOpened=true;
 				varMap=new HashMap<>();
 				String[] temS=res.split(",");
-				for(int i=0;i<temS.length;i++)
+				for(int i=0;i<temS.length;i++){
 					varMap.put(temS[i], i);
+					allVariables+="prism."+temS[i]+",";
+				}
+				allVariables=allVariables.substring(0,allVariables.length()-1);
 				return res;
 			}
 			return null;
@@ -189,6 +193,12 @@ public class PrismClient
 //			e.printStackTrace();
 //			return false;
 //		}
+	}
+	public String GetVariables(){
+		return allVariables;
+	}
+	public String GetAllValues(){
+		return curValuses;
 	}
 	public String GetValue(String varName)
 	{

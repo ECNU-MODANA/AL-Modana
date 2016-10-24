@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JFileChooser;
+
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -29,6 +31,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -370,16 +373,23 @@ public class ModanaUI extends Application implements IUserInterface {
 		menuItemOpenModel.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
+				fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")+"/files"));
+				fileChooser.setTitle("Choose an xml which will be transformed into prism model");
+				 fileChooser.getExtensionFilters().addAll(
+			                new FileChooser.ExtensionFilter("XML", "*.xml*")
+//			                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+//			                new FileChooser.ExtensionFilter("PNG", "*.png")
+			            );
 				String fp;
-//				File file = fileChooser.showOpenDialog(primaryStage);
-//				fp=file.getAbsolutePath().replace("\\", "/");
-				//fp="D:/WorkSpace/Java/win32/modana/fmu.xml";
-				fp="D:/WorkSpace/Java/win32/modana/CTMC.xml";
-				//if (file != null) {
+//				fp="D:/WorkSpace/Java/win32/modana/fmu.xml";
+				//fp="D:/WorkSpace/Java/win32/modana/CTMC.xml";
+				File file = fileChooser.showOpenDialog(primaryStage);
+				fp=file.getAbsolutePath().replace("\\", "/");
+				if (file != null) {
 					//TODO open model!!
-					new PrismModel("","./prism.ecore", "PrismModel").LoadFromFile(fp);
+					new PrismModel("","./files/prism.ecore", "PrismModel").LoadFromFile(fp);
 					logger.debug("model opened!");
-				//}				
+				}				
 			}
 		});
         menuModel.getItems().addAll(menuNewModel,menuItemSaveModel, menuItemOpenModel);
@@ -691,6 +701,18 @@ public class ModanaUI extends Application implements IUserInterface {
   				@Override
   				public void handle(ActionEvent event) {
   					try {
+  						FileChooser fileChooser=new FileChooser();
+  						fileChooser.setInitialDirectory(new File(System.getProperty("user.dir")+"/files"));
+  						fileChooser.setTitle("Choose an fmu model");
+  						 fileChooser.getExtensionFilters().addAll(
+  					                new FileChooser.ExtensionFilter("FMU", "*fmu*")
+//  					                new FileChooser.ExtensionFilter("JPG", "*.jpg"),
+//  					                new FileChooser.ExtensionFilter("PNG", "*.png")
+  					            );
+  						String fp;
+  						File file = fileChooser.showOpenDialog(primaryStage);
+  						fp=file.getAbsolutePath().replace("\\", "/");
+  						if(null==file) return;
  						//new MyCoSimulation().simulate("./bouncingBall.fmu", 2, 0.01, false, ',', "./fmuOut.txt").start(new Stage());
  						//new FMUModelExchange().simulate("./me_bouncingBall.fmu", 2, 0.01, true, ',', "./exchangeOut.txt").start(new Stage());
  						//new FMUModelExchange().simulate("./me_bouncingBall.fmu", 10, 0.04, false, ',', "./1.xml").start(new Stage());
@@ -698,7 +720,18 @@ public class ModanaUI extends Application implements IUserInterface {
  						TreeItem c = (TreeItem)modelTreeView.getSelectionModel().getSelectedItem();
  						//ModelManager.getInstance().GetModel(treeItem.getValue())
  				        PrismModel model=(PrismModel) ModelManager.getInstance().GetModel(c.getValue().toString());
- 				        MyLineChart myLineChart=null;
+ 				        LineChart<Object, Number> lineChart=null;
+				        //lineChart=model.CoSimulation("./files/MyBouncingBall.fmu", 5.5, 0.01/2, false, "./1.xml");
+ 				        lineChart=model.CoSimulation(fp, 5.5, 0.01/2, false, "./files/CosimulationResult.csv");
+				        lineChart.getStylesheets().add("LineChart.css");
+				        Scene scene  = new Scene(lineChart,800,600);
+				        scene.getStylesheets().add("./Stage.css");
+				        Stage stage=new Stage();
+				        stage.setScene(scene);
+				        stage.show();
+				        return;
+ 				        
+ 				        //MyLineChart myLineChart=null;
  				       //myLineChart=model.CoSimulation("./MyBouncingBall.fmu", 5.5, 0.01/2, false, "./1.xml"); 				       
  				       //myLineChart=model.CoSimulation("./ctmcBouncingBall.fmu", 5.5, 0.01, false, "./1.xml");
   				       //myLineChart.SetTitle("1", "DTMC co-simulate with BouncingBall");
@@ -708,7 +741,7 @@ public class ModanaUI extends Application implements IUserInterface {
 // 				       myLineChart=model.CoSimulation("./tryCtmcBouncingBall.fmu", 5.5, 0.01, false, "./1.xml");
 // 				       myLineChart.SetTitle("1", "CTMC co-simulate with BouncingBall");
  				       
- 				       myLineChart.start(new Stage());
+ 				       //myLineChart.start(new Stage());
  				       
 // 				       long startTime=new Date().getTime();
 // 				       PrismClient.getInstance();

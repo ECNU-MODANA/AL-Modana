@@ -69,6 +69,7 @@ public class CoSimulationUI
 			plotComposerStage.setWidth(width);
 			plotComposerStage.setHeight(height);
 			plotComposerStage.centerOnScreen();
+			plotComposerStage.setResizable(true);
 			
 			Group root = new Group();
 	        Scene scene = new Scene(root,Color.WHITE);//, 1000, 800, Color.WHITE);

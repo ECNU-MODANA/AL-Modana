@@ -151,10 +151,10 @@ public class MyCoSimulation extends FMUDriver {
              System.out.println("FMUCoSimulation: about to write header");
          }
          // Generate header row
-         OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+         OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
                  fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
          // Output the initial values.
-         OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+         OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
          		fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
          // Loop until the time is greater than the end time.
          double time = startTime;
@@ -184,7 +184,7 @@ public class MyCoSimulation extends FMUDriver {
                      + ": ");
              time += stepSize;
              // Generate a line for this step
-             OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+             OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
                      fmiComponent, time, file, csvSeparator, Boolean.FALSE);
              timeList.add(time);
              OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "h", hNumberList);

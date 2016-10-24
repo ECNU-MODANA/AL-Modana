@@ -250,10 +250,10 @@ public class FMUModelExchange extends FMUDriver {
                 System.out.println("FMUModelExchange: about to write header");
             }
             // Generate header row
-            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+            OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
                     fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
             // Output the initial values.
-            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+            OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
                     fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
 
             // Functions used within the while loop, organized
@@ -402,7 +402,7 @@ public class FMUModelExchange extends FMUDriver {
                 OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "v", vNumberList);
 
                 // Generate a line for this step
-                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+                OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
                         fmiComponent, time, file, csvSeparator, Boolean.FALSE);
                 numberOfSteps++;
             }

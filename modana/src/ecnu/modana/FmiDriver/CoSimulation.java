@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -259,6 +260,7 @@ public class CoSimulation extends FMUDriver {
         ModelManager.getInstance().logger.debug(sharedVarsPrism);
         File outputFile = new File(outputFileName);
         PrintStream file = null;
+        HashSet<String> twoModelsVariables=GetFmuVariables(fmuFileName);
         try {
 	    // gcj does not have this constructor
             //file = new PrintStream(outputFile);
@@ -268,10 +270,12 @@ public class CoSimulation extends FMUDriver {
             }
             // Generate header row
             OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
+                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE,twoModelsVariables);
+            file.format("ah,%s\n", prismClient.GetVariables());
             // Output the initial values.
             OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
+                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
+            file.format(",%s\n", prismClient.GetAllValues());
 
             // Functions used within the while loop, organized
             // alphabetically.
@@ -458,7 +462,8 @@ public class CoSimulation extends FMUDriver {
 
                 // Generate a line for this step
                 OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                        fmiComponent, time, file, csvSeparator, Boolean.FALSE);
+                        fmiComponent, time, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
+                file.format(",%s\n", prismClient.GetAllValues());
                 numberOfSteps++;
             }
             invoke("_fmiTerminate", new Object[] { fmiComponent },
@@ -1396,6 +1401,7 @@ public class CoSimulation extends FMUDriver {
         ModelManager.getInstance().logger.debug(sharedVarsPrism);
         File outputFile = new File(outputFileName);
         PrintStream file = null;
+        HashSet<String> twoModelsVariables=GetFmuVariables(fmuFileName);
         try {
 	    // gcj does not have this constructor
             //file = new PrintStream(outputFile);
@@ -1405,10 +1411,10 @@ public class CoSimulation extends FMUDriver {
             }
             // Generate header row
             OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
+                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE,twoModelsVariables);
             // Output the initial values.
             OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
+                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
 
             // Functions used within the while loop, organized
             // alphabetically.
@@ -1670,7 +1676,7 @@ public class CoSimulation extends FMUDriver {
 
                 // Generate a line for this step
                 OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                        fmiComponent, time, file, csvSeparator, Boolean.FALSE);
+                        fmiComponent, time, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
                 numberOfSteps++;
             }
             invoke("_fmiTerminate", new Object[] { fmiComponent },
@@ -2647,7 +2653,16 @@ public class CoSimulation extends FMUDriver {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+	public HashSet<String> GetFmuVariables(String fmuPath){
+		HashSet<String> res=new HashSet<>();
+		String[] tStrings=GetFMUVariables(fmuPath);
+		String ts;
+		for(int i=0;i<tStrings.length;i++){
+			ts=tStrings[i].substring(tStrings[i].lastIndexOf('.')+1);
+			if(!res.contains(ts)) res.add(ts);
+		}
+		return res;
+	}
 	public String[]GetMarkovVariables(String path)
 	{
 		PrismClient prismClient=PrismClient.getInstance();

@@ -1,0 +1,1 @@
+jdk_dir:C:\Program Files (x86)\Java\jdk32\bin

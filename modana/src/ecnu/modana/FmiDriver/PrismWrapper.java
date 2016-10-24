@@ -3,13 +3,20 @@ package ecnu.modana.FmiDriver;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.log4j.Logger;
+
+import com.sun.corba.se.impl.javax.rmi.CORBA.Util;
+import com.sun.media.jfxmedia.track.Track.Encoding;
+
+import ecnu.modana.util.MyUtil;
 
 public class PrismWrapper 
 {
@@ -17,8 +24,8 @@ public class PrismWrapper
 	//public static String jre32Path="D:\\ProgramFiles\\java\\jre32\\bin";
 	//public static String prismPath="E:\\postGraduate\\工具\\prism-4.2.beta1";
 	
-	public static String jre32Path="C:\\Program Files (x86)\\Java\\jdk32\\bin";
-	public static String prismPath="E:\\FMI\\prism";
+	public static String jre32Path=null;//"C:\\Program Files (x86)\\Java\\jdk32\\bin";
+	public static String prismPath=null;//"E:\\FMI\\prism";
 	
 //	public static String jre32Path="/usr/lib/jvm/jdk1.8.0_65/bin";
 //	public static String prismPath="/home/ljf/postg/reseacher/prism-4.3-linux64";
@@ -37,6 +44,28 @@ public class PrismWrapper
 	}
 	private void Ini()
 	{
+		if(null==jre32Path) 
+		{
+			prismPath=System.getProperty("user.dir")+"/files/"+"customedPrism";
+			InputStreamReader read;
+			try {
+				read = new InputStreamReader(
+				new FileInputStream(System.getProperty("user.dir")+"/configuration.txt"),"utf-8");
+			    BufferedReader bufferedReader = new BufferedReader(read);
+			    jre32Path=bufferedReader.readLine();
+			    jre32Path=jre32Path.substring(8).replace('\\', '/');
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				MyUtil.showAlertDialog("configuration file no exist!");
+				e.printStackTrace();
+			} catch (IOException e) {
+				MyUtil.showAlertDialog(e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		String osName=System.getProperty("os.name");
 		//logger.debug("osName:"+osName);
 		if(osName.startsWith("Windows"))

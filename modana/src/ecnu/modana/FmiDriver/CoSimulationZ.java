@@ -292,10 +292,10 @@ public class CoSimulationZ extends FMUDriver {
 	                System.out.println("FMUModelExchange: about to write header");
 	            }
 	            // Generate header row
-	            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+	            OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
 	                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
 	            // Output the initial values.
-	            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+	            OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
 	                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
 
 	            // Functions used within the while loop, organized
@@ -437,7 +437,7 @@ public class CoSimulationZ extends FMUDriver {
 	                	else isEventLastHappen[i]=false;
 
 	                // Generate a line for this step
-	                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+	                OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
 	                        fmiComponent, time, file, csvSeparator, Boolean.FALSE);
 	                numberOfSteps++;
 	            }
@@ -569,10 +569,10 @@ public class CoSimulationZ extends FMUDriver {
 	                System.out.println("FMUModelExchange: about to write header");
 	            }
 	            // Generate header row
-	            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+	            OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
 	                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
 	            // Output the initial values.
-	            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+	            OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
 	                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
 
 	            // Functions used within the while loop, organized alphabetically.
@@ -787,7 +787,7 @@ public class CoSimulationZ extends FMUDriver {
 	                }
 
 	                // Generate a line for this step
-	                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+	                OutputRow.outputRowIni(_nativeLibrary, fmiModelDescription,
 	                        fmiComponent, time, file, csvSeparator, Boolean.FALSE);
 	                numberOfSteps++;
 	            }
