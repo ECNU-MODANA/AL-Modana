@@ -111,11 +111,15 @@ public class PrismClient
 				isModelOpened=true;
 				varMap=new HashMap<>();
 				String[] temS=res.split(",");
+				allVariables="";
+				curValuses="";
 				for(int i=0;i<temS.length;i++){
 					varMap.put(temS[i], i);
 					allVariables+="prism."+temS[i]+",";
+					curValuses+="0,";
 				}
 				allVariables=allVariables.substring(0,allVariables.length()-1);
+				curValuses=curValuses.substring(0,curValuses.length()-1);
 				return res;
 			}
 			return null;

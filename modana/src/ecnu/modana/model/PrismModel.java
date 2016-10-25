@@ -7,7 +7,7 @@ import org.apache.log4j.Logger;
 import org.ptolemy.fmi.FMUFile;
 
 import ecnu.modana.Properties.Trace;
-
+import ecnu.modana.alsmc.main.State;
 import ecnu.modana.Modana;
 import ecnu.modana.model.ModelManager.ModelType;
 import ecnu.modana.ui.ModanaUI;
@@ -232,7 +232,7 @@ public class PrismModel extends AbstractModel
 			modelPath=projectDir+name+".pm";
 		}
 		CoSimulation coSimulation=new CoSimulation("127.0.0.1",40000);
-		return coSimulation.simulate(modelPath,this.type,fmuFileName, endTime, stepSize,enableLogging, ',', outputFileName);
+		return coSimulation.simulate(modelPath,this.type,fmuFileName, endTime, stepSize,enableLogging, ',',new ArrayList<State>(),null);
 	}
 	public Trace CoSimulationTrace(String fmuFileName, double endTime, double stepSize,
             boolean enableLogging, String outputFileName) throws Exception

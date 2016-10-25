@@ -2,6 +2,7 @@ package ecnu.modana.FmiDriver;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
 import ecnu.modana.model.ModelManager;
 import ecnu.modana.ui.MyTextConvertor;
 import javafx.beans.property.SimpleStringProperty;
@@ -19,7 +20,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -59,6 +59,8 @@ public class CoSimulationUI
     public ObservableList<MappingList> mappingLists=FXCollections.observableArrayList();
     public ObservableList<FMUPath> FMULists=FXCollections.observableArrayList();
     Label resultLable=null;
+    String markovType="dtmc";
+    Logger logger = Logger.getRootLogger();
     public void start(Stage plotComposerStage) throws Exception 
 	 {
     	   int width=900,height=600;
@@ -130,7 +132,7 @@ public class CoSimulationUI
 					{		
 						if(null==coSimulation) coSimulation=new CoSimulation("127.0.0.1", 40000);
 						ModelManager.getInstance().logger.error("prismModelPath:"+prismModelPath+",FMUPath:"+FMUPath);
-						lineChart=coSimulation.simulate(prismModelPath, "dtmc", FMUPath, 5.5, 0.01, false, ',', "./1.xml");
+						lineChart=coSimulation.simulate(prismModelPath, markovType, FMUPath, 5.5, 0.01, false, ',',null,null);
 						//new CoSimulationZ("127.0.0.1", 40000).simulate(prismModelPath, "dtmc", FMUPath, 5.5, 0.01, false, ',', "./1.xml");
 						try {
 							//Stage stage=new Stage();
@@ -153,6 +155,8 @@ public class CoSimulationUI
 		}
 	VBox opreateVbox;
 	ObservableList<String> mapNames = FXCollections.observableArrayList();
+	ObservableList<String> sourceMapNames = FXCollections.observableArrayList();
+	ObservableList<String> targetMapNames = FXCollections.observableArrayList();
     private BorderPane initReward(int width) 
     {
 		//reward table view
@@ -241,7 +245,7 @@ public class CoSimulationUI
         });
         contextMenu.getItems().addAll(menuItemAdd,menuItem);
         rewardTableView.setContextMenu(contextMenu);
-        mappingLists.add(new MappingList("source: from one model", "target: to another model"));
+        //mappingLists.add(new MappingList("source: from one model", "target: to another model"));
 		
 		return rewardPane;
 		//return rewardTableView;
@@ -260,6 +264,42 @@ public class CoSimulationUI
 			return target;
 		}
 	}	 
+    String[]fmuVariables,markovVariable;
+    private void FillMappingList(){
+    	if(null==fmuVariables||fmuVariables.length==0||null==markovVariable||markovVariable.length==0)
+    	{
+    		logger.error("lack of models or there no variables in model");
+    		return;
+    	}
+    	int i,j;
+    	String tailFix="";
+    	for(i=0;i<fmuVariables.length;i++){
+			if(fmuVariables[i].contains(".in_")){
+				sourceMapNames.add(fmuVariables[i]);
+				tailFix="out_"+fmuVariables[i].substring(fmuVariables[i].indexOf(".in_")+4);
+				for(j=0;j<markovVariable.length;j++){
+					if(markovVariable[j].endsWith(tailFix))
+						targetMapNames.add(markovVariable[j]);
+				}
+			}
+		}
+    	for(i=0;i<markovVariable.length;i++){
+			if(markovVariable[i].contains(".in_")){
+				sourceMapNames.add(markovVariable[i]);
+				tailFix="out_"+markovVariable[i].substring(markovVariable[i].indexOf(".in_")+4);
+				for(j=0;j<fmuVariables.length;j++){
+					if(fmuVariables[j].endsWith(tailFix))
+						targetMapNames.add(fmuVariables[j]);
+				}
+			}
+		}
+    	if(sourceMapNames.size()!=targetMapNames.size()){
+    		logger.error("model names not match");
+    		return;
+    	}
+    	for(i=0;i<sourceMapNames.size();i++)
+    		mappingLists.add(new MappingList(sourceMapNames.get(i),targetMapNames.get(i)));
+    }
     private BorderPane initFMUTable(int width) 
     {
     	//reward table view
@@ -330,11 +370,13 @@ public class CoSimulationUI
 			public void handle(ActionEvent e) {
 	    		String file=ChooseFile("./","FMU(*.fmu)","*.fmu");
 	    		if(null==file) return;
-	    		String[]variables=coSimulation.GetFMUVariables(file);
-	    		if(null==variables||variables.length==0) return;
-	    		for(int i=0;i<variables.length;i++)
-	    			mapNames.add(variables[i]);
+	    		fmuVariables=coSimulation.GetFMUVariables(file);
+	    		if(null==fmuVariables||fmuVariables.length==0) return;
+	    		for(int i=0;i<fmuVariables.length;i++){
+	    			mapNames.add(fmuVariables[i]);
+	    		}
 	    		FMULists.add(new FMUPath(file));
+	    		FillMappingList();
 	    		e.consume();
 			}
         });
@@ -344,11 +386,15 @@ public class CoSimulationUI
 			public void handle(ActionEvent e) {
 	    		String file=ChooseFile("./","Markov(*.pm|*.sm)","*.pm");
 	    		if(null==file) return;
-	    		String[]variables=coSimulation.GetMarkovVariables(file);
-	    		if(null==variables||variables.length==0) return;
-	    		for(int i=0;i<variables.length;i++)
-	    			mapNames.add(variables[i]);
+	    		markovVariable=coSimulation.GetMarkovVariables(file);
+	    		if(null==markovVariable||markovVariable.length==0) return;
+	    		for(int i=0;i<markovVariable.length;i++){
+	    			mapNames.add(markovVariable[i]);
+	    		}
 	    		FMULists.add(new FMUPath(file));
+	    		FillMappingList();
+	    		if(file.endsWith(".pm")) markovType="dtmc";
+	    		else if(file.endsWith(".cm")) markovType="ctmc";
 	    		e.consume();
 			}
         });

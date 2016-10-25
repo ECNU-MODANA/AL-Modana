@@ -1,12 +1,6 @@
 package ecnu.modana.alsmc.main;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-
 import ecnu.modana.alsmc.util.UserFile;
 
 public class State {
@@ -14,6 +8,10 @@ public class State {
 	public ArrayList<Object> values;
 	public static String timeType;
 	public static String[] valueType;
+	
+	public State(){}
+	public void SetTime(double time){this.time=time;}
+	public void SetValues(ArrayList<Object> values){this.values=values;}
 
 	// simple 2-rooms
 	/*
@@ -89,6 +87,10 @@ public class State {
 		return strs;
 	}
 	public static String[] getValueNames() {
+		if (UserFile.praNameList==null) {
+			return null;
+			
+		}
 		String[] praName = (UserFile.praNameList.trim()).split(";");
 		return praName;
 	}

@@ -6,6 +6,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -24,6 +25,7 @@ import com.sun.jna.ptr.ByteByReference;
 
 import ecnu.modana.PlotComposer.JLineChart;
 import ecnu.modana.Properties.Trace;
+import ecnu.modana.alsmc.main.State;
 import ecnu.modana.model.ModelManager;
 import ecnu.modana.util.MyLineChart;
 import javafx.scene.chart.LineChart;
@@ -44,7 +46,7 @@ public class CoSimulation extends FMUDriver {
 	Pointer fmiComponent;
 	StringBuilder sb=new StringBuilder();
 	 public LineChart<Object,Number> simulate(String prismModelPath,String prismModelType,String fmuFileName, double endTime, 
-			 double stepSize,boolean enableLogging, char csvSeparator, String outputFileName)
+			 double stepSize,boolean enableLogging, char csvSeparator,ArrayList<State> res,LinkedHashSet<String> needsVariables)
 	 {
 		 PrismClient prismClient=PrismClient.getInstance();
 	    	prismClient.StartServer();
@@ -62,14 +64,14 @@ public class CoSimulation extends FMUDriver {
 	    	}
 	    	if("dtmc".equals(prismClient.modelType))
 				try {
-					return dtmcSimulate(prismModelPath, prismClient.modelType, fmuFileName, endTime, stepSize, enableLogging, csvSeparator, outputFileName);
+					return dtmcSimulate(prismModelPath, prismClient.modelType, fmuFileName, endTime, stepSize, enableLogging, csvSeparator,res,needsVariables);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 	    	else if("ctmc".equals(prismClient.modelType))
 				try {
-					return ctmcSimulate(prismModelPath, prismClient.modelType, fmuFileName, endTime, stepSize, enableLogging, csvSeparator, outputFileName);
+					return ctmcSimulate(prismModelPath, prismClient.modelType, fmuFileName, endTime, stepSize, enableLogging, csvSeparator, "");
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -119,10 +121,10 @@ public class CoSimulation extends FMUDriver {
 	 
 	 
    public LineChart<Object,Number> dtmcSimulate(String prismModelPath,String prismModelType,String fmuFileName, double endTime, double stepSize,
-            boolean enableLogging, char csvSeparator, String outputFileName)
+            boolean enableLogging, char csvSeparator,ArrayList<State> res,LinkedHashSet<String> needsVariables)
             throws Exception 
     {
-	   PrismClient prismClient=PrismClient.getInstance();
+	    PrismClient prismClient=PrismClient.getInstance();
     	prismClient.StartServer();
     	if(!prismClient.Start(host, port))
     	{
@@ -225,11 +227,21 @@ public class CoSimulation extends FMUDriver {
             endTime = time;
         }
 
-        String fmuVars=OutputRow.GetVars(_nativeLibrary, fmiModelDescription, fmiComponent);
+        //String fmuVars=OutputRow.GetVars(_nativeLibrary, fmiModelDescription, fmiComponent);
         
         String[]prismS=prismVars.split(",");
-        String[]fmuS=fmuVars.split(",");
+        String[]fmuS=GetFMUVariables(fmuFileName);//fmuVars.split(",");
+        for(int i=0;i<fmuS.length;i++){
+        	fmuS[i]=fmuS[i].substring(fmuS[i].indexOf('.')+1);
+        }
         List<String>sharedVarsPrism=new ArrayList<>();
+        if(null==needsVariables){
+        	needsVariables=new LinkedHashSet<String>();
+        	for(int i=0;i<fmuS.length;i++)
+        		needsVariables.add("fmu."+fmuS[i]);
+        	for(int i=0;i<prismS.length;i++)
+        		needsVariables.add("prism."+prismS[i]);
+        }
         for(int i=0;i<prismS.length;i++)
         {
         	if(prismS[i].startsWith("in_"))
@@ -258,24 +270,41 @@ public class CoSimulation extends FMUDriver {
 			}
         }
         ModelManager.getInstance().logger.debug(sharedVarsPrism);
-        File outputFile = new File(outputFileName);
-        PrintStream file = null;
         HashSet<String> twoModelsVariables=GetFmuVariables(fmuFileName);
+        ArrayList<Object> values=new ArrayList<>();
+        State state;
+        String[] markovValues;
         try {
 	    // gcj does not have this constructor
-            //file = new PrintStream(outputFile);
-            file = new PrintStream(outputFileName);
             if (enableLogging) {
                 System.out.println("FMUModelExchange: about to write header");
             }
             // Generate header row
-            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE,twoModelsVariables);
-            file.format("ah,%s\n", prismClient.GetVariables());
+            values=new ArrayList<>();
+//            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,fmiComponent, startTime, true, needsVariables, values);
+//            //markovValues=prismClient.GetVariables().split(",");
+//            for(int i=0;i<prismS.length;i++){
+//            	if(needsVariables.contains(prismS[i]))
+//            		values.add("prism."+prismS[i]);
+//            }
+            for(String str:needsVariables) values.add(str);
+            state=new State();
+            state.SetTime(-1);
+            state.SetValues(values);
+            if(res!=null) res.add(state);
+            
             // Output the initial values.
-            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
-            file.format(",%s\n", prismClient.GetAllValues());
+            values=new ArrayList<>();
+            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,fmiComponent, startTime, false, needsVariables, values);
+            markovValues=prismClient.GetAllValues().split(",");
+            for(int i=0;i<markovValues.length;i++){
+            	if(needsVariables.contains(prismS[i]))
+            		values.add(markovValues[i]);
+            }
+            state=new State();
+            state.SetTime(startTime);
+            state.SetValues(values);
+            if(res!=null) res.add(state);
 
             // Functions used within the while loop, organized
             // alphabetically.
@@ -461,9 +490,19 @@ public class CoSimulation extends FMUDriver {
                 OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "in_v", vNumberList);
 
                 // Generate a line for this step
-                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                        fmiComponent, time, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
-                file.format(",%s\n", prismClient.GetAllValues());
+                if(null!=res){
+	                state=new State();
+	                state.SetTime(time);
+	                values=new ArrayList<>();
+	                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,fmiComponent, time, false, needsVariables, values);
+	                markovValues=prismClient.GetAllValues().split(",");
+	                for(int i=0;i<markovValues.length;i++){
+	                	if(needsVariables.contains("prism."+prismS[i]))
+	                		values.add(markovValues[i]);
+	                }
+	                state.SetValues(values);
+	                res.add(state);
+                }
                 numberOfSteps++;
             }
             invoke("_fmiTerminate", new Object[] { fmiComponent },
@@ -473,12 +512,9 @@ public class CoSimulation extends FMUDriver {
             myLineChart.SetY(hNumberList, "h");
             myLineChart.SetY(vNumberList, "v");
         } finally {
-            if (file != null) {
-                file.close();
-            }
-	    if (fmiModelDescription != null) {
-		fmiModelDescription.dispose();
-	    }
+		    if (fmiModelDescription != null) {
+			fmiModelDescription.dispose();
+		    }
         }
         
         System.out.println("Simulation from " + startTime + " to " + endTime
@@ -1366,10 +1402,10 @@ public class CoSimulation extends FMUDriver {
             endTime = time;
         }
 
-        String fmuVars=OutputRow.GetVars(_nativeLibrary, fmiModelDescription, fmiComponent);
+        //String fmuVars=OutputRow.GetVars(_nativeLibrary, fmiModelDescription, fmiComponent);
         
         String[]prismS=prismVars.split(",");
-        String[]fmuS=fmuVars.split(",");
+        String[]fmuS=GetFMUVariables(fmuFileName);// fmuVars.split(",");
         List<String>sharedVarsPrism=new ArrayList<>();
         for(int i=0;i<prismS.length;i++)
         {
@@ -1410,11 +1446,11 @@ public class CoSimulation extends FMUDriver {
                 System.out.println("FMUModelExchange: about to write header");
             }
             // Generate header row
-            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE,twoModelsVariables);
-            // Output the initial values.
-            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
+//            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+//                    fmiComponent, startTime, file, csvSeparator, Boolean.TRUE,twoModelsVariables);
+//            // Output the initial values.
+//            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+//                    fmiComponent, startTime, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
 
             // Functions used within the while loop, organized
             // alphabetically.
@@ -1675,8 +1711,8 @@ public class CoSimulation extends FMUDriver {
                 OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "in_v", vNumberList);
 
                 // Generate a line for this step
-                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                        fmiComponent, time, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
+//                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+//                        fmiComponent, time, file, csvSeparator, Boolean.FALSE,twoModelsVariables);
                 numberOfSteps++;
             }
             invoke("_fmiTerminate", new Object[] { fmiComponent },
