@@ -47,6 +47,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -161,6 +163,7 @@ public class ModanaUI extends Application implements IUserInterface {
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
+		primaryStage.getIcons().add(new Image("modana-logo.png"));
 		BorderPane root = new BorderPane();
 		Scene scene = new Scene(root);
 		initPanel(root);
@@ -255,6 +258,7 @@ public class ModanaUI extends Application implements IUserInterface {
         for (MuiModule muiModule : collection) {
 			MenuItem item = new MenuItem(muiModule.getName()+"-"+muiModule.getVersion());
 			Stage CreateModelWindow = new Stage(StageStyle.DECORATED);
+			CreateModelWindow.getIcons().add(new Image("modana-logo.png"));
 			CreateModelWindow.initModality(Modality.WINDOW_MODAL);
 			CreateModelWindow.setOpacity(0.87);
 			CreateModelWindow.setTitle("New"+"  "+muiModule.getName()+"-"+muiModule.getVersion());
@@ -587,6 +591,7 @@ public class ModanaUI extends Application implements IUserInterface {
 	private void addHelpMenuItem(Menu menuHelp) {	 
         MenuItem menuItemLoadedPlugins = new MenuItem("Show Loaded Plugins&Msgs");
     	Stage pluginWindow = new Stage(StageStyle.DECORATED);
+    	pluginWindow.getIcons().add(new Image("modana-logo.png"));
 		pluginWindow.initModality(Modality.WINDOW_MODAL);
 		pluginWindow.setOpacity(0.87);
 		pluginWindow.setTitle("Loaded  Plugins and Messages");
@@ -792,6 +797,7 @@ public class ModanaUI extends Application implements IUserInterface {
   			});
             addLeafMenu.getItems().addAll(addLeafMenuItem0,addLeafMenuItem1);
             Stage createDiagramWindow = new Stage(StageStyle.DECORATED);
+            createDiagramWindow.getIcons().add(new Image("modana-logo.png"));
             createDiagramWindow.initModality(Modality.WINDOW_MODAL);
             createDiagramWindow.setOpacity(0.87);
             createDiagramWindow.setTitle("New"+"  Diagram");

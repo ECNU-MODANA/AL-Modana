@@ -298,7 +298,7 @@ public class CoSimulation extends FMUDriver {
             OutputRow.outputRow(_nativeLibrary, fmiModelDescription,fmiComponent, startTime, false, needsVariables, values);
             markovValues=prismClient.GetAllValues().split(",");
             for(int i=0;i<markovValues.length;i++){
-            	if(needsVariables.contains(prismS[i]))
+            	if(needsVariables.contains("prism."+prismS[i]))
             		values.add(markovValues[i]);
             }
             state=new State();

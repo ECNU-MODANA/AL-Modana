@@ -19,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -40,6 +41,7 @@ public class PropertiesUI {
     private MenuBar menuBar = null;
     private PropertiesManager pManager = new PropertiesManager();
 	 public void start(Stage propertiesStage) throws Exception  {
+		 propertiesStage.getIcons().add(new Image("modana-logo.png"));
 			this.propertiesStage = propertiesStage;
 			propertiesStage.initModality(Modality.WINDOW_MODAL);
 			propertiesStage.setOpacity(0.87);

@@ -32,6 +32,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -63,7 +64,8 @@ public class CoSimulationUI
     Logger logger = Logger.getRootLogger();
     public void start(Stage plotComposerStage) throws Exception 
 	 {
-    	   int width=900,height=600;
+    	plotComposerStage.getIcons().add(new Image("modana-logo.png"));
+    	   int width=900,height=650;
 			this.propertiesStage = plotComposerStage;
 			plotComposerStage.initModality(Modality.WINDOW_MODAL);
 			plotComposerStage.setOpacity(0.87);
@@ -93,11 +95,11 @@ public class CoSimulationUI
 	        btnWork.setMinSize(150, 30);
 	        btnWork.setTranslateX(100-width);
 	        btnWork.setTranslateY(295);
-	        Label fmuLable=new Label("在上表中右键选择co-simulation模型");
+	        Label fmuLable=new Label("Co-simulation model table");
 	        fmuLable.setMinSize(250, 30);
 	        fmuLable.setTranslateX(30-width);
 	        fmuLable.setTranslateY(295);
-	        Label mappingLable=new Label("在上表中右键设置模型属性对应关系");
+	        Label mappingLable=new Label("Congruent relationship table");
 	        mappingLable.setMinSize(220, 30);
 	        mappingLable.setTranslateX(250-width);
 	        mappingLable.setTranslateY(295);
@@ -109,6 +111,8 @@ public class CoSimulationUI
 //	        hBox.getChildren().addAll(fmuPane,mappingPane,fmuLable,btnWork,mappingLable);
 
 	        BorderPane upPane = new BorderPane();
+	        upPane.setMinHeight(350);
+	        upPane.setPrefHeight(350);
 	        //leftPane.setStyle("-fx-background-color: #0000AA;");
 	        //upPane.getChildren().add(hBox);
 //	        upPane.getChildren().addAll(btnPrism,btnFMU);
@@ -116,7 +120,7 @@ public class CoSimulationUI
 	        BorderPane downPane = new BorderPane();
 	        downPane.setSnapToPixel(true);
 //	        downPane.setStyle("-fx-background: rgb(10,10,10);");
-	        resultLable=new Label("联合仿真结果显示");
+	        resultLable=new Label("Co-simulation result");
 	        downPane.setCenter(resultLable);
 	        
 	        hBox.getChildren().addAll(fmuPane,mappingPane,fmuLable,btnWork,mappingLable);
@@ -167,7 +171,7 @@ public class CoSimulationUI
 		opreateVbox.setTranslateY(90);
 
 		TableView<MappingList> rewardTableView = new TableView<MappingList>();
-		rewardTableView.setTooltip(new Tooltip("右键设置模型属性对应关系"));
+		rewardTableView.setTooltip(new Tooltip("在表格空白处点击右键，设置协同仿真模型属性之间的对应关系"));
 		rewardTableView.setTableMenuButtonVisible(true);
 		rewardTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		rewardTableView.setEditable(true);
@@ -312,7 +316,7 @@ public class CoSimulationUI
 		//PrismModel prismModel = (PrismModel)ModelManager.getInstance().modelListMap.get(modelTree.getParent().getValue());
 		// table view for showing all loaded reward
 		TableView<FMUPath> pathTableView = new TableView<FMUPath>();
-		pathTableView.setTooltip(new Tooltip("右键选择co-simulation模型"));
+		pathTableView.setTooltip(new Tooltip("在表格空白处点击右键，选择需要联合仿真的模型（markov模型，modelica模型）"));
 		pathTableView.setTableMenuButtonVisible(true);
 		//rewardTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		pathTableView.setEditable(true);
@@ -321,7 +325,7 @@ public class CoSimulationUI
 		pathTableView.setMinWidth(width-100);
 		// add columns
 		TableColumn<FMUPath, String> pathCol = new TableColumn<FMUPath, String>("Path");
-		pathCol.setText("右键选择Co-Simulation模型");
+		pathCol.setText("right-click table and select co-simulation model");
 		pathCol.setEditable(true);
 		pathCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<FMUPath, String>, ObservableValue<String>>() {
 					@Override
@@ -368,13 +372,14 @@ public class CoSimulationUI
 	    menuItemAdd.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 			public void handle(ActionEvent e) {
-	    		String file=ChooseFile("./","FMU(*.fmu)","*.fmu");
+	    		String file=ChooseFile("./files/","FMU(*.fmu)","*.fmu");
 	    		if(null==file) return;
 	    		fmuVariables=coSimulation.GetFMUVariables(file);
 	    		if(null==fmuVariables||fmuVariables.length==0) return;
 	    		for(int i=0;i<fmuVariables.length;i++){
 	    			mapNames.add(fmuVariables[i]);
 	    		}
+	    		FMUPath=file;
 	    		FMULists.add(new FMUPath(file));
 	    		FillMappingList();
 	    		e.consume();
@@ -384,13 +389,14 @@ public class CoSimulationUI
 	    menuItemAddMarkov.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 			public void handle(ActionEvent e) {
-	    		String file=ChooseFile("./","Markov(*.pm|*.sm)","*.pm");
+	    		String file=ChooseFile("./files/","Markov(*.pm|*.sm)","*.pm");
 	    		if(null==file) return;
 	    		markovVariable=coSimulation.GetMarkovVariables(file);
 	    		if(null==markovVariable||markovVariable.length==0) return;
 	    		for(int i=0;i<markovVariable.length;i++){
 	    			mapNames.add(markovVariable[i]);
 	    		}
+	    		prismModelPath=file;
 	    		FMULists.add(new FMUPath(file));
 	    		FillMappingList();
 	    		if(file.endsWith(".pm")) markovType="dtmc";

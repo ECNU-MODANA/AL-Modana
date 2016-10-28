@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -18,6 +19,7 @@ public class HeuristicUI {
 		TextField bietKField = null; // default 0.05 false negatives
 		TextField bietCField = null; // default 0.99 Ratio bound
 		public void start(Stage heuristicStage) throws Exception {
+			heuristicStage.getIcons().add(new Image("modana-logo.png"));
 			this.heuristicStage = heuristicStage;
 			heuristicStage.initModality(Modality.WINDOW_MODAL);
 			heuristicStage.setOpacity(0.87);

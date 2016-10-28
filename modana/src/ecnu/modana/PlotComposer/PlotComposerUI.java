@@ -25,6 +25,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -49,6 +50,7 @@ public class PlotComposerUI {
  	 TextField xAxisField = null;
  	 TextField yAxisField = null;
      public void start(Stage plotComposerStage) throws Exception  {
+    	plotComposerStage.getIcons().add(new Image("modana-logo.png"));
 		this.plotComposerStage = plotComposerStage;
 		plotComposerStage.initModality(Modality.WINDOW_MODAL);
 		plotComposerStage.setOpacity(0.87);

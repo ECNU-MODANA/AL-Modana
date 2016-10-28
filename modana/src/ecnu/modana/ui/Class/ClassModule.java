@@ -27,7 +27,7 @@ public class ClassModule implements MuiModule {
 
 	@Override
 	public String getName() {
-		return "Class";
+		return "Markov DTMC";
 	}
 
 	@Override

@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import javafx.beans.property.DoubleProperty;
 import Jama.Matrix;
@@ -24,11 +26,11 @@ public class ExeUppaal {
 	public static Matrix principalMatrix = null;//主成分矩阵
 	//public static ThesisCaseStudy tcs = new ThesisCaseStudy(5);//使用仿真trace进行实验
 	public static OneSimulate osim = null;//使用UPPAAL,生成一条仿真的原始trace
-	public static int len = 0;
+	public static int len  = 0;
 	public static List<ArrayList<String>> traList = new ArrayList<>();//预处理阶段，仿真生成的SplitTrace的集合
 	public static List<String> staCreList = null;//生成增量trace阶段，产生一条增量trace
-	
-	
+	public static HashSet<String> praList = new LinkedHashSet<String>();
+	public static ArrayList<Integer> sList = new ArrayList<>();
 	public static void exe() {
 		generatePCASplitTrace(TreeShow.progressValue, UserFile.learnTraceNum);
 		generatePCATrace();
@@ -69,10 +71,24 @@ public class ExeUppaal {
 					//ArrayList<State> sl = osim.stateList;
 					//ArrayList<State> sl = tcs.randomGenOneTrace();
 					
-					List<String> praList = new ArrayList<String>();
-					Collections.addAll(praList, (UserFile.praNameList.trim()).split(";"));
+					if (UserFile.praNameList!=null&&UserFile.praNameList!="") {
+						String[] praNameArray = (UserFile.praNameList.trim()).split(";");
+						for (int i = 0; i < UserFile.stateDoubleNum; i++) {
+							praList.add(praNameArray[i]);
+						}
+						for (int i = UserFile.stateDoubleNum; 
+								i < praNameArray.length; i++) {
+							sList.add(Integer.parseInt(praNameArray[i]
+									.substring(1, praNameArray[i].length())));
+						}
+					}
+					else {
+						praList = null;
+						sList = null;
+					}
 					ArrayList<State> sl = VerifierConfig.getConsimTrace
-							(UserFile.markovPath, UserFile.fmuPath,(ArrayList<String>)praList);
+							(UserFile.markovPath, UserFile.fmuPath,(LinkedHashSet<String>)praList,"s",sList,
+									UserFile.stateDoubleNum,UserFile.stateIntNum);
 					
 					
 					////////////////////////
@@ -237,10 +253,11 @@ public class ExeUppaal {
 		//generateNewTrace();
 		//ArrayList<State> sl = osim.stateList;
 		//ArrayList<State> sl = tcs.randomGenOneTrace(); //使用仿真trace进行实验
-		List<String> praList = new ArrayList<String>();
+		HashSet<String> praList = new LinkedHashSet<String>();
 		Collections.addAll(praList, (UserFile.praNameList.trim()).split(";"));
 		ArrayList<State> sl = VerifierConfig.getConsimTrace
-				(UserFile.markovPath, UserFile.fmuPath,(ArrayList<String>)praList);
+				(UserFile.markovPath, UserFile.fmuPath,(LinkedHashSet<String>)praList,"s",sList,
+						UserFile.stateDoubleNum,UserFile.stateIntNum);
 		int sCheck = 0;
 		int sCheck2 = 0;
 		for (int i = 0; i < sl.size() - 1; i++) {

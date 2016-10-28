@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,6 +27,7 @@ public class ParameterUI {
 	private Stage parameterStage = null;
 
 	public void start(Stage parameterStage) throws Exception {
+		parameterStage.getIcons().add(new Image("modana-logo.png"));
 		this.parameterStage = parameterStage;
 		parameterStage.initModality(Modality.WINDOW_MODAL);
 		parameterStage.setOpacity(0.87);

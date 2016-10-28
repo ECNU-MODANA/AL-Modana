@@ -22,7 +22,7 @@ public class PrismModule implements MuiModule {
 	//module menu
 	private Menu moduleMenu = null;
 	//module name
-	private String name="Prism";
+	private String name="Markov CTMC";
 	//XXX list of all created tabs
 	private ArrayList<Tab> tabList = new ArrayList<Tab>();
 	//XXX list of all created tree items

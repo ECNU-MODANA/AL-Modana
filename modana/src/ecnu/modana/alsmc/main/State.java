@@ -1,17 +1,28 @@
 package ecnu.modana.alsmc.main;
 
 import java.util.ArrayList;
+
 import ecnu.modana.alsmc.util.UserFile;
 
 public class State {
 	public double time;
 	public ArrayList<Object> values;
 	public static String timeType;
+	/**
+	 * Double,Byte,          String
+	 */
 	public static String[] valueType;
 	
-	public State(){}
-	public void SetTime(double time){this.time=time;}
-	public void SetValues(ArrayList<Object> values){this.values=values;}
+	public State(){super();}
+	public void SetTime(double time){
+		this.time=time;
+	}
+	public void SetValues(ArrayList<Object> values){
+		this.values=values;
+		valueType=new String[values.size()];
+		for(int i=0;i<values.size();i++)
+			valueType[i]="Double";
+	}
 
 	// simple 2-rooms
 	/*
@@ -30,6 +41,11 @@ public class State {
 	public static int varNum = UserFile.stateDoubleNum+UserFile.stateIntNum; // 43+15=58
 
 	public static String[] valueNames = getValueNames();
+	public static void SetValueNames(String[] names, int dNum,int iNum){
+		valueNames=names;
+//		doubleNum=dNum+1;
+//		iNum=iNum;
+	}
 			/*new String[] { "T[1]", "T[2]", "T[3]", "T[4]", "T[5]", "bvec[1]", "bvec[2]",
 			"bvec[3]", "bvec[4]", "bvec[5]", "Heater(1).c", "Heater(2).c", "Heater(3).c", "u", "discomfort",
 			"ControlGet.idle", "ControlGet.choosing", "user(1).absent", "user(1).arrive", "user(1).morning",
@@ -64,7 +80,6 @@ public class State {
 		super();
 		this.time = time;
 		this.values = values;
-		
 	}
 
 	public Object getValue(String Valuename) {
@@ -94,36 +109,4 @@ public class State {
 		String[] praName = (UserFile.praNameList.trim()).split(";");
 		return praName;
 	}
-	/*public static String[] getValueNames() {
-		String path = UserFile.fmuPath;
-		FileInputStream f = null;
-		String[] strs = null;
-		try {
-			f = new FileInputStream(path);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		BufferedReader br = new BufferedReader(new InputStreamReader(f));
-		try {
-			String strQuery = br.readLine();
-			strs = strQuery.split("\\{");
-			strQuery = strs[1];
-			strs = strQuery.split("\\}");
-			strQuery = strs[0];
-			strs = strQuery.split(",");
-			
-		    for (int i = 0; i < valueNames.length; i++) {
-				System.out.print(valueNames[i]+"  ");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return strs;
-	}*/
 }

@@ -29,8 +29,10 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -62,9 +64,10 @@ public class TreeShow {
     public static DoubleProperty finalResultMark = new SimpleDoubleProperty(0.0);
  	
 	public void start(Stage treeStage) throws Exception  {
+		treeStage.getIcons().add(new Image("modana-logo.png"));
 		treeStage.setTitle("AL-SMC");
 		treeStage.setWidth(900);
-		treeStage.setHeight(700);
+		treeStage.setHeight(650);
 		treeStage.centerOnScreen();
 		BorderPane plotTree = new BorderPane();
 		initPlotPanel(plotTree);
@@ -99,6 +102,9 @@ public class TreeShow {
  		rightPane.getItems().addAll(leftRightPane,rightRightPane);
  		rightPane.setDividerPositions(0.1f);
 		centerBPane.setDividerPositions(0.1f);
+		treeView.setTooltip(new Tooltip("未经约减的前缀频率树结构"));
+		treeReduceView.setTooltip(new Tooltip("经过第一次约减之后的前缀频率树结构"));
+		treeReduceView2.setTooltip(new Tooltip("经过第二次约减之后的前缀频率树结构"));
 		leftPane.setCenter(treeView);
 		leftRightPane.setCenter(treeReduceView);
 		rightRightPane.setCenter(treeReduceView2);
@@ -114,6 +120,7 @@ public class TreeShow {
 			HBox hBox1 = new HBox(7);
 			Label cho = new Label("      ");
 			Button getModel = new Button("Choose Markov Model:");
+			getModel.setTooltip(new Tooltip("1.点击此处选择需要进行协同验证的markov模型"));
 			initGetModel(getModel);
 			pathField = new TextField();
 			pathField.setId("pathField");
@@ -122,6 +129,7 @@ public class TreeShow {
 			HBox hBox2 = new HBox(7);
 			Label query = new Label("      ");
 			Button getQuery = new Button("Choose Fmu Model:");
+			getQuery.setTooltip(new Tooltip("2.点击此处选择需要进行协同验证的modelica模型"));
 			initGetQuery(getQuery);
 			queryField = new TextField();
 			queryField.setId("queryField");
@@ -129,6 +137,7 @@ public class TreeShow {
 			//add double Number
 			HBox hBox3 = new HBox(7);
 			Label Dou = new Label(" Input Double variable Number:   ");
+			Dou.setTooltip(new Tooltip("3.在此处添加验证过程中需要的连续变量的数量"));
 			Dou.setFont(font2);
 			douField = new TextField();
 			douField.setId("douField");
@@ -136,6 +145,7 @@ public class TreeShow {
 			//add int Number
 			HBox hBox4 = new HBox(7);
 			Label Int = new Label(" Input Int variable Number:   ");
+			Int.setTooltip(new Tooltip("4.在此处添加验证过程中需要的离散状态的数量"));
 			Int.setFont(font2);
 			intField = new TextField();
 			intField.setId("intField");
@@ -143,6 +153,7 @@ public class TreeShow {
 			//add Simulated Prameter Name
 			HBox hBox7 = new HBox(7);
 			Label praName = new Label("         Input Simulated Prameter Name:   ");
+			praName.setTooltip(new Tooltip("5.在此处添加验证过程中需要的变量及状态的名称，用；分隔"));
 			praName.setFont(font2);
 			praNameField= new TextField();
 			praNameField.setId("praNameField");
@@ -155,6 +166,7 @@ public class TreeShow {
 			hBox7.getChildren().addAll(praName,praNameField);
 			
 			progressLabel = new Label("Trace training set (N="+UserFile.learnTraceNum+") is generating: ");
+			progressLabel.setTooltip(new Tooltip("此处显示验证的进度"));
 			progressLabelString.addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(ObservableValue<? extends String> o, String v0,
@@ -183,6 +195,7 @@ public class TreeShow {
 			});
 
 			buttonSampling = new Button("Sampling");
+			buttonSampling.setTooltip(new Tooltip("6.执行此步骤之前请先在properties中添加验证公式，点击此处进行\n trace样本的生成及简化，为构建前缀频率树做准备"));
 			buttonSampling.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -200,6 +213,7 @@ public class TreeShow {
 			});
 			
 			buttonBuild = new Button("BuildTree");
+			buttonBuild.setTooltip(new Tooltip("7.点击此处构建前缀频率树"));
 			buttonBuild.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -211,6 +225,7 @@ public class TreeShow {
 			});
 			
 			buttonReduce = new Button("ReduceTree1");
+			buttonReduce.setTooltip(new Tooltip("8.点击此处进行前缀频率树的第一步约减"));
 			buttonReduce.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -223,6 +238,7 @@ public class TreeShow {
 			});
 			
 			buttonReduce2 = new Button("ReduceTree2");
+			buttonReduce2.setTooltip(new Tooltip("9.点击此处进行前缀频率树的第二步约减"));
 			buttonReduce2.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -235,7 +251,7 @@ public class TreeShow {
 			});
 			
 			Button verifyButton = new Button("Check And Return Result");
-			
+			verifyButton.setTooltip(new Tooltip("10.点击此处进行验证"));
 			Task<Void> finalTask = new Task<Void>() {
 				@Override
 				protected Void call() throws Exception {		
@@ -372,7 +388,7 @@ public class TreeShow {
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setInitialDirectory(new File("demo"));
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-						"XML files (*.xml)", "*.xml");
+						"markov files (*.pm)", "*.pm");
 				fileChooser.getExtensionFilters().add(extFilter);
 				Stage s = new Stage();
 				File file = fileChooser.showOpenDialog(s);
@@ -391,7 +407,7 @@ public class TreeShow {
 				FileChooser fileChooser = new FileChooser();
 				fileChooser.setInitialDirectory(new File("demo"));
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-						"QUERY files (*.q)", "*.q");
+						"fmu files (*.fmu)", "*.fmu");
 				fileChooser.getExtensionFilters().add(extFilter);
 				Stage s = new Stage();
 				File file = fileChooser.showOpenDialog(s);
