@@ -49,13 +49,13 @@ public class ExeUppaal {
 	 * @param n:生成trace数目
 	 */
 	public static void generatePCASplitTrace(DoubleProperty progressValue, int n) {
-		//BufferedWriter bw = null;
+		BufferedWriter bw = null;
 		// int count = 0;
-		//try {
+		try {
 			for (int m = 0; m < 1; m++) {
 				
-				/*String tracePath = UserFile.pathPrefix + "trace1" + ".txt";
-				FileWriter fw = new FileWriter(tracePath);*/
+				String tracePath = UserFile.pathPrefix + "trace1" + ".txt";
+				FileWriter fw = new FileWriter(tracePath);
 				
 				for (int h = 0; h < n; h++) {
 					List<String> staList = new ArrayList<>();//PCASplitStateList
@@ -95,7 +95,7 @@ public class ExeUppaal {
 					//-update progress value-//
 					//-----------------------------//
 					
-					//bw = new BufferedWriter(fw);
+					bw = new BufferedWriter(fw);
 					
 					//get state list (old)
 					
@@ -117,19 +117,19 @@ public class ExeUppaal {
 						sCheck2 = (Check.checkState(state,
 								UserFile.properties)) ? 1 : 0;
 						if (i == 0) {
-							//bw.write(prestate.time + "");
+							bw.write(prestate.time + "");
 							stateString1.append(prestate.time+"");
 							
-							for (int j = 0; j < prestate.values.size(); j++) {
-								//bw.write(", "+ prestate.values.get(j).toString());
+							for (int j = 1; j < prestate.values.size(); j++) {
+								bw.write(", "+ prestate.values.get(j).toString());
 								stateString1.append(", "+ prestate.values.get(j).toString());
 							}
-							//bw.write(", " + sCheck);
+							bw.write(", " + sCheck);
 							stateString1.append(", " + sCheck);
-							//bw.write(", " + sCheck);
+							bw.write(", " + sCheck);
 							stateString1.append(", " + sCheck);
 							staList.add(stateString1.toString());
-							//bw.write(System.getProperty("line.separator"));
+							bw.write(System.getProperty("line.separator"));
 							len++;
 						}
 						for (int j = State.doubleNum-1; j < state.values.size(); j++) {
@@ -141,44 +141,44 @@ public class ExeUppaal {
 						}
 						if (flag&&sCheck2==0) {
 							StringBuffer stateString2 = new StringBuffer();
-							//bw.write(state.time + "");
+							bw.write(state.time + "");
 							stateString2.append(state.time + "");
-							for (int j = 0; j < state.values.size(); j++) {
-								//bw.write(", " + state.values.get(j).toString());
+							for (int j = 1; j < state.values.size(); j++) {
+								bw.write(", " + state.values.get(j).toString());
 								stateString2.append(", " + state.values.get(j).toString());
 							}
-							//bw.write(", " + sCheck2);
+							bw.write(", " + sCheck2);
 							stateString2.append(", " + sCheck2);
-							//bw.write(", " + sCheck2);
+							bw.write(", " + sCheck2);
 							stateString2.append(", " + sCheck2);
 							staList.add(stateString2.toString());
-							//bw.write(System.getProperty("line.separator"));
+							bw.write(System.getProperty("line.separator"));
 							len++;
 						} else if(flag&&sCheck2==1){
 							StringBuffer stateString2 = new StringBuffer();
-							//bw.write(state.time + "");
+							bw.write(state.time + "");
 							stateString2.append(state.time + "");
-							for (int j = 0; j < state.values.size(); j++) {
-								//bw.write(", " + state.values.get(j).toString());
+							for (int j = 1; j < state.values.size(); j++) {
+								bw.write(", " + state.values.get(j).toString());
 								stateString2.append(", " + state.values.get(j).toString());
 							}
-							//bw.write(", " + sCheck2);
+							bw.write(", " + sCheck2);
 							stateString2.append(", " + sCheck2);
-							//bw.write(", " + sCheck2);
+							bw.write(", " + sCheck2);
 							stateString2.append(", " + sCheck2);
 							staList.add(stateString2.toString());
-							//bw.write(System.getProperty("line.separator"));
+							bw.write(System.getProperty("line.separator"));
 							len++;
 							break;
 						}
 
 					}
 					traList.add((ArrayList<String>) staList);
-					//bw.flush();
+					bw.flush();
 				}
 			}
 			// BIETAlgorithm.run();
-		/*} catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -188,7 +188,7 @@ public class ExeUppaal {
 				e.printStackTrace();
 			}
 
-		}*/
+		}
 		System.out.println();
 		System.out.println("---------------PCASplittrace finish!---------------");
 	}
@@ -269,7 +269,7 @@ public class ExeUppaal {
 			sCheck2 = (Check.checkState(state, UserFile.properties)) ? 1 : 0;
 			if (i == 0) {
 				stateString1.append(prestate.time + "");
-				for (int j = 0; j < prestate.values.size(); j++) {
+				for (int j = 1; j < prestate.values.size(); j++) {
 					stateString1.append(", "
 							+ prestate.values.get(j).toString());
 				}
@@ -289,7 +289,7 @@ public class ExeUppaal {
 			if (flag && sCheck2 == 0) {
 				StringBuffer stateString2 = new StringBuffer();
 				stateString2.append(state.time + "");
-				for (int j = 0; j < state.values.size(); j++) {
+				for (int j = 1; j < state.values.size(); j++) {
 					stateString2.append(", " + state.values.get(j).toString());
 				}
 				stateString2.append(", " + sCheck2);
@@ -299,7 +299,7 @@ public class ExeUppaal {
 			} else if (flag && sCheck2 == 1) {
 				StringBuffer stateString2 = new StringBuffer();
 				stateString2.append(state.time + "");
-				for (int j = 0; j < state.values.size(); j++) {
+				for (int j = 1; j < state.values.size(); j++) {
 					stateString2.append(", " + state.values.get(j).toString());
 				}
 				stateString2.append(", " + sCheck2);

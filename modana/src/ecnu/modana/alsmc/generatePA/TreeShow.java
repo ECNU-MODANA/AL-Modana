@@ -345,6 +345,7 @@ public class TreeShow {
 
 	protected void resultShow(List<double[]> rs) {
 		result = new Stage();
+		result.getIcons().add(new Image("modana-logo.png"));
 		result.setOpacity(0.91);
 		result.setTitle("ResultView");
 		result.setWidth(800);
@@ -364,7 +365,8 @@ public class TreeShow {
 		for (int i = 0; i < hBoxs.length-1; i++) {
 			hBoxs[i] = new HBox(8);
 			double[] re = rs.get(i);
-			String rsString = "num: "+re[0]+", x:"+re[1]+", n:"+re[2]+", p:"+re[3];
+			String rsString = "num: "+re[0]+", x:"+re[1]+", n:"+re[2]+", p:"+re[3]+"\n"+
+					"-----------------------------------------------------------";
 			Label label = new Label(rsString);
 			label.setFont(font2);
 			hBoxs[i].getChildren().add(label);

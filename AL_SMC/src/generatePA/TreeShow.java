@@ -32,6 +32,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -62,9 +63,10 @@ public class TreeShow extends Application {
     public static DoubleProperty finalResultMark = new SimpleDoubleProperty(0.0);
  	
 	public void start(Stage treeStage) throws Exception  {
+		treeStage.getIcons().add(new Image("modana-logo.png"));
 		treeStage.setTitle("AL-SMC");
-		treeStage.setWidth(1000);
-		treeStage.setHeight(700);
+		treeStage.setWidth(900);
+		treeStage.setHeight(600);
 		treeStage.centerOnScreen();
 		BorderPane plotTree = new BorderPane();
 		initPlotPanel(plotTree);
@@ -77,9 +79,9 @@ public class TreeShow extends Application {
 		SplitPane CenterPane = new SplitPane();
 		plotTree.setCenter(CenterPane);
 		BorderPane topPane = new BorderPane();
-		topPane.setPrefHeight(110);
+		topPane.setPrefHeight(150);
 		topPane.setMaxHeight(180);
-		topPane.setMinHeight(70);
+		topPane.setMinHeight(150);
 		initTopPane(topPane);
  		BorderPane bottomPane = new BorderPane();
  		CenterPane.setDividerPositions(0.1f);
@@ -320,6 +322,7 @@ public class TreeShow extends Application {
 
 	protected void resultShow(List<double[]> rs) {
 		result = new Stage();
+		result.getIcons().add(new Image("modana-logo.png"));
 		result.setOpacity(0.91);
 		result.setTitle("ResultView");
 		result.setWidth(800);
@@ -339,7 +342,8 @@ public class TreeShow extends Application {
 		for (int i = 0; i < hBoxs.length-1; i++) {
 			hBoxs[i] = new HBox(8);
 			double[] re = rs.get(i);
-			String rsString = "num: "+re[0]+", x:"+re[1]+", n:"+re[2]+", p:"+re[3];
+			String rsString = "num: "+re[0]+", x:"+re[1]+", n:"+re[2]+", p:"+re[3]+"\n"+
+			"-----------------------------------------------------------";
 			Label label = new Label(rsString);
 			label.setFont(font2);
 			hBoxs[i].getChildren().add(label);
@@ -361,7 +365,7 @@ public class TreeShow extends Application {
         getModel.setOnAction(new EventHandler<ActionEvent>() {
         	public void handle(ActionEvent e){
 				FileChooser fileChooser = new FileChooser();
-				fileChooser.setInitialDirectory(new File("C:/Users/JKQ/Desktop/model"));
+				fileChooser.setInitialDirectory(new File("demo"));
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
 						"XML files (*.xml)", "*.xml");
 				fileChooser.getExtensionFilters().add(extFilter);
@@ -380,7 +384,7 @@ public class TreeShow extends Application {
 		getQuery.setOnAction(new EventHandler<ActionEvent>() {
         	public void handle(ActionEvent e){
 				FileChooser fileChooser = new FileChooser();
-				fileChooser.setInitialDirectory(new File("C:/Users/JKQ/Desktop/model"));
+				fileChooser.setInitialDirectory(new File("demo"));
 				FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
 						"QUERY files (*.q)", "*.q");
 				fileChooser.getExtensionFilters().add(extFilter);

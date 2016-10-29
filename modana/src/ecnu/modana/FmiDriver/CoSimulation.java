@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 import org.apache.log4j.Logger;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.ptolemy.fmi.FMICallbackFunctions;
 import org.ptolemy.fmi.FMIEventInfo;
 import org.ptolemy.fmi.FMIModelDescription;
@@ -29,8 +28,6 @@ import ecnu.modana.alsmc.main.State;
 import ecnu.modana.model.ModelManager;
 import ecnu.modana.util.MyLineChart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 
 public class CoSimulation extends FMUDriver {
@@ -325,6 +322,8 @@ public class CoSimulation extends FMUDriver {
             List<Number>alterVNumberList=new ArrayList<>();     
             boolean isEnd=false;
             double lastTime=-1;
+            
+            String iniMarkovValues="";
             // Loop until the time is greater than the end time.
             while (time < endTime&&!isEnd) 
             {
@@ -398,7 +397,7 @@ public class CoSimulation extends FMUDriver {
                     {
                         numberOfStateEvents++;
                         int i=0;
-                        //if (enableLogging) 
+                        if (enableLogging) 
                         {
                             for (i = 0; i < numberOfEventIndicators; i++)
                             {
@@ -460,7 +459,32 @@ public class CoSimulation extends FMUDriver {
                        	  //prismClient.NewPath();
                 		  SetValueToPrism(sharedVarsPrism,prismClient);
                        	  //logger.debug(prismClient.CurValues());
-                       	  prismClient.DoStep(true);
+                		  while(true){
+                			  prismClient.DoStep(false);
+                			  if(null!=res){
+	              	                state=new State();
+	              	                state.SetTime(time);
+	              	                values=new ArrayList<>();
+	              	                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,fmiComponent, time, false, needsVariables, values);
+	              	                markovValues=prismClient.GetAllValues().split(",");
+	              	                for(int ij=0;ij<markovValues.length;ij++){
+	              	                	if(needsVariables.contains("prism."+prismS[ij]))
+	              	                		values.add(markovValues[ij]);
+	              	                }
+	              	                state.SetValues(values);
+	              	                res.add(state);
+                            }
+                			if(iniMarkovValues.equals(prismClient.curValuses)){
+                				if (res==null) {
+									break;
+								}
+                				if(res.size()>0) res.remove(res.size()-1);
+                				break;
+                			}
+                			else iniMarkovValues=prismClient.curValuses;
+                		  }
+                       	  
+                       	 //prismClient.DoStep(false);
                        	  //prismClient.DoStep(false);
                        	  SetValueToFmu(sharedVarsPrism,prismClient);
 //                		  sb.append(GetValue(fmiModelDescription, "out_v", fmiComponent)+" "+GetValue(fmiModelDescription, "in_v", fmiComponent)+" "+states[1]+"\n");
@@ -516,14 +540,15 @@ public class CoSimulation extends FMUDriver {
 			fmiModelDescription.dispose();
 		    }
         }
-        
-        System.out.println("Simulation from " + startTime + " to " + endTime
-                + " was successful");
-        System.out.println("  steps: " + numberOfSteps);
-        System.out.println("  step size: " + stepSize);
-        System.out.println("  stateEvents: " + numberOfStateEvents);
-        System.out.println("  stepEvents: " + numberOfStepEvents);
-        System.out.println("  timeEvents: " + numberOfTimeEvents);
+        if(enableLogging){
+	        System.out.println("Simulation from " + startTime + " to " + endTime
+	                + " was successful"); 
+	        System.out.println("  steps: " + numberOfSteps);
+	        System.out.println("  step size: " + stepSize);
+	        System.out.println("  stateEvents: " + numberOfStateEvents);
+	        System.out.println("  stepEvents: " + numberOfStepEvents);
+	        System.out.println("  timeEvents: " + numberOfTimeEvents);
+        }
 	System.out.flush();
 	prismClient.Close();
 	//System.err.println(sb);

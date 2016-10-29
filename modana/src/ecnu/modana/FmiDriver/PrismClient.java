@@ -16,7 +16,7 @@ public class PrismClient
 	PrintWriter out=null;
 	boolean isModelOpened=false;
 	HashMap<String, Integer>varMap=null;
-	String curValuses="";
+	public String curValuses="";
 	/**
 	 * prism double xiao shu wei,ji wei de int jiu dai biao ji wei xiao shu
 	 */

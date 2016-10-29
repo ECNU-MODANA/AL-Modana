@@ -273,6 +273,9 @@ public class Check {
 	
 	
 	public static boolean checkState(State state,String property) {
+		 if (property==null) {
+				new Exception("ÇëÌí¼Óproperty");
+			 }
 		 //match whole property
 		 Pattern pattern = Pattern.compile("([PR]=\\?)\\s?\\[\\s?([FG]<?=?0?.?[0-9]*)\\s([a-zA-EH-OQS-Z_0-9]\\w*[><!=]=?-?[0-9]?.?[0-9]*( [&|] [a-zA-EH-OQS-Z_0-9]\\w*[><!=]=?-?[0-9]?.?[0-9]*)*)\\s? ]");
 	     Matcher matcher = pattern.matcher(property);

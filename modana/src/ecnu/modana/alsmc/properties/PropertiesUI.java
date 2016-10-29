@@ -173,7 +173,7 @@ public class PropertiesUI {
 	private void addProperty(MenuItem addItem) {
 		addItem.setOnAction(new EventHandler<ActionEvent>() {
         	public void handle(ActionEvent e){
-        		Properties pro = new Properties("P=?[F energy>=2200 ]");
+        		Properties pro = new Properties("P=?[F fmu.in_v>=5 ]");
         		pManager.propertiesObervableList.add(pro);
         	}
 		});
