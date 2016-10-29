@@ -274,7 +274,8 @@ public class Check {
 	
 	public static boolean checkState(State state,String property) {
 		 //match whole property
-		 Pattern pattern = Pattern.compile("([PR]=\\?)\\s?\\[\\s?([FG]<?=?0?.?[0-9]*)\\s([a-zA-EH-OQS-Z_0-9]\\w*[><!=]=?-?[0-9]?.?[0-9]*( [&|] [a-zA-EH-OQS-Z_0-9]\\w*[><!=]=?-?[0-9]?.?[0-9]*)*)\\s? ]");
+		 Pattern pattern = Pattern.compile("([PR]=\\?)\\s?\\[\\s?([FG]<?=?0?.?[0-9]*)\\s([a-zA-EH-OQS-Z_0-9]\\w*.?[a-zA-EH-OQS-Z_0-9]\\w*"
+		 		+ "[><!=]=?-?[0-9]?.?[0-9]*( [&|] [a-zA-EH-OQS-Z_0-9]\\w*.?[a-zA-EH-OQS-Z_0-9]\\w*[><!=]=?-?[0-9]?.?[0-9]*)*)\\s? ]");
 	     Matcher matcher = pattern.matcher(property);
 	     //match and find like PR=? and send value to  frStringBuffer
 	     Pattern prPattern = Pattern.compile("([PR]=\\?)"); 
@@ -289,7 +290,7 @@ public class Check {
 	     Matcher opMatcher = opPattern.matcher(property);
 	     List<String> opList = new ArrayList<String>();
 	     //match and find like s!=5 and send value to exVList exOList exNList
-	     Pattern exPattern = Pattern.compile("([a-zA-EH-OQS-Z_0-9]\\w*)([><!=]=?)(-?[01]?.?[0-9]*)");
+	     Pattern exPattern = Pattern.compile("([a-zA-EH-OQS-Z_0-9]\\w*.?[a-zA-EH-OQS-Z_0-9]\\w*)([><!=]=?)(-?[01]?.?[0-9]*)");
 	     Matcher exMatcher = exPattern.matcher(property);
 	     List<String> exVList = new ArrayList<String>();
 	     List<String> exOList = new ArrayList<String>();

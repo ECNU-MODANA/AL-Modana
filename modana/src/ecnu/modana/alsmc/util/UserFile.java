@@ -44,7 +44,7 @@ public class UserFile {
 	public static int stateDoubleNum = 0;
 	public static int stateIntNum = 0;
 	//------------------------BIET k c    -----------------------------
-	public static double bietK = 0.02;
+	public static double bietK = 0.05;
 	public static double bietC = 0.95;
 	//------------------------EXEuppaal LearnTraceNum extractTraceNum extractTraceProbability   -----------------------------
     public static int learnTraceNum = 250;

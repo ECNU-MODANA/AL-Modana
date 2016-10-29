@@ -14,6 +14,7 @@ public class VerifierConfig {
 		coSimulation.simulate(markovModel,markovModel.endsWith(".pm")?"dtmc":"ctmc",fmuModel, 5.5, 0.01,false, ',',res,names);
 		if(res.size()<1) return res; 
 		ArrayList<Object> tArrayList=res.get(0).values;
+		tArrayList.add(0,"time");
 		String []tStrings=new String[tArrayList.size()];
 		for(int i=0;i<tArrayList.size();i++)
 			tStrings[i]=tArrayList.get(i).toString();
@@ -32,7 +33,8 @@ public class VerifierConfig {
 		int pos=0;
 		ArrayList<Object> tL;
 		for(int i=0,n=res.size(),j;i<n;i++){
-		   	pos=Integer.valueOf(res.get(i).values.get(p).toString());
+			
+		   	pos=(int) Double.parseDouble(res.get(i).values.get(p).toString());
 		   	tL=res.get(i).values;
 		   	for(j=0;j<sList.size();j++){
 		   		if(pos==sList.get(j)) tL.add("1");
