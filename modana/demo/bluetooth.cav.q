@@ -1,1 +1,0 @@
-simulate 1 [<=50000] {energy,time,sender1.s1,sender1.s2,receiver1.scan,receiver1.Reply,receiver1.wait,frequency1.f1}

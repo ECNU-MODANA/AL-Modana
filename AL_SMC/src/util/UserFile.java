@@ -37,9 +37,10 @@ public class UserFile {
 	//------------------------state doubleNum intNum    -----------------------------
 	
 	/**
-	 * smartbuilding 15/43
+	 * smartbuilding 15/43 1/6
 	 * robot 4/9
-	 * energy 2/6
+	 * bluetooth 2/6
+	 * room 2/7
 	 */
 	public static int stateDoubleNum = 0;
 	public static int stateIntNum = 0;

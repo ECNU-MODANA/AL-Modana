@@ -43,7 +43,7 @@ public class CoSimulation extends FMUDriver {
 	Pointer fmiComponent;
 	StringBuilder sb=new StringBuilder();
 	 public LineChart<Object,Number> simulate(String prismModelPath,String prismModelType,String fmuFileName, double endTime, 
-			 double stepSize,boolean enableLogging, char csvSeparator,ArrayList<State> res,LinkedHashSet<String> needsVariables)
+			 double stepSize,boolean enableLogging, char csvSeparator,ArrayList<State> res,LinkedHashSet<String> needsVariables,boolean isAllRun)
 	 {
 		 PrismClient prismClient=PrismClient.getInstance();
 	    	prismClient.StartServer();
@@ -61,7 +61,7 @@ public class CoSimulation extends FMUDriver {
 	    	}
 	    	if("dtmc".equals(prismClient.modelType))
 				try {
-					return dtmcSimulate(prismModelPath, prismClient.modelType, fmuFileName, endTime, stepSize, enableLogging, csvSeparator,res,needsVariables);
+					return dtmcSimulate(prismModelPath, prismClient.modelType, fmuFileName, endTime, stepSize, enableLogging, csvSeparator,res,needsVariables,isAllRun);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -115,10 +115,23 @@ public class CoSimulation extends FMUDriver {
 				}
 	    	return null;
 	 }
-	 
-	 
+   /**
+    * 
+    * @param prismModelPath
+    * @param prismModelType
+    * @param fmuFileName
+    * @param endTime
+    * @param stepSize
+    * @param enableLogging
+    * @param csvSeparator
+    * @param res
+    * @param needsVariables
+    * @param isAllRun 是否是永久交互
+    * @return
+    * @throws Exception
+    */
    public LineChart<Object,Number> dtmcSimulate(String prismModelPath,String prismModelType,String fmuFileName, double endTime, double stepSize,
-            boolean enableLogging, char csvSeparator,ArrayList<State> res,LinkedHashSet<String> needsVariables)
+            boolean enableLogging, char csvSeparator,ArrayList<State> res,LinkedHashSet<String> needsVariables,boolean isAllRun)
             throws Exception 
     {
 	    PrismClient prismClient=PrismClient.getInstance();
@@ -449,13 +462,8 @@ public class CoSimulation extends FMUDriver {
                                 + time);
                     }
                     for(int i=0;i<numberOfEventIndicators;i++)
-                		if(isEventHappen[i])
-                		{
-                		  //logger.debug(GetValue(fmiModelDescription, "out_v", fmiComponent));
-//                			if (ModelManager.getInstance().logger.isDebugEnabled()) {
-//                				sb.append(time+" "+GetValue(fmiModelDescription, "in_v", fmiComponent)+" ");
-//							}
-//                		  
+                		if(isEventHappen[i]&&!isAllRun)
+                		{                		  
                        	  //prismClient.NewPath();
                 		  SetValueToPrism(sharedVarsPrism,prismClient);
                        	  //logger.debug(prismClient.CurValues());
@@ -475,9 +483,7 @@ public class CoSimulation extends FMUDriver {
 	              	                res.add(state);
                             }
                 			if(iniMarkovValues.equals(prismClient.curValuses)){
-                				if (res==null) {
-									break;
-								}
+                				if(null==res) break;
                 				if(res.size()>0) res.remove(res.size()-1);
                 				break;
                 			}
@@ -509,9 +515,25 @@ public class CoSimulation extends FMUDriver {
                 		isEventHappen[i]=false;
                 	}
                 	else isEventLastHappen[i]=false;
+                if(isAllRun){
+                	 SetValueToPrism(sharedVarsPrism,prismClient);
+                	 prismClient.DoStep(false);
+//                	 System.out.println(prismClient.GetVariables());
+                	 System.out.println(prismClient.curValuses);
+                	 SetValueToFmu(sharedVarsPrism,prismClient);
+                }
                 timeList.add(time);
-                OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "h", hNumberList);
-                OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "in_v", vNumberList);
+                
+                if(needsVariables.contains("fmu.in_v")){
+                	OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "in_v", vNumberList);
+                    OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "h", hNumberList);
+                }
+                else if (needsVariables.contains("fmu.out_p")) {
+                	 OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "in_p", vNumberList);
+                	 vNumberList.set(vNumberList.size()-1, vNumberList.get(vNumberList.size()-1).doubleValue()/10000);
+                	 OutputRow.AddRow(this, fmiModelDescription, fmiComponent, "in_x", hNumberList);
+                }
+               
 
                 // Generate a line for this step
                 if(null!=res){

@@ -136,7 +136,7 @@ public class CoSimulationUI
 					{		
 						if(null==coSimulation) coSimulation=new CoSimulation("127.0.0.1", 40000);
 						ModelManager.getInstance().logger.error("prismModelPath:"+prismModelPath+",FMUPath:"+FMUPath);
-						lineChart=coSimulation.simulate(prismModelPath, markovType, FMUPath, 5.5, 0.01, false, ',',null,null);
+						lineChart=coSimulation.simulate(prismModelPath, markovType, FMUPath, 10, 0.01, false, ',',null,null,false);
 						//new CoSimulationZ("127.0.0.1", 40000).simulate(prismModelPath, "dtmc", FMUPath, 5.5, 0.01, false, ',', "./1.xml");
 						try {
 							//Stage stage=new Stage();
@@ -434,7 +434,7 @@ public class CoSimulationUI
 		if (file != null) {
 			return fp;
 			//TODO open model!!
-			//new PrismModel("","./prism.ecore", "PrismModel").LoadFromFile(fp);
+			//new PrismModel("","./files/prism.ecore", "PrismModel").LoadFromFile(fp);
 //			logger.debug("model opened!");
 		}	
 		return null;

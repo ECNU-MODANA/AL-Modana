@@ -139,7 +139,7 @@ public class ModanaUI extends Application implements IUserInterface {
 
 	@Override
 	public String getName() {
-		return "ModanaUI";
+		return "Modana";
 	}
 
 	@Override
@@ -882,7 +882,7 @@ public class ModanaUI extends Application implements IUserInterface {
 					//ModelManager.getInstance().GetModel(treeItem.getValue())
 			         PrismModel model=(PrismModel) ModelManager.getInstance().GetModel(c.getValue().toString());
 			         model.Check("./11.xml","dice.pctl");
-			         Stage pluginWindow = new Stage(StageStyle.DECORATED);
+			         /*Stage pluginWindow = new Stage(StageStyle.DECORATED);
 						pluginWindow.initModality(Modality.WINDOW_MODAL);
 						pluginWindow.setOpacity(0.87);
 						pluginWindow.setTitle("Check Result");
@@ -916,7 +916,7 @@ public class ModanaUI extends Application implements IUserInterface {
 			        
 						Scene scene = new Scene(vBox);
 						pluginWindow.setScene(scene);
-						pluginWindow.show();
+						pluginWindow.show();*/
 				}});
   
         //module delete            

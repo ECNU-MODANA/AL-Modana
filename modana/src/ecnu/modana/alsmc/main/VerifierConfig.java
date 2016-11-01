@@ -7,11 +7,11 @@ import java.util.LinkedHashSet;
 import ecnu.modana.FmiDriver.CoSimulation;
 
 public class VerifierConfig {
-	public static ArrayList<State> getConsimTrace(String markovModel,String fmuModel,LinkedHashSet<String>names,String sName,ArrayList<Integer>sList, int doubleNum,int intNum){
+	public static ArrayList<State> getConsimTrace(String markovModel,String fmuModel,LinkedHashSet<String>names,String sName,ArrayList<Integer>sList, int doubleNum,int intNum,boolean isAllRun){
 		
 		CoSimulation coSimulation=new CoSimulation("127.0.0.1", 40000);
 		ArrayList<State> res=new ArrayList<>();
-		coSimulation.simulate(markovModel,markovModel.endsWith(".pm")?"dtmc":"ctmc",fmuModel, 5.5, 0.01,false, ',',res,names);
+		coSimulation.simulate(markovModel,markovModel.endsWith(".pm")?"dtmc":"ctmc",fmuModel, 5.5, 0.01,false, ',',res,names,isAllRun);
 		if(res.size()<1) return res; 
 		ArrayList<Object> tArrayList=res.get(0).values;
 		tArrayList.add(0,"time");

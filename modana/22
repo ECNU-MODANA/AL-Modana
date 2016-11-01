@@ -1,0 +1,9 @@
+PRISM
+=====
+Version: 4.3
+Date: Sun Oct 30 15:53:19 CST 2016
+Hostname: LAPTOP-QMDEBVQA
+Memory limits: cudd=1g, java(heap)=247.5m
+Command line: prism 'C:/Users/jiang/Desktop/demo/tank3.pm' -simpath '10,vars=(s,in_v,out_v),sep=comma' ./test.txt
+Parsing model file "C:/Users/jiang/Desktop/demo/tank3.pm"...
+Error: Unknown variable "out_x" in update ("out_x", line 7, column 31).

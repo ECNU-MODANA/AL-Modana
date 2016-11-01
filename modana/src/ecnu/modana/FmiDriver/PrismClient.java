@@ -149,6 +149,8 @@ public class PrismClient
 			if(tStr.length()>2)
 			{
 				curValuses=tStr.substring(1,tStr.length()-1);
+//				curValuses=curValuses.replace("true", "1");
+//				curValuses=curValuses.replace("false", "0");
 				ModelManager.getInstance().logger.debug("dostep result:"+curValuses);
 				return curValuses;
 			}
@@ -167,6 +169,8 @@ public class PrismClient
 			if(tStr.length()>2)
 			{
 				curValuses=tStr.substring(1,tStr.length()-1);
+//				curValuses=curValuses.replace("true", "1");
+//				curValuses=curValuses.replace("false", "0");
 				//System.err.println("curValues:"+curValuses);
 				return curValuses;
 			}

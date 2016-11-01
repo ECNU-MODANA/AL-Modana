@@ -79,7 +79,7 @@ public class PrismModule implements MuiModule {
 	public TreeItem<String> createTreeModelExplorer(String modelName) {
 		//TODO bind observable list of data
 		TreeItem<String> treeItem = new TreeItem<String>(modelName);
-		ModelManager.getInstance().CreateModel("./prism.ecore",modelName,ModelType.PrismModel);
+		ModelManager.getInstance().CreateModel("./files/prism.ecore",modelName,ModelType.PrismModel);
 		treeItem.setExpanded(true);
 //		TreeItem<String> item = new TreeItem<> ("PrismDiagram");
 //		treeItem.getChildren().add(item);

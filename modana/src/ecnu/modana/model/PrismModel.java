@@ -232,7 +232,7 @@ public class PrismModel extends AbstractModel
 			modelPath=projectDir+name+".pm";
 		}
 		CoSimulation coSimulation=new CoSimulation("127.0.0.1",40000);
-		return coSimulation.simulate(modelPath,this.type,fmuFileName, endTime, stepSize,enableLogging, ',',new ArrayList<State>(),null);
+		return coSimulation.simulate(modelPath,this.type,fmuFileName, endTime, stepSize,enableLogging, ',',new ArrayList<State>(),null,false);
 	}
 	public Trace CoSimulationTrace(String fmuFileName, double endTime, double stepSize,
             boolean enableLogging, String outputFileName) throws Exception

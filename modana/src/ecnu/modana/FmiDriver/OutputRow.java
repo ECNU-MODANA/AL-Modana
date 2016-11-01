@@ -271,7 +271,12 @@ public class OutputRow {
             FMIModelDescription fmiModelDescription, Pointer fmiComponent,
             String scalarVariableName, List<Number>list) 
     {
-    	list.add((Number) fmuDriver.GetValue(fmiModelDescription, scalarVariableName, fmiComponent));
+    	Object obj=fmuDriver.GetValue(fmiModelDescription, scalarVariableName, fmiComponent);
+    	if(obj instanceof Boolean){
+    		if((Boolean)obj==false) list.add(0);
+    		else list.add(1);
+    	}
+    	else list.add((Number) obj);
     }
     public static void OutRow(PrintStream file,String str)
     {

@@ -175,7 +175,9 @@ public class PropertiesUI {
         	public void handle(ActionEvent e){
         		Properties pro1 = new Properties("P=?[F energy>=2200 ]");
         		Properties pro2 = new Properties("P=?[F discomfort>=15 ]");
-        		pManager.propertiesObervableList.addAll(pro1,pro2);
+        		Properties pro3 = new Properties("P=?[F e>=500 ]");
+        		Properties pro4 = new Properties("P=?[F T0>31 & T1<4 ]");
+        		pManager.propertiesObervableList.addAll(pro1,pro2,pro3,pro4);
         	}
 		});
 		

@@ -88,7 +88,7 @@ public class ExeUppaal {
 					}
 					ArrayList<State> sl = VerifierConfig.getConsimTrace
 							(UserFile.markovPath, UserFile.fmuPath,(LinkedHashSet<String>) praList,"s",sList,
-									UserFile.stateDoubleNum,UserFile.stateIntNum);
+									UserFile.stateDoubleNum,UserFile.stateIntNum,true);
 					
 					
 					////////////////////////
@@ -255,7 +255,7 @@ public class ExeUppaal {
 		//ArrayList<State> sl = tcs.randomGenOneTrace(); //使用仿真trace进行实验
 		ArrayList<State> sl = VerifierConfig.getConsimTrace
 				(UserFile.markovPath, UserFile.fmuPath,(LinkedHashSet<String>) praList,"s",sList,
-						UserFile.stateDoubleNum,UserFile.stateIntNum);
+						UserFile.stateDoubleNum,UserFile.stateIntNum,true);
 		int sCheck = 0;
 		int sCheck2 = 0;
 		for (int i = 0; i < sl.size() - 1; i++) {
