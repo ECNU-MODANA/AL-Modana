@@ -1,0 +1,13 @@
+PRISM
+=====
+Version: 4.3
+Date: Mon Dec 07 14:50:55 CST 2015
+Hostname: Ljf-PC
+Memory limits: cudd=1g, java(heap)=247.5m
+Command line: prism 'D:/WorkSpace/Java/win32/modana/CTMC.pm' -simpath '10,vars=(s,in_v,out_v),sep=comma' ./test.txt
+Parsing model file "D:/WorkSpace/Java/win32/modana/CTMC.pm"...
+Type:        CTMC
+Modules:     c 
+Variables:   s in_v out_v con_c 
+Generating random path of length 10 steps...
+Generated path: 10 steps, total time 6.055296043818136 (exported to .\test.txt)

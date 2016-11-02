@@ -44,10 +44,10 @@ public class UserFile {
 	public static int stateDoubleNum = 0;
 	public static int stateIntNum = 0;
 	//------------------------BIET k c    -----------------------------
-	public static double bietK = 0.05;
-	public static double bietC = 0.95;
+	public static double bietK = 0.1;
+	public static double bietC = 0.9;
 	//------------------------EXEuppaal LearnTraceNum extractTraceNum extractTraceProbability   -----------------------------
-    public static int learnTraceNum = 250;
+    public static int learnTraceNum = 50;
     public static int extractTraceNum = 2;
     public static double extractTraceProbability = 0.5;
     //------------------------PCAthreshold    -----------------------------

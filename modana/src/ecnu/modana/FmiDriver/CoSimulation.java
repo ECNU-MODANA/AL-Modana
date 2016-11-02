@@ -337,6 +337,7 @@ public class CoSimulation extends FMUDriver {
             double lastTime=-1;
             
             String iniMarkovValues="";
+            boolean isToOut=false;
             // Loop until the time is greater than the end time.
             while (time < endTime&&!isEnd) 
             {
@@ -519,8 +520,122 @@ public class CoSimulation extends FMUDriver {
                 	 SetValueToPrism(sharedVarsPrism,prismClient);
                 	 prismClient.DoStep(false);
 //                	 System.out.println(prismClient.GetVariables());
-                	 System.out.println(prismClient.curValuses);
+//                	 System.out.println(prismClient.curValuses);
                 	 SetValueToFmu(sharedVarsPrism,prismClient);
+
+                     // Update time.
+                     stepStartTime = time;
+                     time = Math.min(time + stepSize, endTime);
+                     timeEvent = eventInfo.upcomingTimeEvent == 1
+                             && eventInfo.nextEventTime < time;
+                     if (timeEvent) {
+                         time = eventInfo.nextEventTime;
+                     }
+                     dt = time - stepStartTime;
+                     invoke(setTime, new Object[] { fmiComponent, time },
+                             "Could not set time, time was " + time + ": ");
+
+                     // Perform a step.
+                     for (int i = 0; i < numberOfStates; i++) {
+                         // The forward Euler method.
+                         states[i] += dt * derivatives[i];
+                     }
+                     isStop=0;
+                     for(isStop=0;isStop<numberOfStates;isStop++)
+                     	if(!(Math.abs(derivatives[isStop])<=0.01)) break;
+                     if(isStop==numberOfStates) isEnd=true;
+                     
+                     invoke(setContinuousStates, new Object[] { fmiComponent,
+                             states, numberOfStates },
+                             "Could not set continuous states, time was " + time
+                                     + ": ");
+                    
+                     // Check to see if we have completed the integrator step.
+                     // Pass stepEvent in by reference. See
+                     // https://github.com/twall/jna/blob/master/www/ByRefArguments.md
+                     stepEventReference = new ByteByReference(
+                             stepEvent);
+                     invoke(completedIntegratorStep, new Object[] { fmiComponent,
+                             stepEventReference },
+                             "Could not set complete integrator step, time was "
+                                     + time + ": ");
+                     
+                     // Save the state events.
+                     for (int i = 0; i < numberOfEventIndicators; i++) {
+                         preEventIndicators[i] = eventIndicators[i];
+                     }
+
+                     // Get the eventIndicators.
+                     invoke(getEventIndicators, new Object[] { fmiComponent,
+                             eventIndicators, numberOfEventIndicators },
+                             "Could not set get event indicators, time was " + time
+                                     + ": ");
+
+                     stateEvent = Boolean.FALSE;
+                     for (int i = 0; i < numberOfEventIndicators; i++) {
+                         stateEvent = stateEvent
+                                 || preEventIndicators[i] * eventIndicators[i] < 0;
+                     }
+                     
+                  // Handle Events
+                     if (stateEvent || stepEvent != (byte) 0 || timeEvent)
+                     {
+                         if (stateEvent) 
+                         {
+                             numberOfStateEvents++;
+                             int i=0;
+                             if (enableLogging) 
+                             {
+                                 for (i = 0; i < numberOfEventIndicators; i++)
+                                 {
+                                     System.out.println("state event "
+                                          + (preEventIndicators[i] > 0&& eventIndicators[i] < 0 ? "-\\-"
+                                                             : "-/-")
+                                                     + " eventIndicator[" + i+ "], time: " + time);
+                                 }
+                             }
+                           i=0;
+                           //if(!isEventLastHappen[i])
+                           if(time-lastTime>stepSize*2)
+                           {
+                         	  lastTime=time;
+     	                      isEventHappen[i]=true;
+     	                	  //logger.debug(GetValue(fmiModelDescription, "out_v", fmiComponent));
+                           }
+                         }
+                         if (stepEvent != (byte) 0) {
+                             numberOfStepEvents++;
+                             if (enableLogging) {
+                                 System.out.println("step event at " + time);
+                             }
+                         }
+                         if (timeEvent) {
+                             numberOfTimeEvents++;
+                             if (enableLogging) {
+                                 System.out.println("Time event at " + time);
+                             }
+                         }
+
+                         invoke(eventUpdate, new Object[] { fmiComponent, (byte) 0,
+                                 eventInfo },
+                                 "Could not set update event, time was " + time
+                                         + ": ");
+
+                         if (eventInfo.terminateSimulation != (byte) 0) {
+                             System.out.println("Termination requested: " + time);
+                             break;
+                         }
+
+                         if (eventInfo.stateValuesChanged != (byte) 0
+                                 && enableLogging) {
+                             System.out.println("state values changed: " + time);
+                         }
+                         if (eventInfo.stateValueReferencesChanged != (byte) 0
+                                 && enableLogging) {
+                             System.out.println("new state variables selected: "
+                                     + time);
+                         }
+                     }
                 }
                 timeList.add(time);
                 
@@ -575,6 +690,17 @@ public class CoSimulation extends FMUDriver {
 	prismClient.Close();
 	//System.err.println(sb);
 //	prismClient.EndServer();
+	
+	
+	/**
+	 * 打印trace
+	 */
+	/*if(null!=res){
+		for(int i=0;i<res.size();i++){
+			System.out.println(res.get(i).time+","+res.get(i).values);
+		}
+		System.out.println(res.get(0).time+","+res.get(0).values);
+	}*/
 	return myLineChart.getJLineChart();
     }
    public Trace dtmcSimulate(String prismModelPath,String prismModelType,FMIModelDescription fmiModelDescription, double endTime, double stepSize,
@@ -2694,7 +2820,7 @@ public class CoSimulation extends FMUDriver {
     		else if(sharedVarsPrism.get(i).startsWith("con_"))
     		{
     			Object tObject=GetValue(fmiModelDescription,sharedVarsPrism.get(i), fmiComponent);
-    			prismClient.SetValue(sharedVarsPrism.get(i),tObject);
+ //   			prismClient.SetValue(sharedVarsPrism.get(i),tObject);
 //    			if("1".equals(tObject.toString()))
 //    			ModelManager.getInstance().logger.error("set condition to Prism,"+sharedVarsPrism.get(i)+":"+tObject);
     		}

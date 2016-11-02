@@ -179,7 +179,7 @@ public abstract class MuiGEditor {
 	private int indexOf1stArea = 1;
 
 	// default canvas size
-	private static final int graphWidth = 800, graphHeight = 300;
+	private static final int graphWidth = 1500, graphHeight = 720;
 	// opreateVbox include create delete update
 	VBox opreateVbox;
 	

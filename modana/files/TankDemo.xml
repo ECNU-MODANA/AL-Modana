@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prism:PrismModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:prism="http:///ecnu.modana.mf.prism" name="TankModel" type="dtmc">
+  <Variables xsi:type="prism:Variable" name="in_p" value="[-200000000..200000000]init 0;"/>
+  <Variables xsi:type="prism:Variable" name="out_p" value="[-200000000..200000000]init 0;"/>
+  <Variables xsi:type="prism:Variable" name="in_x" value="[0..1]init 0;"/>
+  <Variables xsi:type="prism:Variable" name="out_x" value="[0..1]init 0;"/>
+  <modules name="tankDigram">
+    <states name="s0" index="0" x="186.0" y="19.0" width="51.73974609375" height="52.05029296875"/>
+    <states name="s1" index="1" x="180.0" y="199.0" width="51.73974609375" height="52.05029296875"/>
+    <states name="s2" index="2" x="400.0" y="144.0" width="51.73974609375" height="52.05029296875"/>
+    <states name="s3" index="3" x="175.0" y="305.0" width="51.73974609375" height="52.05029296875"/>
+    <states name="s4" index="4" x="477.0" y="309.0" width="51.73974609375" height="52.05029296875"/>
+    <states name="s5" index="5" x="10.0" y="378.0" width="51.73974609375" height="52.05029296875"/>
+    <states name="s6" index="6" x="387.0" y="381.0" width="51.73974609375" height="52.05029296875"/>
+    <states name="s7" index="7" x="771.0" y="130.0" width="51.73974609375" height="52.05029296875"/>
+    <transitions name="9359595" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="2" targetPtIndex="0" source="//@modules.0/@states.0" target="//@modules.0/@states.1"/>
+    <transitions name="15578894" syn="" condition="" prob="0.9" assigns="" sourcePtIndex="1" targetPtIndex="1" source="//@modules.0/@states.1" target="//@modules.0/@states.0"/>
+    <transitions name="27987773" syn="" condition="" prob="0.1" assigns="" sourcePtIndex="2" targetPtIndex="0" source="//@modules.0/@states.1" target="//@modules.0/@states.3"/>
+    <transitions name="11224631" syn="" condition="in_x=1" prob="" assigns="out_x=0" sourcePtIndex="0" targetPtIndex="1" source="//@modules.0/@states.3" target="//@modules.0/@states.5"/>
+    <transitions name="10232391" syn="" condition="in_x=0" prob="" assigns="out_x=1" sourcePtIndex="2" targetPtIndex="0" source="//@modules.0/@states.3" target="//@modules.0/@states.6"/>
+    <transitions name="33076829" syn="" condition="" prob="" assigns="" sourcePtIndex="0" targetPtIndex="2" source="//@modules.0/@states.6" target="//@modules.0/@states.0"/>
+    <transitions name="7439224" syn="" condition="" prob="" assigns="" sourcePtIndex="3" targetPtIndex="2" source="//@modules.0/@states.4" target="//@modules.0/@states.0"/>
+    <transitions name="16116799" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="1" targetPtIndex="0" source="//@modules.0/@states.0" target="//@modules.0/@states.2"/>
+    <transitions name="28078140" syn="" condition="" prob="0.2" assigns="out_p = in_p-1000" sourcePtIndex="2" targetPtIndex="0" source="//@modules.0/@states.2" target="//@modules.0/@states.4"/>
+    <transitions name="19166858" syn="" condition="" prob="0.8" assigns="out_p = in_p" sourcePtIndex="1" targetPtIndex="3" source="//@modules.0/@states.2" target="//@modules.0/@states.7"/>
+    <transitions name="27153749" syn="" condition="" prob="" assigns="" sourcePtIndex="1" targetPtIndex="1" source="//@modules.0/@states.7" target="//@modules.0/@states.0"/>
+    <transitions name="15189389" syn="" condition="" prob="" assigns="" sourcePtIndex="0" targetPtIndex="3" source="//@modules.0/@states.5" target="//@modules.0/@states.0"/>
+  </modules>
+</prism:PrismModel>

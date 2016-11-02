@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prism:PrismModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:prism="http:///ecnu.modana.mf.prism" name="CTMC" type="ctmc">
+  <Variables xsi:type="prism:Variable" name="in_v" value="[-200000000..200000000]init 0;"/>
+  <Variables xsi:type="prism:Variable" name="out_v" value="[-200000000..200000000] init 0;"/>
+  <Variables xsi:type="prism:Variable" name="con_c" value="[0..1] init 0;"/>
+  <modules name="c">
+    <states name="s0" index="0" x="202.0" y="74.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s1" index="1" x="390.0" y="154.0" width="53.13134765625" height="50.45361328125"/>
+    <transitions name="15905410" syn="" condition="" prob="1" assigns="con_c=1" sourcePtIndex="1" targetPtIndex="0" source="//@modules.0/@states.0" target="//@modules.0/@states.1"/>
+    <transitions name="28228186" syn="" condition="" prob="" assigns="out_v=in_v*8" sourcePtIndex="3" targetPtIndex="2" source="//@modules.0/@states.1" target="//@modules.0/@states.0"/>
+  </modules>
+</prism:PrismModel>

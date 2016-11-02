@@ -222,7 +222,6 @@ public class ModanaUI extends Application implements IUserInterface {
 		tabPane = new TabPane();
 		//set property of tab pane
 		tabPane.setPrefWidth(editorPrefWidth);
-
 		centerPane.getItems().addAll(leftPane, tabPane);
 		centerPane.setDividerPositions(0.1f);
 		//add model explorer tree
@@ -719,7 +718,7 @@ public class ModanaUI extends Application implements IUserInterface {
         private ContextMenu addLeafMenu = new ContextMenu();
         public TextFieldTreeCellImpl() {
         	 MenuItem addMenuItem = new MenuItem("Add PrismDiagram");
-             MenuItem addMenuItem0 = new MenuItem("Check Model");
+             MenuItem addMenuItem0 = new MenuItem("Model Translate");
              MenuItem addMenuItem1 = new MenuItem("Delete Model");
              MenuItem fmItem=new MenuItem("co-simulation");
              MenuItem addLeafMenuItem0 = new MenuItem("Open Diagram");

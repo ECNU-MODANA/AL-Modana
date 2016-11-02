@@ -1,0 +1,4 @@
+action,step,s,c,v
+-,0,0,0,0
+fmuD,1,1,0,1
+fmuD,2,0,0,1

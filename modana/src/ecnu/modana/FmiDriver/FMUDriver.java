@@ -212,7 +212,10 @@ public abstract class FMUDriver {
 			 if (scalarVariable.type instanceof FMIBooleanType) 
 				 scalarVariable.setBoolean(fmiComponent, (boolean) value);
              else if (scalarVariable.type instanceof FMIIntegerType) 
-            	 scalarVariable.setInt(fmiComponent, (int) value);
+            	 if(value instanceof Number)
+            		 scalarVariable.setInt(fmiComponent, (int) value);
+            	 else 
+            		 scalarVariable.setInt(fmiComponent, Integer.valueOf(value.toString()));
              else if (scalarVariable.type instanceof FMIRealType) 
             	 scalarVariable.setDouble(fmiComponent, Double.valueOf(value.toString())/PrismClient.xiaoShuWei);
              else if (scalarVariable.type instanceof FMIStringType)

@@ -1,8 +1,11 @@
 package ecnu.modana.FmiDriver;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import org.apache.log4j.Logger;
+
+import ecnu.modana.alsmc.main.State;
 import ecnu.modana.model.ModelManager;
 import ecnu.modana.ui.MyTextConvertor;
 import javafx.beans.property.SimpleStringProperty;
@@ -136,7 +139,13 @@ public class CoSimulationUI
 					{		
 						if(null==coSimulation) coSimulation=new CoSimulation("127.0.0.1", 40000);
 						ModelManager.getInstance().logger.error("prismModelPath:"+prismModelPath+",FMUPath:"+FMUPath);
-						lineChart=coSimulation.simulate(prismModelPath, markovType, FMUPath, 10, 0.01, false, ',',null,null,false);
+						String modelname = prismModelPath.substring(prismModelPath.lastIndexOf("files")+6,prismModelPath.lastIndexOf(".pm"));
+						if(modelname.equals("fmu"))
+							lineChart=coSimulation.simulate(prismModelPath, markovType, FMUPath, 5.5, 0.01, false, ',',null,null,false);
+						else {
+							lineChart=coSimulation.simulate(prismModelPath, markovType, FMUPath, 15.5, 0.01, false, ',',null,null,true);
+						}
+						//lineChart=coSimulation.simulate(prismModelPath, markovType, FMUPath, 15.5, 0.01, false, ',',new ArrayList<State>(),null,true);
 						//new CoSimulationZ("127.0.0.1", 40000).simulate(prismModelPath, "dtmc", FMUPath, 5.5, 0.01, false, ',', "./1.xml");
 						try {
 							//Stage stage=new Stage();
