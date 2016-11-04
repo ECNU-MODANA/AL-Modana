@@ -174,7 +174,8 @@ public class PropertiesUI {
 		addItem.setOnAction(new EventHandler<ActionEvent>() {
         	public void handle(ActionEvent e){
         		Properties pro = new Properties("P=?[F<=15 fmu.h<1 | fmu.h>3 ]");
-        		pManager.propertiesObervableList.add(pro);
+        		Properties pro2 = new Properties("P=?[F<=15 fmu.in_v>5 ]");
+        		pManager.propertiesObervableList.addAll(pro,pro2);
         	}
 		});
 		

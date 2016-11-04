@@ -136,7 +136,7 @@ public class TreeShow {
 			queryField.setPrefWidth(200);
 			//add double Number
 			HBox hBox3 = new HBox(7);
-			Label Dou = new Label(" Input Double variable Number:   ");
+			Label Dou = new Label(" Input Continuous Variable Number:   ");
 			Dou.setTooltip(new Tooltip("3.在此处添加验证过程中需要的连续变量的数量"));
 			Dou.setFont(font2);
 			douField = new TextField();
@@ -144,7 +144,7 @@ public class TreeShow {
 			douField.setPrefWidth(100);
 			//add int Number
 			HBox hBox4 = new HBox(7);
-			Label Int = new Label(" Input Int variable Number:   ");
+			Label Int = new Label(" Input Location Number:   ");
 			Int.setTooltip(new Tooltip("4.在此处添加验证过程中需要的离散状态的数量"));
 			Int.setFont(font2);
 			intField = new TextField();
@@ -212,7 +212,7 @@ public class TreeShow {
 				}
 			});
 			
-			buttonBuild = new Button("BuildTree");
+			buttonBuild = new Button("Build PFT");
 			buttonBuild.setTooltip(new Tooltip("7.点击此处构建前缀频率树"));
 			buttonBuild.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -224,7 +224,7 @@ public class TreeShow {
 				}
 			});
 			
-			buttonReduce = new Button("ReduceTree1");
+			buttonReduce = new Button("Reduce PFT1");
 			buttonReduce.setTooltip(new Tooltip("8.点击此处进行前缀频率树的第一步约减"));
 			buttonReduce.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
@@ -237,7 +237,7 @@ public class TreeShow {
 				}
 			});
 			
-			buttonReduce2 = new Button("ReduceTree2");
+			buttonReduce2 = new Button("Reduce PFT2");
 			buttonReduce2.setTooltip(new Tooltip("9.点击此处进行前缀频率树的第二步约减"));
 			buttonReduce2.setOnAction(new EventHandler<ActionEvent>() {
 				@Override

@@ -1,7 +1,5 @@
-/properties/
-/smc/
-/test/
-/util/
+/generatePA/
 /main/
 /modelCheck/
-/parameter/
+/smc/
+/util/

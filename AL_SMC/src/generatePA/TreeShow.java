@@ -1,7 +1,7 @@
 package generatePA;
 import java.io.File;
 import java.util.List;
-import main.ExeUppaal;
+
 import parameter.HeuristicUI;
 import parameter.ParameterUI;
 import properties.PropertiesUI;
@@ -21,6 +21,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import main.ExeUppaal;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -130,14 +131,14 @@ public class TreeShow extends Application {
 			queryField.setPrefWidth(200);
 			//add double Number
 			HBox hBox3 = new HBox(7);
-			Label Dou = new Label(" Input Double variable Number:   ");
+			Label Dou = new Label(" Input Continuous Variable Number:   ");
 			Dou.setFont(font2);
 			douField = new TextField();
 			douField.setId("douField");
 			douField.setPrefWidth(100);
 			//add int Number
 			HBox hBox4 = new HBox(7);
-			Label Int = new Label(" Input Int variable Number:   ");
+			Label Int = new Label(" Input Location Number:   ");
 			Int.setFont(font2);
 			intField = new TextField();
 			intField.setId("intField");
@@ -193,7 +194,7 @@ public class TreeShow extends Application {
 				}
 			});
 			
-			buttonBuild = new Button("BuildTree");
+			buttonBuild = new Button("Build PFT");
 			buttonBuild.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -204,7 +205,7 @@ public class TreeShow extends Application {
 				}
 			});
 			
-			buttonReduce = new Button("ReduceTree1");
+			buttonReduce = new Button("Reduce PFT1");
 			buttonReduce.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {
@@ -216,7 +217,7 @@ public class TreeShow extends Application {
 				}
 			});
 			
-			buttonReduce2 = new Button("ReduceTree2");
+			buttonReduce2 = new Button("Reduce PFT2");
 			buttonReduce2.setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent arg0) {

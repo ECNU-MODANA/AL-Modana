@@ -717,12 +717,12 @@ public class ModanaUI extends Application implements IUserInterface {
         private ContextMenu addMenu = new ContextMenu();
         private ContextMenu addLeafMenu = new ContextMenu();
         public TextFieldTreeCellImpl() {
-        	 MenuItem addMenuItem = new MenuItem("Add PrismDiagram");
-             MenuItem addMenuItem0 = new MenuItem("Model Translate");
+        	 MenuItem addMenuItem = new MenuItem("Add Diagram");
+             MenuItem addMenuItem0 = new MenuItem("Model Translation");
              MenuItem addMenuItem1 = new MenuItem("Delete Model");
-             MenuItem fmItem=new MenuItem("co-simulation");
+             MenuItem fmItem=new MenuItem("Co-Simulation");
              MenuItem addLeafMenuItem0 = new MenuItem("Open Diagram");
-             MenuItem addLeafMenuItem1 = new MenuItem("delete Diagram");
+             MenuItem addLeafMenuItem1 = new MenuItem("Delete Diagram");
              addMenu.getItems().addAll(addMenuItem,addMenuItem0,addMenuItem1,fmItem);
              fmItem.setOnAction(new EventHandler<ActionEvent>() {
   				@Override
