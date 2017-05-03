@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 import org.apache.log4j.Logger;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.ptolemy.fmi.FMICallbackFunctions;
 import org.ptolemy.fmi.FMIEventInfo;
 import org.ptolemy.fmi.FMIModelDescription;

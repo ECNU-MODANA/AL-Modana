@@ -411,10 +411,10 @@ public class ModanaUI extends Application implements IUserInterface {
        /* Menu menuProperties = new Menu("Properties");
         addPropertiesMenuItem(menuProperties);*/
         //Co-Simulation
-        Menu menuSim = new Menu("Co-Simulation");
+        Menu menuSim = new Menu("CV-SMC");
         addSimulationMenuItem(menuSim);
         //Al-Smc Verifier
-        Menu alsmc = new Menu("Al-Smc");
+        Menu alsmc = new Menu("AL-SMC");
         addAlSmcMenuItem(alsmc);
         menuBar.getMenus().addAll(menuModel,menuSim,alsmc,menuTool, menuHelp);
         //menuBar.getMenus().addAll(menuModel,menuProperties,menuSim,alsmc,menuTool, menuHelp);
@@ -422,7 +422,7 @@ public class ModanaUI extends Application implements IUserInterface {
 	}
 	private void addAlSmcMenuItem(Menu alsmc) {
 		// Add Properties
-				MenuItem addPropertiesList = new MenuItem("Al-smc");
+				MenuItem addPropertiesList = new MenuItem("al-smc");
 				addPropertiesList.setOnAction(new EventHandler<ActionEvent>() {
 					@Override
 					public void handle(ActionEvent e) {	
@@ -441,7 +441,7 @@ public class ModanaUI extends Application implements IUserInterface {
 
 	private void addSimulationMenuItem(Menu menu) {
 		// Add Properties
-		MenuItem addPropertiesList = new MenuItem("Co-Simulation");
+		MenuItem addPropertiesList = new MenuItem("CV-SMC");
 		addPropertiesList.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {	
