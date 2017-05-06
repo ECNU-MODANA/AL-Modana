@@ -2,6 +2,8 @@ package ecnu.modana.FmiDriver;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -285,7 +287,7 @@ public class CoSimulationUI
 		simulateWork.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>(){
 			public void handle(Event e)
 			{		
-				if(null==coSimulation) coSimulation=new CoSimulation("127.0.0.1", 40000);
+				/*if(null==coSimulation) coSimulation=new CoSimulation("127.0.0.1", 40000);
 				ModelManager.getInstance().logger.error("prismModelPath:"+prismModelPath+",FMUPath:"+FMUPath);
 				String modelname = prismModelPath.substring(prismModelPath.lastIndexOf("files")+6,prismModelPath.lastIndexOf(".pm"));
 				if(modelname.equals("fmu"))
@@ -305,7 +307,25 @@ public class CoSimulationUI
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
-				}
+				}*/
+				
+				//	new MinaServer(40001).Start();
+			    	LinkedList<String> fmus=new LinkedList<>();
+//			    	fmus.add("./files/MyBouncingBall.fmu");
+			    	//fmus.add("./files/BouncingBall-sys.fmu");
+			    	//fmus.add("./files/testFMU.fmu");
+			    	fmus.add("./files/smartBuildingNo.fmu");
+			    	LinkedHashMap<String, String> toolSlave=new LinkedHashMap<String, String>();
+			    	//toolSlave.put("./files/smartBuildingHuman.sm", "Prism");
+			    	toolSlave.put("ecnu.modana.FmiDriver.Controller","SourceCode");
+			    	toolSlave.put("ecnu.modana.FmiDriver.HumansActivity","SourceCode");
+			    	
+			    	long start = System.currentTimeMillis();
+			    	new PlugCoSimulation().CoSimulation(fmus, toolSlave, null, 
+			    			0, 50, 0.04, "./files/res.csv");
+			    	long end = System.currentTimeMillis();
+			    	System.out.println(end-start);
+				
 			}
 			} );
 		Label exStepNum = new Label();

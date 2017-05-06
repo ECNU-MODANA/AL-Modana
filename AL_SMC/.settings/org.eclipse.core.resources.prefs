@@ -2,6 +2,7 @@ eclipse.preferences.version=1
 encoding//src/PCA/PCA.java=GBK
 encoding//src/generatePA/PreTree.java=UTF-8
 encoding//src/main/ExeUppaal.java=UTF-8
+encoding//src/service/HttpServiceImpl.java=UTF-8
 encoding//src/smc/BIETAlgorithm.java=UTF-8
 encoding//src/util/UserFile.java=UTF-8
 encoding/<project>=GBK

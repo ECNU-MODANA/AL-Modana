@@ -1,9 +1,0 @@
-PRISM
-=====
-Version: 4.3
-Date: Wed Nov 02 17:30:51 CST 2016
-Hostname: Ljf-PC
-Memory limits: cudd=1g, java(heap)=247.5m
-Command line: prism 'D:/WorkSpace/Java/win32/modana/files/TankModel.pm' -simpath '10,vars=(s,in_v,out_v),sep=comma' ./test.txt
-Parsing model file "D:/WorkSpace/Java/win32/modana/files/TankModel.pm"...
-Error: Syntax error ("out_p", line 11, column 28).

@@ -13,5 +13,8 @@
 	<classpathentry kind="lib" path="libs/Jama-1.0.3.jar"/>
 	<classpathentry kind="lib" path="libs/org.apache.commons.net.jar"/>
 	<classpathentry kind="lib" path="libs/colt.jar"/>
+	<classpathentry kind="lib" path="libs/mina-core-2.0.16.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-api-1.7.21.jar"/>
+	<classpathentry kind="lib" path="libs/slf4j-nop-1.7.21.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

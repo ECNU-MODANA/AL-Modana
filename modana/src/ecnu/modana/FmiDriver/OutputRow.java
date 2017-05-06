@@ -161,6 +161,97 @@ public class OutputRow {
         // Terminate this row.
         //file.format("%n");
     }
+    public static void outputRowPlug(NativeLibrary nativeLibrary,
+            FMIModelDescription fmiModelDescription, Pointer fmiComponent,
+            double time, PrintStream file, char separator, Boolean header) {
+        int i;
+        // fmiReal r;
+        // fmiInteger i;
+        // fmiBoolean b;
+        // fmiString s;
+        // fmiValueReference vr;
+
+        // Print the first column.
+//        if (header) 
+//        {
+//            file.print("time");
+//        } else {
+//            if (separator == ',') {
+//                file.format("%g", time);
+//            } else {
+//                // Separator is ';' or '\t'
+//                // If the separator is not a comma, then replace the decimal
+//                // place with a comma.
+//                file.format("%s", Double.toString(time).replace('.', ','));
+//            }
+//        }
+
+        // Print all the other columns.
+        for (FMIScalarVariable scalarVariable : fmiModelDescription.modelVariables) 
+        {
+            if (scalarVariable.alias != null && scalarVariable.alias != Alias.noAlias) {
+                // If the scalarVariable has an alias, then skip it.
+                // In bouncingBall.fmu, g has an alias, so it is skipped.
+                continue;
+            }
+            if (header) 
+            {
+                // Output header names.
+                if (separator == ',') {
+                    // Treat array element, e.g. print a[1, 2] as a[1.2]
+                    file.format("%c", separator);
+                    file.format(fmiModelDescription.modelIdentifier+".");
+                    // FIXME: Just do a replace()
+                    char[] s = scalarVariable.name.toCharArray();
+                    for (i = 0; i < s.length; i++) {
+                        if (s[i] != ' ') {
+                            file.format("%c", s[i] == ',' ? '.' : s[i]);
+                        }
+                    }
+                } else {
+                    file.format("%c%s", separator, scalarVariable.name);
+                }
+                PlugCoSimulation.variables+=","+fmiModelDescription.modelIdentifier+"."+scalarVariable.name;
+            } else {
+                // Output values.
+
+                // The value reference is an internal-use-only integer that
+                // refers to which variable we
+                // are to access.
+                // int valueReference = scalarVariable.valueReference;
+                // IntBuffer valueReferenceIntBuffer =
+                // IntBuffer.allocate(1).put(0, valueReference);
+                if (scalarVariable.type instanceof FMIBooleanType) {
+                    boolean result = scalarVariable.getBoolean(fmiComponent);
+                    file.format("%c%b", separator, result);
+                } else if (scalarVariable.type instanceof FMIIntegerType) {
+                    // FIXME: handle Enumerations?
+                    int result = scalarVariable.getInt(fmiComponent);
+                    file.format("%c%d", separator, result);
+                } else if (scalarVariable.type instanceof FMIRealType) {
+                    double result = scalarVariable.getDouble(fmiComponent);
+                    if (separator == ',') {
+                        file.format(",%.16g", result);
+                    } else {
+                        // separator is e.g. ';' or '\t'
+                        // If the separator is not a comma, then replace the
+                        // decimal place with a comma.
+                        file.format("%c%s", separator, Double.toString(result)
+                                .replace('.', ','));
+                    }
+                } else if (scalarVariable.type instanceof FMIStringType) {
+                    String result = scalarVariable.getString(fmiComponent);
+                    file.format("%c%s", separator, result);
+                } else {
+                    file.format("%cNoValueForType=%s", separator,
+                            scalarVariable.type.getClass().getName());
+                }
+            }
+        }
+
+        // Terminate this row.
+//        file.format("%n");
+    }
     public static void outputRowIni(NativeLibrary nativeLibrary,
             FMIModelDescription fmiModelDescription, Pointer fmiComponent,
             double time, PrintStream file, char separator, Boolean header) {
@@ -248,7 +339,7 @@ public class OutputRow {
         }
 
         // Terminate this row.
-        file.format("%n");
+//        file.format("%n");
     }
 
     public static String GetVars(NativeLibrary nativeLibrary,

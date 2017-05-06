@@ -60,7 +60,7 @@ import ecnu.modana.util.MyLineChart;
  *  @Pt.ProposedRating Red (cxh)
  *  @Pt.AcceptedRating Red (cxh)
  */
-public abstract class FMUDriver {
+public abstract class FMUDriver{
 
     /** Return a function by name.
      *  @param name The name of the function.  The value of the
@@ -217,7 +217,8 @@ public abstract class FMUDriver {
             	 else 
             		 scalarVariable.setInt(fmiComponent, Integer.valueOf(value.toString()));
              else if (scalarVariable.type instanceof FMIRealType) 
-            	 scalarVariable.setDouble(fmiComponent, Double.valueOf(value.toString())/PrismClient.xiaoShuWei);
+            	 //scalarVariable.setDouble(fmiComponent, Double.valueOf(value.toString())/PrismClient.xiaoShuWei);
+            	 scalarVariable.setDouble(fmiComponent, Double.valueOf(value.toString()));
              else if (scalarVariable.type instanceof FMIStringType)
             	 scalarVariable.setString(fmiComponent, (String) value);
              else System.err.println("NoValueForType");

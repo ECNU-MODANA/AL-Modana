@@ -24,15 +24,15 @@ public class UserFile {
 /*	public static String modelPath = "C:/Users/JKQ/Desktop/model/bluetooth.cav.xml";
 	public static String queryPath = "C:\\Users\\JKQ\\Desktop\\model\\bluetooth.cav.q";*/
 	
-	public static String modelPath = null;
-	public static String queryPath = null;
+	public static String modelPath = "demo\\bluetooth.cav.xml";
+	public static String queryPath = "demo\\bluetooth.cav.q";
 	
 	/**
 	 * smartbuilding P=?[F discomfort>=15 ]
 	 */
 
-//	public static String properties = "P=?[F energy>=2200 ]";
-	public static String properties = null;
+	public static String properties = "P=?[F energy>=2200 ]";
+//	public static String properties = null;
 	
 	//------------------------state doubleNum intNum    -----------------------------
 	
@@ -42,8 +42,8 @@ public class UserFile {
 	 * bluetooth 2/6
 	 * room 2/7
 	 */
-	public static int stateDoubleNum = 0;
-	public static int stateIntNum = 0;
+	public static int stateDoubleNum = 2;
+	public static int stateIntNum = 6;
 	//------------------------BIET k c    -----------------------------
 	public static double bietK = 0.02;
 	public static double bietC = 0.95;

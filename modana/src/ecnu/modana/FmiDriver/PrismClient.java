@@ -10,6 +10,7 @@ import ecnu.modana.model.ModelManager;
 
 public class PrismClient 
 {
+	public String slaveId="";
 	public String modelType="ctmc";
 	Socket client=null;
 	BufferedReader in=null;
