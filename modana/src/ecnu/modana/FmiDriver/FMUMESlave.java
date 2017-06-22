@@ -3,12 +3,19 @@ package ecnu.modana.FmiDriver;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Hashtable;
 
 import org.ptolemy.fmi.FMICallbackFunctions;
 import org.ptolemy.fmi.FMIEventInfo;
 import org.ptolemy.fmi.FMIModelDescription;
+import org.ptolemy.fmi.FMIScalarVariable;
 import org.ptolemy.fmi.FMUFile;
 import org.ptolemy.fmi.FMULibrary;
+import org.ptolemy.fmi.FMIScalarVariable.Alias;
+import org.ptolemy.fmi.type.FMIBooleanType;
+import org.ptolemy.fmi.type.FMIIntegerType;
+import org.ptolemy.fmi.type.FMIRealType;
+import org.ptolemy.fmi.type.FMIStringType;
 
 import com.sun.jna.Function;
 import com.sun.jna.NativeLibrary;
@@ -173,7 +180,57 @@ public class FMUMESlave extends FMUDriver{
 //       System.out.print("time:"+time);
 //       if(states.length>0) System.out.println(","+states[0]);
 //       else System.out.println();
+    	return dt;
+    }
+    public boolean RollBackByStep(SlaveTrace slaveTrace, int stepsOfBack){
+    	int to=slaveTrace.statesList.size()-1-stepsOfBack;
+    	if(to<0) to=0;
+    	return RollBack(slaveTrace, slaveTrace.statesList.get(to));
+    }
+    public boolean RollBack(SlaveTrace slaveTrace, State state){
+    	try {
+    		int i=0;
+    		Object obj;
+    		for(String varName:slaveTrace.varNameType.keySet()){
+    			obj=state.values.get(i++);
+    			SetValue(fmiModelDescription, varName, fmiComponent, obj);
+			}
+        	invoke(setTime, new Object[] { fmiComponent, state.time },
+                    "RollBack Could not set time, time was " + state.time + ": ");
+        	return true;
+		} catch (Exception e) {
+			return false;
+		}
+    }
+    public double Predict(double time,double stepSize){
     	return stepSize;
+    }
+    private Hashtable<String, String> varTypeHt;
+    public String GetVarType(String varName){
+    	if(null==varTypeHt){
+    		varTypeHt=new Hashtable<>();
+    		for (FMIScalarVariable scalarVariable : fmiModelDescription.modelVariables) 
+            {
+                if (scalarVariable.alias != null && scalarVariable.alias != Alias.noAlias) {
+                    // If the scalarVariable has an alias, then skip it.
+                    // In bouncingBall.fmu, g has an alias, so it is skipped.
+                    continue;
+                }
+                if (scalarVariable.type instanceof FMIBooleanType) {
+                	varTypeHt.put(scalarVariable.name, "Boolean");
+                } else if (scalarVariable.type instanceof FMIIntegerType) {
+                	varTypeHt.put(scalarVariable.name, "IntegerType");
+                } else if (scalarVariable.type instanceof FMIRealType) {
+                	varTypeHt.put(scalarVariable.name, "Double");
+                } else if (scalarVariable.type instanceof FMIStringType) {
+                	varTypeHt.put(scalarVariable.name, "String");
+                } else {
+                	varTypeHt.put(scalarVariable.name, "unKnow");
+                }
+            }
+    	}
+    	if(varTypeHt.contains(varName)) return varTypeHt.get(varName);
+    	return "notExist";
     }
     public void Ini2() throws MalformedURLException{
     	 // Callbacks

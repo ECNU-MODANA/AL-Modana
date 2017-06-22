@@ -8,6 +8,9 @@ import java.util.Queue;
 import javax.swing.text.rtf.RTFEditorKit;
 
 public class HumansActivity extends ToolSlave{
+	public HumansActivity(){
+		slaveId="HumansActivity";
+	}
 	int n=5;
 	class Behaviors{
 		public double lamda,time;

@@ -3,6 +3,9 @@ package ecnu.modana.FmiDriver;
 import java.util.ArrayList;
 
 public class Controller extends ToolSlave{
+	public Controller(){
+		slaveId="Controller";
+	}
 	int n=5,heaterNumbers=3;
 	int h[]=new int[n];
 	int rh[]=new int[]{0,0,0,0,0}; //房间i使用哪个加热器
@@ -119,7 +122,7 @@ public class Controller extends ToolSlave{
 		}			
 	}
 	@Override
-	public boolean SetValues(String varNames, String values) {
+	public boolean SetValues(String varNames, String values) { 
 		if(null==varNames){
 			String[]tem=values.split(",");
 			for(int i=0;i<tem.length;i++){
