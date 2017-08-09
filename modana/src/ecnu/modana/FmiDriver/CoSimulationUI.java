@@ -1,6 +1,9 @@
 package ecnu.modana.FmiDriver;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -652,23 +655,54 @@ public class CoSimulationUI
     private void initVerifierPanel(BorderPane plotTree) {
 		SplitPane CenterPane = new SplitPane();
 		plotTree.setCenter(CenterPane);
-		BorderPane topPane = new BorderPane();
-		topPane.setPrefHeight(280);
-		topPane.setMaxHeight(280);
-		topPane.setMinHeight(180);
-		initTopPane(topPane);
- 		BorderPane bottomPane = new BorderPane();
+		initTopPane(plotTree);
+		BorderPane leftPane = new BorderPane();
+		leftPane.setPrefWidth(250);
+		leftPane.setMaxWidth(250);
+		leftPane.setMinWidth(250);
+ 		SplitPane rightPane = new SplitPane();
  		CenterPane.setDividerPositions(0.1f);
- 		CenterPane.setOrientation(Orientation.VERTICAL);
- 		CenterPane.getItems().addAll(topPane,bottomPane);
-		SplitPane centerBPane = new SplitPane();
-		bottomPane.setCenter(centerBPane);
+ 		CenterPane.setOrientation(Orientation.HORIZONTAL);
+ 		CenterPane.getItems().addAll(leftPane,rightPane);
+ 		BorderPane topRightPane = new BorderPane();
+ 		BorderPane bottomRightPane = new BorderPane();
+ 		topRightPane.setPrefHeight(400);
+ 		topRightPane.setMaxHeight(400);
+ 		topRightPane.setMinHeight(400);
+ 		rightPane.setDividerPositions(0.1f);
+ 		rightPane.setOrientation(Orientation.VERTICAL);
+ 		initLeftPane(leftPane);
+ 		rightPane.getItems().addAll(topRightPane,bottomRightPane);
 	}
 	
-	   private void initTopPane(BorderPane topPane) {
+	   private void initLeftPane(BorderPane leftPane) {
+		   VBox algorithmVbox = new VBox(10);
+		   Label algLable = new Label("Algorithms:");
+		   
+		   ChoiceBox alg = new ChoiceBox(FXCollections.observableArrayList(  
+	        		"select SMC algorithm", "SSP","BHT", "SPRT", "BIE","APMC")  
+	        	);  
+		   alg.setMinWidth(170);
+		   alg.setMaxWidth(170);
+		   alg.getSelectionModel().select(0);
+		  /* alg.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+				@Override
+				public void changed(ObservableValue observable, Number oldValue, Number newValue) {
+					String pro_name = projectObervableList.get(alg.getSelectionModel().getSelectedIndex());
+				}
+			});*/
+		   //SSP parameter
+		   Label sspSamplesLabel = new Label("Samples:");
+		   TextField sspSamplesText = new TextField();
+		   sspSamplesText.setMinWidth(170);
+		   sspSamplesText.setMaxWidth(170);
+		   algorithmVbox.getChildren().addAll(algLable,alg,sspSamplesLabel,sspSamplesText);
+		   leftPane.setCenter(algorithmVbox);
+	}
+	private void initTopPane(BorderPane plotTree) {
 		    VBox menuPane = new VBox();
 		 	initMenu(menuPane);
-		 	topPane.setCenter(menuPane);
+		 	plotTree.setTop(menuPane);
 	}
 	   
 
