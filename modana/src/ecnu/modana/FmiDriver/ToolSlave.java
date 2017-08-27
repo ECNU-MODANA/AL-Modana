@@ -30,6 +30,9 @@ public abstract class ToolSlave{// extends FMUDriver{
 			}
 //        	invoke(setTime, new Object[] { fmiComponent, state.time },
 //                    "RollBack Could not set time, time was " + state.time + ": ");
+
+    		if(slaveTrace.statesList.size()>0)
+    			slaveTrace.statesList.remove(slaveTrace.statesList.size()-1);
         	return true;
 		} catch (Exception e) {
 			return false;

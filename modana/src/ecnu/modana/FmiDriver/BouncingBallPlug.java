@@ -25,7 +25,7 @@ public class BouncingBallPlug extends ToolSlave{
 	@Override
 	public double DoStep(double curTime, double stepSize) {
 		if(h-g*stepSize*stepSize/2<=0){
-			return x;
+			return -1;
 		}
 		else{
 			v=v+g*stepSize;

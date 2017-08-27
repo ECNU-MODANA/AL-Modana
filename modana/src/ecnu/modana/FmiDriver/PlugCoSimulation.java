@@ -606,8 +606,8 @@ public class PlugCoSimulation extends FMUDriver{
 		/**
 		 * 最初为String，而后被换成slave对象
 		 */
-		public Object fromSlave;
-		public String fromVariable;
+		public Object fromSlave;    //BouncingBall   -> 具体实例
+		public String fromVariable; // h     fromSlave.fromVariable=BouncingBall.h    
 		public Object targetSlave;
 		public String targetVariable;
 		/**
