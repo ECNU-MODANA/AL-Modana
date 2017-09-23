@@ -77,7 +77,7 @@ class MessageManager {
 							msgMap.put(name, new PluginMessage(receiver, name, null));
 						}
 					} else {
-						logger.warn("There exist duplicate messages!");
+							logger.warn("There exist duplicate messages!");
 						b = false;
 					}
 					

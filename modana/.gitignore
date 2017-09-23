@@ -3,4 +3,6 @@ bin/
 *.classpath
 *.prefs
 BouncingBallPlug.java
+/files/
+/.idea/
 
