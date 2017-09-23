@@ -209,10 +209,11 @@ public abstract class FMUDriver{
     {
 		try {
 			FMIScalarVariable scalarVariable=GetScalarVariable(fmiModelDescription, scalarVariableName);
+			double pre = scalarVariable.getDouble(fmiComponent);
 			 if (scalarVariable.type instanceof FMIBooleanType) 
 				 scalarVariable.setBoolean(fmiComponent, (boolean) value);
              else if (scalarVariable.type instanceof FMIIntegerType) 
-            	 if(value instanceof Number)
+            	 if(value instanceof Number) 
             		 scalarVariable.setInt(fmiComponent, (int) value);
             	 else 
             		 scalarVariable.setInt(fmiComponent, Integer.valueOf(value.toString()));
@@ -222,7 +223,7 @@ public abstract class FMUDriver{
              else if (scalarVariable.type instanceof FMIStringType)
             	 scalarVariable.setString(fmiComponent, (String) value);
              else System.err.println("NoValueForType");
-			return true;			
+			 return true;			
 		} catch (Exception e) {
 			System.err.println("set value error,scalarVariableName:"+scalarVariableName+" in:"+_modelIdentifier);
 			return false;

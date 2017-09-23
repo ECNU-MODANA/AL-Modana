@@ -29,6 +29,7 @@ public class JLineChart extends JChart
 	public void SetY(List<Number>yDataList){this.yDataList.add(yDataList);}
 	public void SetX(List<Object> xDataList,String xName) {this.xDataList=xDataList;this.xName=xName;}
 	public void SetY(List<Number>yDataList,String yName){this.yDataList.add(yDataList);this.yNameList.add(yName);}
+	public void SetYList(List<List<Number>> yDataList){this.yDataList = yDataList;}
 
 //	@Override
 	public LineChart<Object, Number> getJLineChart(TextField xAxisField,TextField yAxisField)  throws Exception 

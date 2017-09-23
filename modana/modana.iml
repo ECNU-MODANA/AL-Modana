@@ -26,7 +26,6 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="jdk" jdkName="jdk1.8.0_111" jdkType="JavaSDK" />
     <orderEntry type="module-library">
       <library name="log4j-1.2.17.jar">
         <CLASSES>
@@ -87,7 +86,9 @@
           <root url="jar://$MODULE_DIR$/libs/fmi.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/libs/fmi.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
@@ -153,5 +154,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="inheritedJdk" />
   </component>
 </module>

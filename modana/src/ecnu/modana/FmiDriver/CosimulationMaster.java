@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
 import org.ptolemy.fmi.FMIModelDescription;
+import org.ptolemy.fmi.FMIScalarVariable;
+
 import com.sun.jna.Pointer;
 import com.sun.org.apache.bcel.internal.generic.AALOAD;
 
@@ -25,6 +27,141 @@ public class CosimulationMaster extends FMUDriver{
 	FMIModelDescription fmiModelDescription;
 	Pointer fmiComponent;
 	//public static String variables="";
+	
+	private LinkedHashMap<String, Exchange> IniMapping(){
+		LinkedHashMap<String, Exchange> mappingMap=new LinkedHashMap<>();
+		Exchange exchange=new Exchange();
+		exchange.fromSlave="Controller";
+		exchange.fromVariable="h1";
+		exchange.targetSlave="smartBuildGc_smartBuildingNo";
+		exchange.targetVariable="h[1]";
+		mappingMap.put("smartBuildGc_smartBuildingNo.h[1]", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="Controller";
+		exchange.fromVariable="h2";
+		exchange.targetSlave="smartBuildGc_smartBuildingNo";
+		exchange.targetVariable="h[2]";
+		mappingMap.put("smartBuildGc_smartBuildingNo.h[2]", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="Controller";
+		exchange.fromVariable="h3";
+		exchange.targetSlave="smartBuildGc_smartBuildingNo";
+		exchange.targetVariable="h[3]";
+		mappingMap.put("smartBuildGc_smartBuildingNo.h[3]", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="Controller";
+		exchange.fromVariable="h4";
+		exchange.targetSlave="smartBuildGc_smartBuildingNo";
+		exchange.targetVariable="h[4]";
+		mappingMap.put("smartBuildGc_smartBuildingNo.h[4]", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="Controller";
+		exchange.fromVariable="h5";
+		exchange.targetSlave="smartBuildGc_smartBuildingNo";
+		exchange.targetVariable="h[5]";
+		mappingMap.put("smartBuildGc_smartBuildingNo.h[5]", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="Controller";
+		exchange.fromVariable="derAllUn";
+		exchange.targetSlave="smartBuildGc_smartBuildingNo";
+		exchange.targetVariable="derAllUn";
+		mappingMap.put("smartBuildGc_smartBuildingNo.derAllUn", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="Controller";
+		exchange.fromVariable="derEnergy";
+		exchange.targetSlave="smartBuildGc_smartBuildingNo";
+		exchange.targetVariable="derEnergy";
+		mappingMap.put("smartBuildGc_smartBuildingNo.derEnergy", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="smartBuildGc_smartBuildingNo";
+		exchange.fromVariable="Room[1]";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="Room1";
+		mappingMap.put("Controller.Room1", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="smartBuildGc_smartBuildingNo";
+		exchange.fromVariable="Room[2]";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="Room2";
+		mappingMap.put("Controller.Room2", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="smartBuildGc_smartBuildingNo";
+		exchange.fromVariable="Room[3]";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="Room3";
+		mappingMap.put("Controller.Room3", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="smartBuildGc_smartBuildingNo";
+		exchange.fromVariable="Room[4]";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="Room4";
+		mappingMap.put("Controller.Room4", exchange);		
+		
+		exchange=new Exchange();
+		exchange.fromSlave="smartBuildGc_smartBuildingNo";
+		exchange.fromVariable="Room[5]";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="Room5";
+		mappingMap.put("Controller.Room5", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="HumansActivity";
+		exchange.fromVariable="humanNums1";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="humans1";
+		mappingMap.put("Controller.humans1", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="HumansActivity";
+		exchange.fromVariable="humanNums2";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="humans2";
+		mappingMap.put("Controller.humans2", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="HumansActivity";
+		exchange.fromVariable="humanNums3";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="humans3";
+		mappingMap.put("Controller.humans3", exchange);
+		
+		exchange=new Exchange();
+		exchange.fromSlave="HumansActivity";
+		exchange.fromVariable="humanNums4";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="humans4";
+		mappingMap.put("Controller.humans4", exchange);
+		
+		
+		exchange=new Exchange();
+		exchange.fromSlave="HumansActivity";
+		exchange.fromVariable="humanNums5";
+		exchange.targetSlave="Controller";
+		exchange.targetVariable="humans5";
+		mappingMap.put("Controller.humans5", exchange);
+//		exchange.fromSlave="smartBuildingHuman";
+//		exchange.fromVariable="humanNum1";
+//		exchange.targetSlave="smartBuildGc_smartBuilding";
+//		exchange.targetVariable="humans[1]";
+//		mappingMap.put("smartBuildingHuman.humans[1]", exchange);
+//		exchange=new Exchange();
+//		exchange.fromSlave="smartBuildingHuman";
+//		exchange.fromVariable="humanNum2";
+//		exchange.targetSlave="smartBuildGc_smartBuilding";
+//		exchange.targetVariable="humans[2]";
+//		mappingMap.put("smartBuildingHuman.humans[2]", exchange);
+		return mappingMap;
+	}
 	LinkedHashMap<String, Exchange>mappingMap=null;
 	LinkedHashMap<String, FMUMESlave> fmusMap;
 	LinkedHashMap<String, Object>toolSlaveMap;
@@ -70,8 +207,12 @@ public class CosimulationMaster extends FMUDriver{
 			Exchange exchange = null;
 			ArrayList<Object> tal=null;
 			for(int i=0;i<fmus.size();i++){
-				//ini fmu
+				//ini    fmu
 				FMUMESlave fmuSlave=new FMUMESlave(fmus.get(i));
+//				FMIScalarVariable ii = fmuSlave.GetScalarVariable(fmuSlave.fmiModelDescription, "i");
+//				double va = ii.getDouble(fmuSlave.fmiComponent);
+//				ii.setDouble(fmuSlave.fmiComponent, 34);
+//				va = ii.getDouble(fmuSlave.fmiComponent);
 				fmusMap.put(fmuSlave.fmiModelDescription.modelIdentifier, fmuSlave);
 				if(null!=slaveIdxName) slaveIdxName.add(fmuSlave.fmiModelDescription.modelIdentifier);
 				//System.out.println("ah:"+fmuSlave._modelIdentifier);
@@ -95,7 +236,7 @@ public class CosimulationMaster extends FMUDriver{
 				
 				trace.slaveMap.put(slaveTrace.slaveName, slaveTrace);
 			}
-			Map.Entry entry;
+			Entry entry;
 			Iterator iter;
 			//minaServer.toolFmuHt.clear();
 			
@@ -107,7 +248,7 @@ public class CosimulationMaster extends FMUDriver{
 			LinkedHashMap<String, Object> toolSlaveMap=new LinkedHashMap<>();
 			iter = toolModelMap.entrySet().iterator();
 			while (iter.hasNext()) {
-				entry = (Map.Entry) iter.next();
+				entry = (Entry) iter.next();
 				String modelPath = (String) entry.getKey();
 				String toolName = (String) entry.getValue();
 				switch (toolName) {
@@ -156,16 +297,13 @@ public class CosimulationMaster extends FMUDriver{
 			if(null!=slaveIdxName) slaveNums=slaveIdxName.size();
 			//int times=0;
 			while(time<=endT){
-				if(null!=slaveDoneStepsize){
-					idx=0;
-					slaveDoneStepsize.clear();
-				}
+				idx = 0;
 				//Predict stepSize;
 				if(null!=slavePredictStepsize){
 					double minStepsize=1e30,td;
 					iter = fmusMap.entrySet().iterator();
 					while (iter.hasNext()) {
-						entry = (Map.Entry) iter.next();
+						entry = (Entry) iter.next();
 						slaveId=(String) entry.getKey();
 						fmumeSlave=(FMUMESlave) entry.getValue();
 						td=fmumeSlave.Predict(time, iniStepsize);
@@ -173,20 +311,19 @@ public class CosimulationMaster extends FMUDriver{
 					}
 					iter = toolSlaveMap.entrySet().iterator();
 					while (iter.hasNext()) {
-						entry = (Map.Entry) iter.next();
+						entry = (Entry) iter.next();
 						toolSlave=(ToolSlave) entry.getValue();
 						td=toolSlave.Predict(time, iniStepsize);
 						minStepsize=Math.min(minStepsize, td);
 					}
-
-					if(minStepsize<stepSize) stepSize=minStepsize;
+					if(minStepsize>stepSize) stepSize=minStepsize;
 					else if(stepSize!=iniStepsize) stepSize=iniStepsize;
 				}
 				
 				iter = fmusMap.entrySet().iterator();
 				while (iter.hasNext()) {
-					entry = (Map.Entry) iter.next();
-					slaveId=(String) entry.getKey();
+					entry = (Entry) iter.next();
+ 					slaveId=(String) entry.getKey();
 					//if(slaveStateHt.get(slaveId)==slaveState.notActive) continue;
 					fmumeSlave=(FMUMESlave) entry.getValue();
 					doneStepsize= fmumeSlave.doStep(time, stepSize);
@@ -196,44 +333,61 @@ public class CosimulationMaster extends FMUDriver{
 				}
 				iter = toolSlaveMap.entrySet().iterator();
 				while (iter.hasNext()) {
-					entry = (Map.Entry) iter.next();
+					entry = (Entry) iter.next();
 					toolSlave=(ToolSlave) entry.getValue();
 					//if(slaveStateHt.get(toolSlave.slaveId)==slaveState.notActive) continue;
 					doneStepsize= toolSlave.DoStep(time,stepSize);
 					if(null!=slaveDoneStepsize) slaveDoneStepsize.add(idx++, doneStepsize);
 				}
+				
+				//need RollBack?
+				if(null!=slaveDoneStepsize&&slaveDoneStepsize.size()>1){
+					double minStepsize=slaveDoneStepsize.get(0);
+					boolean needRollBack=false;
+					for(int j=1;j<slaveNums;j++){
+						minStepsize = Math.min(minStepsize, slaveDoneStepsize.get(j-1));
+						minStepsize=Math.min(minStepsize, slaveDoneStepsize.get(j));
+						if(slaveDoneStepsize.get(j).doubleValue()!=slaveDoneStepsize.get(j-1).doubleValue()) 
+							needRollBack=true;
+					}
+					if(needRollBack){
+						iter = fmusMap.entrySet().iterator();
+						while (iter.hasNext()) {
+							entry = (Entry) iter.next();
+							slaveId=(String) entry.getKey();
+							fmumeSlave=(FMUMESlave) entry.getValue();
+							//RollBack one Step
+							fmumeSlave.RollBackByStep(trace.slaveMap.get(fmumeSlave.fmiModelDescription.modelIdentifier), 1);
+						}
+						iter = toolSlaveMap.entrySet().iterator();
+						while (iter.hasNext()) {
+							entry = (Entry) iter.next();
+							toolSlave=(ToolSlave) entry.getValue();
+							toolSlave.RollBackByStep(trace.slaveMap.get(toolSlave.slaveId), 1);
+						}
+						if(minStepsize>0) stepSize=minStepsize;
+						else System.err.println("Done stepsize <=0");
+						continue; //time not updated, 
+					}
+				}
+				else if(stepSize!=iniStepsize) stepSize=iniStepsize;
+				
 				//dataExchange
 				iter=mappingMap.entrySet().iterator();
 				if(!isExchangeTableIni){
 					mappingMap= ExchangeTableIni(iter,mappingMap,fmusMap, toolSlaveMap);
 					isExchangeTableIni=true;
 				}
-				DataExchange(iter,null);
+				DataExchange(mappingMap.entrySet().iterator(),null);
 				//FMUEventTimeCollect(time,stepSize);
 				
-				//need RollBack?
-				double minStepsize;
-				boolean needRollBack=false;
-				if(null!=slaveDoneStepsize&&slaveDoneStepsize.size()>=1){
-					minStepsize=slaveDoneStepsize.get(0);
-					needRollBack=false;
-					for(int j=1;j<slaveNums;j++){
-						minStepsize=Math.min(minStepsize, slaveDoneStepsize.get(j));
-						if(slaveDoneStepsize.get(j)!=slaveDoneStepsize.get(j-1)) needRollBack=true;
-					}
-					if(slaveNums==1&&minStepsize<stepSize) needRollBack=true;
-					if(minStepsize>0) 
-						stepSize=minStepsize;
-					else 
-						System.err.println("Done stepsize <=0");
-				}
+				time+=stepSize;
 				
 				//add State to Trace
-				time+=stepSize;
 				i=0;
 				iter = fmusMap.entrySet().iterator();
 				while (iter.hasNext()) {
-					entry = (Map.Entry) iter.next();
+					entry = (Entry) iter.next();
 					fmumeSlave=(FMUMESlave) entry.getValue();
 					State state=new State();
 					state.time=time;
@@ -246,7 +400,7 @@ public class CosimulationMaster extends FMUDriver{
 				}
 				iter = toolSlaveMap.entrySet().iterator();
 				while (iter.hasNext()) {
-					entry = (Map.Entry) iter.next();
+					entry = (Entry) iter.next();
 					String values=((ToolSlave)entry.getValue()).GetValues(null);
 					//values=values.substring(values.indexOf(",")+1);
 					if(null!=values&&values.length()>0){
@@ -259,28 +413,6 @@ public class CosimulationMaster extends FMUDriver{
 						slaveTrace.statesList.add(state);
 					}
 				}
-				//rollBack
-				if(needRollBack){
-					iter = fmusMap.entrySet().iterator();
-					while (iter.hasNext()) {
-						entry = (Map.Entry) iter.next();
-						slaveId=(String) entry.getKey();
-						fmumeSlave=(FMUMESlave) entry.getValue();
-						//RollBack one Step
-						fmumeSlave.RollBackByStep(trace.slaveMap.get(fmumeSlave.fmiModelDescription.modelIdentifier), 1);
-					}
-					iter = toolSlaveMap.entrySet().iterator();
-					while (iter.hasNext()) {
-						entry = (Map.Entry) iter.next();
-						toolSlave=(ToolSlave) entry.getValue();
-						toolSlave.RollBackByStep(trace.slaveMap.get(toolSlave.slaveId), 1);
-					}
-					time-=stepSize;
-					continue; //time not updated, 
-				}
-				else if(stepSize!=iniStepsize) stepSize=iniStepsize;
-				//if(stepSize!=iniStepsize) stepSize=iniStepsize;
-				
 			}
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
@@ -418,6 +550,9 @@ public class CosimulationMaster extends FMUDriver{
 		 * targetVariable=ration *fromVariable;
 		 */
 		public double multiplier;
+	}
+	public Exchange newEchange(){
+		return new Exchange();
 	}
 	@Override
 	public MyLineChart simulate(String fmuFileName, double endTime, double stepSize, boolean enableLogging,

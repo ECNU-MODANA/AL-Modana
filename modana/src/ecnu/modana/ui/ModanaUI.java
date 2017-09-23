@@ -157,7 +157,7 @@ public class ModanaUI extends Application implements IUserInterface {
 		if (Logger.getRootLogger().isDebugEnabled()) {
 			Logger.getRootLogger().debug("ModanaUI launched!");
 		}
-		launch(paramValues); //for launching JavaFX window application
+		launch(paramValues); //for l		aunching JavaFX window application
 	}
 
 	@Override
