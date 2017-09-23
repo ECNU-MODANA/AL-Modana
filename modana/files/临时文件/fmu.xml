@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prism:PrismModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:prism="http:///ecnu.modana.mf.prism" name="fmu" type="dtmc">
+  <Variables xsi:type="prism:Variable" name="con_start" value="[0..1]init 0;"/>
+  <Variables xsi:type="prism:Variable" name="in_v" value="[-200000000..200000000]init 0;"/>
+  <Variables xsi:type="prism:Variable" name="out_v" value="[-200000000..200000000] init 0;"/>
+  <modules name="fmuD">
+    <states name="s0" index="0" x="259.0" y="58.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s1" index="1" x="493.0" y="134.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s2" index="2" x="242.0" y="276.0" width="53.13134765625" height="50.45361328125"/>
+    <transitions name="260839" syn="" condition="con_start=1" prob="0.5" assigns="out_v=in_v*5" sourcePtIndex="1" targetPtIndex="0" source="//@modules.0/@states.0" target="//@modules.0/@states.1"/>
+    <transitions name="22321254" syn="" condition="" prob="1" assigns="con_start=0" sourcePtIndex="3" targetPtIndex="1" source="//@modules.0/@states.1" target="//@modules.0/@states.0"/>
+    <transitions name="7670536" syn="" condition="con_start=1" prob="0.5" assigns="out_v=in_v*10" sourcePtIndex="2" targetPtIndex="1" source="//@modules.0/@states.0" target="//@modules.0/@states.2"/>
+    <transitions name="22181507" syn="" condition="" prob="1" assigns="con_start=0" sourcePtIndex="3" targetPtIndex="2" source="//@modules.0/@states.2" target="//@modules.0/@states.0"/>
+  </modules>
+</prism:PrismModel>

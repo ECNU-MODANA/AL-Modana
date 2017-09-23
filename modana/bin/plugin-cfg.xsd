@@ -1,0 +1,54 @@
+<xs:schema targetNamespace="ecnu.modana.pc" xmlns="ecnu.modana.pc"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xs:element name="entry-flag" type="xs:string" />
+	<xs:element name="entry-class" type="xs:string" />
+	
+	<xs:element name="entry-plugin">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="entry-flag" />
+				<xs:element ref="entry-class" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="receiver-class" type="xs:string" />
+	<xs:element name="type" type="xs:string" />
+
+	<xs:element name="data-types">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="type" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="msg">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="receiver-class" />
+				<xs:element ref="data-types" minOccurs="0" />
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="plugin-message">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="msg" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="plugin-config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="entry-plugin" minOccurs="1" maxOccurs="unbounded" />
+				<xs:element ref="plugin-message" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

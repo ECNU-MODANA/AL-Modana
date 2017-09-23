@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<prism:PrismModel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:prism="http:///ecnu.modana.mf.prism" name="PrismModel" type="dtmc">
+  <Variables xsi:type="prism:Variable" name="d" value="[0..6] init 0;"/>
+  <modules name="PrismDiagram">
+    <states name="s0" index="0" x="296.0" y="-27.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s1" index="1" x="180.0" y="79.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s2" index="2" x="491.0" y="66.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s3" index="3" x="91.0" y="204.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s4" index="4" x="292.0" y="188.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s5" index="5" x="398.0" y="191.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s6" index="6" x="583.0" y="187.0" width="53.13134765625" height="50.45361328125"/>
+    <states name="s7" index="7" x="407.0" y="344.5" width="53.13134765625" height="50.45361328125"/>
+    <transitions name="894588500" syn="" condition="" prob="0.5" assigns="d=1" sourcePtIndex="2" targetPtIndex="3" source="//@modules.0/@states.3" target="//@modules.0/@states.7"/>
+    <transitions name="1732489828" syn="" condition="" prob="0.5" assigns="d=2" sourcePtIndex="2" targetPtIndex="3" source="//@modules.0/@states.4" target="//@modules.0/@states.7"/>
+    <transitions name="1068550399" syn="" condition="" prob="0.5" assigns="d=3" sourcePtIndex="1" targetPtIndex="0" source="//@modules.0/@states.4" target="//@modules.0/@states.7"/>
+    <transitions name="1522662337" syn="" condition="" prob="0.5" assigns="d=4" sourcePtIndex="1" targetPtIndex="1" source="//@modules.0/@states.5" target="//@modules.0/@states.7"/>
+    <transitions name="116777672" syn="" condition="" prob="0.5" assigns="d=6" sourcePtIndex="2" targetPtIndex="0" source="//@modules.0/@states.6" target="//@modules.0/@states.7"/>
+    <transitions name="2086641888" syn="" condition="" prob="" assigns="" sourcePtIndex="0" targetPtIndex="1" source="//@modules.0/@states.7" target="//@modules.0/@states.7"/>
+    <transitions name="1158768804" syn="" condition="" prob="0.5" assigns="d=5" sourcePtIndex="2" targetPtIndex="3" source="//@modules.0/@states.5" target="//@modules.0/@states.7"/>
+    <transitions name="282827828" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="2" targetPtIndex="0" source="//@modules.0/@states.0" target="//@modules.0/@states.1"/>
+    <transitions name="965861189" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="0" targetPtIndex="3" source="//@modules.0/@states.3" target="//@modules.0/@states.1"/>
+    <transitions name="944255031" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="2" targetPtIndex="1" source="//@modules.0/@states.1" target="//@modules.0/@states.3"/>
+    <transitions name="1985096658" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="2" targetPtIndex="3" source="//@modules.0/@states.1" target="//@modules.0/@states.4"/>
+    <transitions name="983835408" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="2" targetPtIndex="0" source="//@modules.0/@states.0" target="//@modules.0/@states.2"/>
+    <transitions name="234399990" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="2" targetPtIndex="3" source="//@modules.0/@states.2" target="//@modules.0/@states.6"/>
+    <transitions name="1950939382" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="0" targetPtIndex="1" source="//@modules.0/@states.6" target="//@modules.0/@states.2"/>
+    <transitions name="329470230" syn="" condition="" prob="0.5" assigns="" sourcePtIndex="2" targetPtIndex="1" source="//@modules.0/@states.2" target="//@modules.0/@states.5"/>
+  </modules>
+</prism:PrismModel>

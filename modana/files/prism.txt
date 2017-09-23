@@ -1,0 +1,51 @@
+PrismState: EClass
+--name: EString
+--index: EString
+--x: EString
+--y: EString
+--width: EString
+--height: EString
+
+PrismAssign: EClass
+--name: EString
+--index: EString
+
+PrismTransition: EClass
+--name:EString
+--syn: EString
+--condition: EString
+--prob: EString
+--sourcePtIndex: EString
+--targetPtIndex: EString
+--assign: PrismAssign[0,n]
+--source: PrismState[1]
+--target: PrismState[1]
+
+PrismFormula: EClass
+--name: EString
+--value: EString
+
+PrismLabel: EClass
+--name: EString
+--value: EString
+
+PrismRewardsContent: EClass
+--syn: EString
+--condition: EString
+--value: EString
+
+PrismRewards: EClass
+--name: EString
+--content: PrismRewardsContent[1,n]
+
+PrismModule: EClass
+--states: PrismState[1,n]
+--transitions: PrismTransition[0,n]
+
+PrismModel: EClass
+--name: EString
+--type: EString
+--formulas: PrismFormula[0,n]
+--labels: PrismLabel[0,n]
+--rewards: PrismRewards[0,n]
+--modules: PrismModule[1,n]
