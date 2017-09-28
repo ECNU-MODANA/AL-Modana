@@ -24,6 +24,7 @@ public class PlotComposer {
 	List<Number> stateList = new ArrayList<Number>();
     List<Number> variableList = new ArrayList<Number>();
     private List<List<Number>> yDataList=new ArrayList<List<Number>>();
+    public List<String> seriesName = new ArrayList<>();
 	public void SetXYList() {
 		stepList.add(0.1);
 		stepList.add(0.2);
@@ -44,39 +45,68 @@ public class PlotComposer {
 		variableList.add(2);
 
 	}
-	public void SetXYList(Trace trace){
-	    int stepNum = 0;
-		if (trace!=null &&trace.slaveMap.size()>0) {
+	public void SetXYList(Trace trace,List<String> checkL){
+		if(checkL.size()==0) {
+			int stepNum = 0;
+			if (trace != null && trace.slaveMap.size() > 0) {
+				Iterator it = trace.slaveMap.keySet().iterator();
+				if (it.hasNext())
+					stepNum = trace.slaveMap.get((String) it.next()).statesList.size();
+			}
 			Iterator it = trace.slaveMap.keySet().iterator();
-			if (it.hasNext())
-			    stepNum = trace.slaveMap.get((String)it.next()).statesList.size();
+			Map<String, List<List<Number>>> yMap = new HashMap<>();
+			int countX = 0;
+			while (it.hasNext()) {
+				countX++;
+				List<List<Number>> sLaveYDataList = new ArrayList<List<Number>>();
+				SlaveTrace slave = trace.slaveMap.get(it.next());
+				for (int s = 0; s < slave.statesList.get(0).values.size(); s++)
+					sLaveYDataList.add(new ArrayList<Number>());
+				for (int i = 0; i < slave.statesList.size(); i++) {
+					State state = slave.statesList.get(i);
+					for (int j = 0; j < state.values.size(); j++) {
+						if (countX == 1)
+							if (j == 0)
+								stepList.add(state.time);
+						sLaveYDataList.get(j).add((double) state.values.get(j));
+					}
+				}
+				yMap.put(slave.slaveName, sLaveYDataList);
+			}
+
+			it = yMap.keySet().iterator();
+			while (it.hasNext()) {
+				List list = yMap.get(it.next());
+				for (int i = 0; i < list.size(); i++)
+					yDataList.add((List<Number>) list.get(i));
+			}
+		}else{
+			int countX = 0;
+			int stepNum = 0;
+			if (trace != null && trace.slaveMap.size() > 0) {
+				Iterator it = trace.slaveMap.keySet().iterator();
+				if (it.hasNext())
+					stepNum = trace.slaveMap.get((String) it.next()).statesList.size();
+			}
+			Iterator it = trace.slaveMap.keySet().iterator();
+			Map<String, List<List<Number>>> yMap = new HashMap<>();
+			for(int i=0;i<checkL.size();i++) {
+				String fmuName = checkL.get(i);
+				String fff = fmuName.substring(fmuName.indexOf(".")+1,fmuName.lastIndexOf("_"));
+				seriesName.add(fmuName.substring(fmuName.indexOf(".")+1,fmuName.lastIndexOf("_")));
+				SlaveTrace slave = trace.slaveMap.get(fmuName.substring(0, fmuName.indexOf('.')));
+				int vNum = Integer.parseInt(fmuName.substring(fmuName.lastIndexOf("_")+1, fmuName.length()));
+				List<Number> list = new ArrayList<Number>();
+				for (int j = 0; j < slave.statesList.size(); j++) {
+					State state = slave.statesList.get(j);
+					if (countX == 1)
+						stepList.add(state.time);
+					list.add((double) state.values.get(vNum));
+				}
+				countX++;
+				yDataList.add(list);
+			}
 		}
-        Iterator it = trace.slaveMap.keySet().iterator();
-        Map<String,List<List<Number>>> yMap = new HashMap<>();
-        int countX = 0;
-        while(it.hasNext()){
-            countX++;
-            List<List<Number>> sLaveYDataList=new ArrayList<List<Number>>();
-            SlaveTrace slave = trace.slaveMap.get(it.next());
-            for(int s =0;s<slave.statesList.get(0).values.size();s++)
-                sLaveYDataList.add(new ArrayList<Number>());
-            for(int i=0;i<slave.statesList.size();i++){
-                State state = slave.statesList.get(i);
-                for (int j=0;j<state.values.size();j++){
-                    if (countX==1)
-                        if(j==0)
-                            stepList.add(state.time);
-                    sLaveYDataList.get(j).add((double)state.values.get(j));
-                }
-            }
-            yMap.put(slave.slaveName,sLaveYDataList);
-        }
-        it = yMap.keySet().iterator();
-        while(it.hasNext()){
-            List list = yMap.get(it.next());
-            for(int i = 0; i<list.size(); i++)
-                yDataList.add((List<Number>) list.get(i));
-        }
 
 	}
 	public LineChart<Object, Number> getLineChart(TextField xAxisField,TextField yAxisField) throws Exception {
@@ -85,8 +115,7 @@ public class PlotComposer {
 		JLineChart jLineChart = null;
 		jLineChart = new JLineChart();
 		jLineChart.SetX(stepList);
-//		jLineChart.SetY(stateList);
-//		jLineChart.SetY(variableList);
+		jLineChart.SetSeriesName(seriesName);
         jLineChart.SetYList(yDataList);
 		return jLineChart.getJLineChart(xProperty,yProperty);
 	}

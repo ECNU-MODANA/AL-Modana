@@ -2,12 +2,7 @@ package ecnu.modana.FmiDriver;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
@@ -175,7 +170,7 @@ public class CosimulationMaster extends FMUDriver{
 	 * @param fmus fmu路径列表
 	 * @param toolModelMap
 	 * @param mappingMap
-	 * @param eventHandleHt slaveIdentifier,eventName 作为key，操作Operation作为value
+	 * param eventHandleHt slaveIdentifier,eventName 作为key，操作Operation作为value
 	 * @param startT
 	 * @param endT
 	 * @param stepSize
@@ -559,5 +554,29 @@ public class CosimulationMaster extends FMUDriver{
 			char csvSeparator, String outputFileName) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	/**
+	 *获取所有FMU变量名以及顺序
+	 *@param fmus FMU路径列表
+	 */
+	public List<String> getFMUVariables(List<String> fmus){
+		List<String> FMUVariables = new ArrayList<>();
+		try {
+			for (String fmu : fmus) {
+				FMIModelDescription fmuModel = new FMUMESlave(fmu).fmiModelDescription;
+				String name = fmuModel.modelName;
+				List scalarVariableList = fmuModel.modelVariables;
+				for(int i=0;i<scalarVariableList.size();i++){
+					FMIScalarVariable fv = (FMIScalarVariable)scalarVariableList.get(i);
+					FMUVariables.add(name+"."+fv.name+"_"+i);
+				}
+			}
+			return FMUVariables;
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return FMUVariables;
+
+
 	}
 }

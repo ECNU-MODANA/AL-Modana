@@ -29,6 +29,7 @@ public class JLineChart extends JChart
 	public void SetY(List<Number>yDataList){this.yDataList.add(yDataList);}
 	public void SetX(List<Object> xDataList,String xName) {this.xDataList=xDataList;this.xName=xName;}
 	public void SetY(List<Number>yDataList,String yName){this.yDataList.add(yDataList);this.yNameList.add(yName);}
+	public void SetSeriesName(List<String> list){this.yNameList = list;}
 	public void SetYList(List<List<Number>> yDataList){this.yDataList = yDataList;}
 
 //	@Override
@@ -44,15 +45,11 @@ public class JLineChart extends JChart
 		yAxis.labelProperty().bindBidirectional(yAxisField.textProperty());
 		xAxis.labelProperty().bindBidirectional(xAxisField.textProperty());
 		lineChart = new LineChart<>(xAxis, yAxis);
-		//this.chartTitle=stringProperty;
-//		chartTitle.bindBidirectional(stringProperty.textProperty());
-//		lineChart.setTitle(stringProperty.textProperty().getValue());
 		for(int i=0,j=yDataList.size();i<j;i++)
 		{
 			List<Number> yList=yDataList.get(i);
 			XYChart.Series series = new XYChart.Series();
-//		    if(yNameList.size()>i) series.setName(yNameList.get(i));
-//			series.setName(String.valueOf(i));
+			series.setName(yNameList.get(i));
 		    for(int k=0;k<yList.size();k++)
 		    	series.getData().add(new XYChart.Data(xDataList.get(k),yList.get(k)));
 		    lineChart.getData().add(series);
