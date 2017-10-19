@@ -230,6 +230,7 @@ public class CoSimulationUI {
         Composer.initPlotPanel(plotRoot);
         coPlotTab.setOnSelectionChanged(e -> initPlotPanel(plotRoot));
         perpane.getTabs().addAll(coSimTab, coVerTab, coPlotTab);
+        perpane.getSelectionModel().select(coVerTab);
         coSimTab.setContent(splitPane);
         coVerTab.setContent(verifierUI);
         coPlotTab.setContent(plotRoot);
