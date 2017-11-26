@@ -351,7 +351,7 @@ public class TreeShow extends Application {
 			hBoxs[i].alignmentProperty().setValue(Pos.CENTER);
 		}
 		double[] re = rs.get(rs.size()-1);
-		String rsString = "finalResult = "+re[0];
+		String rsString = "finalResult = ["+(re[0]-UserFile.bietK)+","+(re[0]+UserFile.bietK)+"]";
 		Label label = new Label(rsString);
 		label.setFont(font2);
 		hBoxs[hBoxs.length-1] = new HBox(8);

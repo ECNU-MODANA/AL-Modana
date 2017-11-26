@@ -2,7 +2,7 @@ package ecnu.modana.FmiDriver;
 
 public class BouncingBallPlug extends ToolSlave{
 	
-	private double h=4,g=-9.8,v=0,c=-0.8;
+	double h=4,g=-9.8,v=0,c=-0.8;
 	@Override
 	public boolean ConnectMaster(String host, int port) {
 		// TODO Auto-generated method stub
@@ -55,5 +55,6 @@ public class BouncingBallPlug extends ToolSlave{
 		else if("h".equals(varNames)) h=Double.valueOf(values);
 		return true;
 	}
+
 
 }

@@ -1,1 +1,1 @@
-simulate 1 [<=48] {discomfort,Heater(1).Off,Heater(1).On,Heater(2).Off,Heater(2).On,Heater(3).Off,Heater(3).On}
+simulate 1 [<=48] {energy,discomfort,Heater(1).Off,Heater(1).On,Heater(2).Off,Heater(2).On,Heater(3).Off,Heater(3).On}
