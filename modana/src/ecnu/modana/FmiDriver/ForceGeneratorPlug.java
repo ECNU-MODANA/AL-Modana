@@ -66,13 +66,14 @@ public class ForceGeneratorPlug {
 
 
     public double getValues(String varNames) {
-        if(varNames.equals("effectBall1")){
-            return effectBall1*timeForceQue[currentIndex][2];
-        }else if(varNames.equals("effectBall2")){
-            return effectBall2*timeForceQue[currentIndex][2];
-        }else if(varNames.equals("currentIndex"))
-            return currentIndex;
-
+        if(currentIndex>0) {
+            if (varNames.equals("effectBall1")) {
+                return effectBall1 * timeForceQue[currentIndex - 1][2];
+            } else if (varNames.equals("effectBall2")) {
+                return effectBall2 * timeForceQue[currentIndex - 1][2];
+            } else if (varNames.equals("currentIndex"))
+                return currentIndex;
+        }
         return 0.0;
     }
 

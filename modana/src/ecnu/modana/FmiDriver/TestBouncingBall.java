@@ -160,6 +160,11 @@ public class TestBouncingBall {
             //termination check
             if(fg.terminate())
                 break;
+            //data exchange
+            if(rollback!=1) {
+                BB.SetValues("v", Double.toString(BB.v + fg.getValues("effectBall1")));
+                BB2.SetValues("v", Double.toString(BB2.v + fg.getValues("effectBall2")));
+            }
             Double[] data = new Double[9];
             data[0] = fg.getValues("effectBall1");
             data[1] = fg.getValues("effectBall2");
@@ -168,11 +173,6 @@ public class TestBouncingBall {
             data[4] = Double.parseDouble(BB2.GetValues("h"));
             data[5] = Double.parseDouble(BB2.GetValues("v"));
             data[6] = fg.getValues("currentIndex");
-            //data exchange
-//            if(BB.h!=0.0)
-                BB.SetValues("v", Double.toString(BB.v + fg.getValues("effectBall1")));
-//            if(BB2.h!=0.0)
-                BB2.SetValues("v", Double.toString(BB2.v + fg.getValues("effectBall2")));
             // stepsize prediction
             double tempBB = BB.Predict();
             double tempFg = fg.Predict(current);
@@ -272,6 +272,11 @@ public class TestBouncingBall {
             //termination check
             if(fg.terminate())
                 break;
+            //data exchange
+            if(rollback!=1) {
+                BB.SetValues("v", Double.toString(BB.v + fg.getValues("effectBall1")));
+                BB2.SetValues("v", Double.toString(BB2.v + fg.getValues("effectBall2")));
+            }
             Double[] data = new Double[9];
             data[0] = fg.getValues("effectBall1");
             data[1] = fg.getValues("effectBall2");
@@ -280,11 +285,6 @@ public class TestBouncingBall {
             data[4] = Double.parseDouble(BB2.GetValues("h"));
             data[5] = Double.parseDouble(BB2.GetValues("v"));
             data[6] = fg.getValues("currentIndex");
-            //data exchange
-//            if(BB.h!=0.0)
-                BB.SetValues("v", Double.toString(BB.v + fg.getValues("effectBall1")));
-//            if(BB2.h!=0.0)
-                BB2.SetValues("v", Double.toString(BB2.v + fg.getValues("effectBall2")));
             // stepsize prediction
             double tempBB = BB.Predict();
             double tempFg = fg.Predict(current);
@@ -343,7 +343,7 @@ public class TestBouncingBall {
         ForceGeneratorPlug fg = new ForceGeneratorPlug(timeForceQue);
         double current = 0.00;
 
-        double stepSize = 0.1;
+        double stepSize = 1;
         int rollback = 0;
         int index = 0;
         int rollbackNum = 0;
@@ -364,6 +364,11 @@ public class TestBouncingBall {
             //termination check
             if(fg.terminate())
                 break;
+            //data exchange
+            if(rollback!=1) {
+                BB.SetValues("v", Double.toString(BB.v + fg.getValues("effectBall1")));
+                BB2.SetValues("v", Double.toString(BB2.v + fg.getValues("effectBall2")));
+            }
             Double[] data = new Double[9];
             data[0] = fg.getValues("effectBall1");
             data[1] = fg.getValues("effectBall2");
@@ -372,20 +377,14 @@ public class TestBouncingBall {
             data[4] = Double.parseDouble(BB2.GetValues("h"));
             data[5] = Double.parseDouble(BB2.GetValues("v"));
             data[6] = fg.getValues("currentIndex");
-            //data exchange
-//            if(BB.h!=0.0)
-            if(rollback != 1) {
-                BB.SetValues("v", Double.toString(BB.v + fg.getValues("effectBall1")));
-//            if(BB2.h!=0.0)
-                BB2.SetValues("v", Double.toString(BB2.v + fg.getValues("effectBall2")));
-            }
+
 //            System.out.println(" stepSIze: "+stepSize+"current index"+fg.currentIndex);
             if(-1 != BB2.DoStep(current,stepSize) && -1 != BB.DoStep(current,stepSize) &&-1 != fg.doStep(current,stepSize)) {
 
 
                 current += stepSize;
                 rollback = 0;
-                stepSize = 0.1;
+                stepSize = 1;
                 time.add(current);
                 height_ball1.add(BB.h);
                 height_ball2.add(BB2.h);
