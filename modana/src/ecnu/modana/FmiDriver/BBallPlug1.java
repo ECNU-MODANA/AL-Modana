@@ -64,7 +64,7 @@ public class BBallPlug1 extends ToolSlave{
                 return -1;
             } else if (calculatedHeight <= 0.001) {
                 eventNum++;
-//                h = 0;
+                h = calculatedHeight;
                 v = (v + g * stepSize) * c;
             } else {
                 v = v + g * stepSize;
@@ -102,14 +102,18 @@ public class BBallPlug1 extends ToolSlave{
         //0.0步长，从而使得仿真“终止”；
 //        System.out.println("current h of ball1 is : " + h+"v = " + v);
         double tPredict = 0.0;
-//        if(h<1E-4 && v*v<1E-6){
-//            return 999;
-//        }
-        if(v>=0) {
-            tPredict = (Math.sqrt(v * v + 2 * g * h) - v) / g;
+        if(Math.abs(h)<1E-2 && v*v<1E-6){
+            return 999;
+        }
+        if(Math.abs(h)<=0.001 && h<=0) {
+            tPredict =Math.abs(v) / g * 2;
             if (tPredict >= 0)
                 return tPredict;
-        }else {
+        }else if(Math.abs(h)<=0.001 && h>0){
+            tPredict =Math.abs(v) / g * 2;
+            if (tPredict >= 0)
+                return tPredict;
+        }else{
             tPredict = (Math.sqrt(v * v + 2 * g * h) - v) / g;
             if (tPredict >= 0)
                 return tPredict;
