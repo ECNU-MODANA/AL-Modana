@@ -1,23 +1,17 @@
 package ecnu.modana.ui;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
-
-import javax.swing.JFileChooser;
-
+import ecnu.modana.FmiDriver.CoSimulationUI;
+import ecnu.modana.Modana;
+import ecnu.modana.PlotComposer.PlotComposerUI;
+import ecnu.modana.abstraction.IUserInterface;
+import ecnu.modana.alsmc.generatePA.TreeShow;
+import ecnu.modana.base.PluginMessage;
+import ecnu.modana.model.AbstractModel;
+import ecnu.modana.model.ModelManager;
+import ecnu.modana.model.ModelManager.DiagramType;
+import ecnu.modana.model.ModelManager.ModelType;
+import ecnu.modana.model.PrismModel;
+import ecnu.modana.ui.prism.PrismModule;
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -32,24 +26,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeCell;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -57,35 +36,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.FileChooser;
-import javafx.stage.Modality;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
+import javafx.stage.*;
 import javafx.util.Callback;
-
 import org.apache.log4j.Logger;
-import org.ptolemy.fmi.FMUFile;
 
-import ecnu.modana.Modana;
-import ecnu.modana.FmiDriver.CoSimulation;
-import ecnu.modana.FmiDriver.CoSimulationUI;
-import ecnu.modana.FmiDriver.FMUModelExchange;
-import ecnu.modana.FmiDriver.PrismClient;
-import ecnu.modana.FmiDriver.PrismWrapper;
-import ecnu.modana.abstraction.IUserInterface;
-import ecnu.modana.alsmc.generatePA.TreeShow;
-import ecnu.modana.base.PluginMessage;
-import ecnu.modana.model.AbstractModel;
-import ecnu.modana.model.ModelManager;
-import ecnu.modana.model.ModelManager.DiagramType;
-import ecnu.modana.model.ModelManager.ModelType;
-import ecnu.modana.model.PrismModel;
-import ecnu.modana.model.PrismModel.*;
-import ecnu.modana.ui.prism.PrismModule;
-import ecnu.modana.util.MyLineChart;
-import ecnu.modana.PlotComposer.PlotComposerUI;
-import ecnu.modana.Properties.PropertiesUI;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
 /**
  * Default GUI of Modana Platform
  * @author cb
@@ -182,7 +141,7 @@ public class ModanaUI extends Application implements IUserInterface {
 			primaryStage.setMinWidth(bounds.getWidth());
 			primaryStage.setMinHeight(bounds.getHeight());
 		}
-		primaryStage.setTitle(getName() + " " + getVersion());
+		primaryStage.setTitle("Modana模型转换器");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 

@@ -1,27 +1,12 @@
 package ecnu.modana.FmiDriver;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import javafx.application.Platform;
-import javafx.beans.Observable;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import ecnu.modana.FmiDriver.CosimulationMaster.Exchange;
+import ecnu.modana.ui.MyTextConvertor;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableDoubleValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -31,72 +16,31 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
-import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.CellDataFeatures;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
-import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
-
 import org.apache.log4j.Logger;
-import org.omg.CORBA.PRIVATE_MEMBER;
 
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
-
-import ecnu.modana.FmiDriver.CosimulationMaster.Exchange;
-import ecnu.modana.PlotComposer.PlotComposer;
-import ecnu.modana.alsmc.generatePA.BIETool;
-import ecnu.modana.alsmc.generatePA.PreTree;
-import ecnu.modana.alsmc.generatePA.TreeNode;
-import ecnu.modana.alsmc.main.ExeUppaal;
-import ecnu.modana.alsmc.parameter.HeuristicUI;
-import ecnu.modana.alsmc.parameter.ParameterUI;
-import ecnu.modana.alsmc.properties.PropertiesUI;
-import ecnu.modana.alsmc.util.UserFile;
-import ecnu.modana.ui.MyTextConvertor;
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
 
 import static ecnu.modana.FmiDriver.Composer.initPlotPanel;
-import static ecnu.modana.FmiDriver.Verifier.initVerifierPanel;
 
 /**
  * @author JKQ
@@ -137,7 +81,7 @@ public class CoSimulationUI {
         this.propertiesStage = plotComposerStage;
         plotComposerStage.initModality(Modality.WINDOW_MODAL);
         plotComposerStage.setOpacity(1);
-        plotComposerStage.setTitle("Co-verification");
+        plotComposerStage.setTitle("Modana协同验证器");
         plotComposerStage.setWidth(width);
         plotComposerStage.setHeight(height);
         plotComposerStage.centerOnScreen();

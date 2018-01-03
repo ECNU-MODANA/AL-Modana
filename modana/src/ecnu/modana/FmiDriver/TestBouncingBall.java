@@ -20,10 +20,10 @@ public class TestBouncingBall {
         double[][] plot = new double[83][2];
         BBallPlug1 BB = new BBallPlug1(4,0,-0.8);
         BBallPlug1 BB2 = new BBallPlug1(7,2,-0.8);
-        double[][] timeForceQue = new double[100][3];
+        double[][] timeForceQue = new double[10][3];
         Random selectBall = new Random(20);
         Random selectEffect = new Random(10);
-        for(int i =0;i<100;i++){
+        for(int i =0;i<10;i++){
             timeForceQue[i][0] = i+1;
             timeForceQue[i][1] = i%2+1;
             timeForceQue[i][2] = selectEffect.nextInt(10);
@@ -69,7 +69,10 @@ public class TestBouncingBall {
             double tempFg = fg.Predict(current);
             if(rollback != 1)
                 stepSize = tempBB> tempFg ? tempFg : tempBB;
-            System.out.println(tempBB+ "   "+ tempFg + " stepSIze: "+stepSize);
+//            System.out.println(tempBB+ "   "+ tempFg + " stepSIze: "+stepSize);
+
+
+            //训练集取大一点：
 
             //记录最终选择的步长
             data[7] = stepSize;
@@ -119,7 +122,7 @@ public class TestBouncingBall {
         LogProcess lp = new LogProcess();
         double[] weight = lp.train(doubleData,doublelable, 0.1f, 200, (short)1);
 
-
+        System.out.println(System.currentTimeMillis()-start);
         return weight;
     }
     public double[][] withLR(double[] weight,int seed1,int seed2,int length){
@@ -156,6 +159,13 @@ public class TestBouncingBall {
 
         //simulation start
         double[] parameters = null;
+        double w0 = weight[0];
+        double w1 = weight[1];
+        double w2 = weight[2];
+        double w3 = weight[3];
+        double w4 = weight[4];
+        double w5 = weight[5];
+        double w6 = weight[6];
         while(true){
             //termination check
             if(fg.terminate())
@@ -173,20 +183,22 @@ public class TestBouncingBall {
             data[4] = Double.parseDouble(BB2.GetValues("h"));
             data[5] = Double.parseDouble(BB2.GetValues("v"));
             data[6] = fg.getValues("currentIndex");
+
+
             // stepsize prediction
             double tempBB = BB.Predict();
             double tempFg = fg.Predict(current);
             if(rollback != 1)
                 stepSize = tempBB> tempFg ? tempFg : tempBB;
 //            System.out.println(tempBB+ "   "+ tempFg + " stepSIze: "+stepSize);
-            double classifyResult = weight[0] * data[0]+
-                    weight[1] * data[1]+
-                    weight[2] * data[2]+
-                    weight[3] * BB.v+
-                    weight[4] * data[4]+
-                    weight[5] * BB2.v;
+            double classifyResult = w0 * data[0]+
+                    w1 * data[1]+
+                    w2 * data[2]+
+                    w3 * BB.v+
+                    w4 * data[4]+
+                    w5 * BB2.v;
             for(int i=2;i>0;i--){
-                if(classifyResult + weight[6] * stepSize>0)
+                if(classifyResult + w6 * stepSize>0)
                     break;
 //                System.out.println(classifyResult + "   "+ weight[6] * stepSize);
                 stepSize = stepSize*(6.0/10.0);
@@ -204,7 +216,6 @@ public class TestBouncingBall {
                 effect.add(fg.getValues("effect"));
                 stepList.add(stepSize);
                 index++;
-                data[8] = 1.0;
             }
             else {
                 rollback = 1;
@@ -217,14 +228,11 @@ public class TestBouncingBall {
                 BB2.SetValues("h",Double.toString(data[4]));
                 BB2.SetValues("v",Double.toString(data[5]));
                 fg.SetValues(3,data[6]);
-                data[8] = 0.0;
-
             }
-            dataSet.add(data);
         }
         Long stop = System.currentTimeMillis();
         System.out.println("with LR,rollback:"+ rollbackNum +", time cost:" + (stop-start)+
-                "eventNum :"+BB.eventNum+"   ,"+ BB2.eventNum+"    ," + fg.eventNum+"    ," + time.get(time.size()-1));
+                "eventNum :"+BB.eventNum+"   ,"+ BB2.eventNum+"    ," + fg.eventNum+"    ," + time.get(time.size()-1)+"likelyhood:"+(double)index/(double)(index+rollbackNum));
 
         double[][] plot = new double[time.size()][2];
         for(int i=0;i<time.size();i++){
@@ -315,6 +323,28 @@ public class TestBouncingBall {
                 BB2.SetValues("h",Double.toString(data[4]));
                 BB2.SetValues("v",Double.toString(data[5]));
                 fg.SetValues(3,data[6]);
+                fg.SetValues(1,data[0]);
+                fg.SetValues(2,data[1]);
+                BB.SetValues("h",Double.toString(data[2]));
+                BB.SetValues("v",Double.toString(data[3]));
+                BB2.SetValues("h",Double.toString(data[4]));
+                BB2.SetValues("v",Double.toString(data[5]));
+                fg.SetValues(3,data[6]);
+                fg.SetValues(1,data[0]);
+                fg.SetValues(2,data[1]);
+                BB.SetValues("h",Double.toString(data[2]));
+                BB.SetValues("v",Double.toString(data[3]));
+                BB2.SetValues("h",Double.toString(data[4]));
+                BB2.SetValues("v",Double.toString(data[5]));
+                fg.SetValues(3,data[6]);
+                fg.SetValues(1,data[0]);
+                fg.SetValues(2,data[1]);
+                BB.SetValues("h",Double.toString(data[2]));
+                BB.SetValues("v",Double.toString(data[3]));
+                BB2.SetValues("h",Double.toString(data[4]));
+                BB2.SetValues("v",Double.toString(data[5]));
+                fg.SetValues(3,data[6]);
+
             }
             dataSet.add(data);
         }
@@ -343,7 +373,7 @@ public class TestBouncingBall {
         ForceGeneratorPlug fg = new ForceGeneratorPlug(timeForceQue);
         double current = 0.00;
 
-        double stepSize = 1;
+        double stepSize = 0.1;
         int rollback = 0;
         int index = 0;
         int rollbackNum = 0;
@@ -384,7 +414,7 @@ public class TestBouncingBall {
 
                 current += stepSize;
                 rollback = 0;
-                stepSize = 1;
+                stepSize = 0.1;
                 time.add(current);
                 height_ball1.add(BB.h);
                 height_ball2.add(BB2.h);
@@ -400,6 +430,9 @@ public class TestBouncingBall {
                 fg.SetValues(2,data[1]);
                 BB.SetValues("h",Double.toString(data[2]));
                 BB.SetValues("v",Double.toString(data[3]));
+                BB2.SetValues("h",Double.toString(data[4]));
+                BB2.SetValues("v",Double.toString(data[5]));
+                fg.SetValues(3,data[6]);
                 BB2.SetValues("h",Double.toString(data[4]));
                 BB2.SetValues("v",Double.toString(data[5]));
                 fg.SetValues(3,data[6]);
