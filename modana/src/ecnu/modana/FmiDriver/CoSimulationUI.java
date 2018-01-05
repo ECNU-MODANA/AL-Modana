@@ -612,7 +612,7 @@ public class CoSimulationUI {
         menuItemAdd.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                String file = ChooseFile("./files/", "FMU(*.fmu)", "*.fmu");
+                String file = ChooseFile("F:/ECNU_MODANA/AL-Modana/modana/files/", "FMU(*.fmu)", "*.fmu");
                 if (null == file) return;
                 fmuVariables = coSimulation.GetFMUVariables(file);
                 if (null == fmuVariables || fmuVariables.length == 0) return;
