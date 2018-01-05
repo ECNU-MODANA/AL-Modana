@@ -14,33 +14,50 @@ public class HeaterController extends PlugInSlave{
 
     @Override
     public double DoStep(double curTime, double stepSize) {
-        if(temperatureRoom1>=19 && temperatureRoom1<=23) {
-            if (Math.abs(room1.temperature - 23) <= 0.01){
-                Room1switch = 0;
-                return stepSize;
-            }else if(room1.temperature>23){
+        if(curTime%24 >=5 && curTime%24 <=22) {
+            if(curTime%24+stepSize-22>=0.01)
                 return -1;
-            }else if(Math.abs(room1.temperature - 19) <= 0.01){
-                Room1switch = 0;
+            if (temperatureRoom1 >= 19 && temperatureRoom1 <= 23) {
+                if (Math.abs(room1.temperature - 23) <= 0.01) {
+                    Room1switch = 0;
+                    return stepSize;
+                } else if (room1.temperature > 23) {
+                    return -1;
+                } else if (Math.abs(room1.temperature - 19) <= 0.01) {
+                    Room1switch = 1;
+                    return stepSize;
+                } else if (room1.temperature < 19) {
+                    return -1;
+                } else
+                    return stepSize;
+            } else if (temperatureRoom1 > 23) {
+                if (room1.temperature <= 19) {
+                    return -1;
+                } else
+                    Room1switch = 0.0;
                 return stepSize;
-            }else if(room1.temperature< 19){
-                return -1;
-            }else
-                Room1switch = 0;
-                return stepSize;
-        }else if(temperatureRoom1>23){
-            if(room1.temperature<=19) {
-                return -1;
-            }else
-                Room1switch = 0.0;
-                return stepSize;
-        }else {
-            if(room1.temperature>=23)
-                return -1;
-            else{
-                Room1switch = 1.0;
-                return stepSize;
+            } else {
+                if (room1.temperature >= 23)
+                    return -1;
+                else {
+                    Room1switch = 1.0;
+                    return stepSize;
+                }
             }
+        }else if(curTime%24 <5){
+            if(Math.abs(5-(curTime%24+stepSize)) <=0.01){
+                if(room1.temperature < 19){
+                    Room1switch = 1;
+                    return stepSize;
+                }else
+                    return 1;
+            }else if(curTime%24+stepSize >5){
+                return -1;
+            }else
+                return stepSize;
+        }else{
+            Room1switch = 0;
+            return stepSize;
         }
 
     }

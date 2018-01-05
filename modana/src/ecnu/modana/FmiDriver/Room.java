@@ -1,16 +1,27 @@
 package ecnu.modana.FmiDriver;
 
+import java.io.*;
+import java.util.ArrayList;
+
 public class Room extends PlugInSlave {
     double temperature = 0.0;
+    double otherRoomEffect = 0.0;
     static double de = 0.0;
     static double Room1switch;
+    static ArrayList<Double[]> amat = new ArrayList();
     public static double function(double t,double a)
     {
-        double e = 2.71828;
-        double Gauss1 = -((t-23.16)/ 11.58)*((t-23.16)/ 11.58);
-        double Gauss2 = -((t-14.24)/ 6.194)*((t-14.24)/ 6.194);
-        double Gauss3 = -((t+1.212)/ 5.069)*((t+1.212)/ 5.069);
-        return (900*Room1switch + 25*(3.868*Math.pow(e,Gauss1)+8.556*Math.pow(e,Gauss2)+6.057*Math.pow(e,Gauss3)-a))/100;
+        int index = 0;
+        for(;index<amat.size()-1;index++){
+            if(Math.abs(amat.get(index)[0]-t%48)<=0.1)
+                break;
+        }
+//        double e = 2.71828;
+//        double Gauss1 = -((t-23.16)/ 11.58)*((t-23.16)/ 11.58);
+//        double Gauss2 = -((t-14.24)/ 6.194)*((t-14.24)/ 6.194);
+//        double Gauss3 = -((t+1.212)/ 5.069)*((t+1.212)/ 5.069);
+//        System.out.println(1+ -1*Math.sin(t*2*3.14159265));
+        return (900*Room1switch + 25*(1+ -1*Math.sin(t*2*3.14159265)-a)+amat.get(index)[1])/100;
     }
 
     public Room(double temp){
@@ -43,6 +54,21 @@ public class Room extends PlugInSlave {
     public void NewPath() {
         // TODO Auto-generated method stub
         temperature=20.0;
+        String absolutePath = Room.class.getClass().getResource("/").getPath();
+        String line;
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(absolutePath + "../files/variance.txt"));
+            while((line = bufferedReader.readLine()) != null){
+                if(line.startsWith("#"))
+                    continue;
+                Double[] temp = new Double[2];
+                temp[0] = Double.parseDouble(line.split(" ")[0]);
+                temp[1] = Double.parseDouble(line.split(" ")[1]);
+                amat.add(temp);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
