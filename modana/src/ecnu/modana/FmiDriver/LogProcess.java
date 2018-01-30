@@ -86,7 +86,8 @@ public class LogProcess {
                         for(int s = 0; s < size; s++) {
                             sum  += (labels[s] - out[s]) * datas[s][d];
                         }
-                        w[d] = w[d] + step * sum;
+//                        w[d] = w[d] + step * sum;
+                        w[d] = (float) (w[d] + step * sum-0.01*Math.abs(w[d]));  //L1正则
                     }
                     System.out.println(Arrays.toString(w));
                 }

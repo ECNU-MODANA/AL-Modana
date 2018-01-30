@@ -1,5 +1,7 @@
 package ecnu.modana.FmiDriver;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.panayotis.gnuplot.JavaPlot;
 import com.panayotis.gnuplot.plot.AbstractPlot;
 import com.panayotis.gnuplot.plot.DataSetPlot;
@@ -9,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class TestSmartBuilding {
+public class TestSmartBuilding2 {
     public double[] Train(double defaultStep,double trainingTime){
         Long start = System.currentTimeMillis();
         double[][] plot = new double[83][2];
@@ -48,9 +50,9 @@ public class TestSmartBuilding {
             data[2] = stepSize;
             if(rollback != 1)
                 heaterController.SetValues("temperatureRoom1",room.temperature);
-                room.Room1switch = heaterController.Room1switch;
+            room.Room1switch = heaterController.Room1switch;
             double tempT = room.temperature;
-                //            System.out.println(tempBB+ "   "+ tempFg + " stepSIze: "+stepSize);
+            //            System.out.println(tempBB+ "   "+ tempFg + " stepSIze: "+stepSize);
             room.DoStep(current,stepSize);
             if(-1 !=  heaterController.DoStep(current,stepSize) ) {
                 current += stepSize;
@@ -80,7 +82,7 @@ public class TestSmartBuilding {
         }
         //逻辑回归获取权重向量
         LogProcess lp = new LogProcess();
-        double[] weight = lp.train(doubleData,doublelable, 0.1f, 200, (short)1);
+        double[] weight = lp.train(doubleData,doublelable, 0.1f, 500, (short)1);
         Long stop = System.currentTimeMillis();
         System.out.println("training-rollback:"+ rollbackNum +", time cost:" + (stop-start));
         return weight;
@@ -306,7 +308,7 @@ public class TestSmartBuilding {
                 room.Room1switch = heaterController.Room1switch;
             }
             double tempT = room.temperature;
-          //  System.out.println(" stepSIze: "+stepSize+"current index"+ room.temperature);
+            //  System.out.println(" stepSIze: "+stepSize+"current index"+ room.temperature);
             room.DoStep(current,stepSize);
             if(-1 !=  heaterController.DoStep(current,stepSize)) {
                 current += stepSize;
