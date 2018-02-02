@@ -31,7 +31,6 @@ package ecnu.modana.FmiDriver.ptolemy.fmi;
 import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Pointer;
-import org.ptolemy.fmi.NativeSizeT;
 
 /**
  * A Java Native Acess (JNA) Wrapper for a Functional Mock-up Unit

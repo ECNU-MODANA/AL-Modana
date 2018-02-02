@@ -27,7 +27,6 @@
  */
 package ecnu.modana.FmiDriver.ptolemy.fmi.type;
 
-import org.ptolemy.fmi.type.FMIType;
 import org.w3c.dom.Element;
 
 ///////////////////////////////////////////////////////////////////

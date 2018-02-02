@@ -27,16 +27,12 @@
  */
 package ecnu.modana.FmiDriver.ptolemy.fmi;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 
 ///////////////////////////////////////////////////////////////////

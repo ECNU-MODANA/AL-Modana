@@ -27,28 +27,20 @@
  */
 package ecnu.modana.FmiDriver.ptolemy.fmi;
 
+import com.sun.jna.Function;
+import com.sun.jna.NativeLibrary;
+import com.sun.jna.Pointer;
+import com.sun.jna.ptr.PointerByReference;
+import ecnu.modana.FmiDriver.ptolemy.fmi.type.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import java.io.IOException;
 import java.nio.DoubleBuffer;
 import java.nio.IntBuffer;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.ptolemy.fmi.FMILibrary;
-import org.ptolemy.fmi.FMIModelDescription;
-import org.ptolemy.fmi.NativeSizeT;
-import org.ptolemy.fmi.type.FMIBooleanType;
-import org.ptolemy.fmi.type.FMIIntegerType;
-import org.ptolemy.fmi.type.FMIRealType;
-import org.ptolemy.fmi.type.FMIStringType;
-import org.ptolemy.fmi.type.FMIType;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import com.sun.jna.Function;
-import com.sun.jna.NativeLibrary;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.PointerByReference;
 
 ///////////////////////////////////////////////////////////////////
 //// FMIScalarVariable
@@ -77,7 +69,7 @@ public class FMIScalarVariable {
     /** Create an empty ScalarVariable.
      * @param fmiModelDescription
      * @param element*/
-    public FMIScalarVariable(ecnu.modana.FmiDriver.ptolemy.fmi.FMIModelDescription fmiModelDescription, Element element) {
+    public FMIScalarVariable() {
     }
 
     /** Create a ScalarVariable from an XML Element.
@@ -146,9 +138,11 @@ public class FMIScalarVariable {
                 variability = Variability.continuous;
             } else if (attribute.equals("discrete")) {
                 variability = Variability.discrete;
-            } else if (attribute.equals("parameter")) {
-                variability = Variability.parameter;
-            } else {
+            } else if (attribute.equals("fixed")) {
+                variability = Variability.fixed;
+            } else if (attribute.equals("tunable")) {
+                variability = Variability.tunable;
+            }  else {
                 throw new IllegalArgumentException(
                         "variability \""
                                 + attribute
@@ -348,8 +342,8 @@ public class FMIScalarVariable {
 
         // Include the trailing null character.
 	Pointer reference = fmiModelDescription.getFMUAllocateMemory()
-	    .apply(new org.ptolemy.fmi.NativeSizeT(value.length() + 1),
-		   new org.ptolemy.fmi.NativeSizeT(1));
+	    .apply(new NativeSizeT(value.length() + 1),
+		   new NativeSizeT(1));
         reference.setString(0, value);
         pointerByReference.setValue(reference);
 
@@ -416,7 +410,9 @@ public class FMIScalarVariable {
         discrete,
         /** The value does not change after initialization.
          */
-        parameter
+        fixed,
+
+        tunable
     }
 
     ///////////////////////////////////////////////////////////////////

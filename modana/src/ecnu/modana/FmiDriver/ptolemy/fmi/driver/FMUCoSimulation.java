@@ -27,20 +27,14 @@
  */
 package ecnu.modana.FmiDriver.ptolemy.fmi.driver;
 
-import java.io.File;
-import java.io.PrintStream;
-
-import org.ptolemy.fmi.FMICallbackFunctions;
-import org.ptolemy.fmi.FMILibrary;
-import org.ptolemy.fmi.FMIModelDescription;
-import org.ptolemy.fmi.FMUFile;
-import org.ptolemy.fmi.FMULibrary;
-
 import com.sun.jna.Function;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
+import ecnu.modana.FmiDriver.ptolemy.fmi.*;
 
-import org.ptolemy.fmi.driver.OutputRow;
+import java.io.File;
+import java.io.PrintStream;
+
 
 ///////////////////////////////////////////////////////////////////
 //// FMUCoSimulation
@@ -151,7 +145,7 @@ public class FMUCoSimulation extends FMUDriver {
 
         // Parse the .fmu file.
         FMIModelDescription fmiModelDescription = FMUFile
-                 .parseFMUFile(fmuFileName);
+                .parseFMUFile(fmuFileName);
 
         // Load the shared library.
         String sharedLibrary = FMUFile.fmuSharedLibrary(fmiModelDescription);
@@ -185,7 +179,7 @@ public class FMUCoSimulation extends FMUDriver {
         byte loggingOn = enableLogging ? (byte) 1 : (byte) 0;
         loggingOn = (byte) 1;
 
-        Function instantiateSlave = getFunction("_fmiInstantiateSlave");
+        Function instantiateSlave = getFunction("fmi2Instantiate");
         Pointer fmiComponent = (Pointer) instantiateSlave.invoke(Pointer.class,
                 new Object[] { _modelIdentifier, fmiModelDescription.guid,
                         fmuLocation, mimeType, timeout, visible, interactive,
@@ -209,10 +203,10 @@ public class FMUCoSimulation extends FMUDriver {
                 System.out.println("FMUCoSimulation: about to write header");
             }
             // Generate header row
-            org.ptolemy.fmi.driver.OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
                     fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
             // Output the initial values.
-            org.ptolemy.fmi.driver.OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
                     fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
             // Loop until the time is greater than the end time.
             double time = startTime;

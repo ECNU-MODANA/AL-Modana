@@ -27,19 +27,14 @@
  */
 package ecnu.modana.FmiDriver.ptolemy.fmi.driver;
 
-import java.io.File;
-import java.io.PrintStream;
-
-import org.ptolemy.fmi.FMICallbackFunctions;
-import org.ptolemy.fmi.FMIEventInfo;
-import org.ptolemy.fmi.FMIModelDescription;
-import org.ptolemy.fmi.FMUFile;
-import org.ptolemy.fmi.FMULibrary;
-
 import com.sun.jna.Function;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
+import ecnu.modana.FmiDriver.ptolemy.fmi.*;
+
+import java.io.File;
+import java.io.PrintStream;
 
 ///////////////////////////////////////////////////////////////////
 //// FMUModelExchange
@@ -241,10 +236,10 @@ public class FMUModelExchange extends FMUDriver {
                 System.out.println("FMUModelExchange: about to write header");
             }
             // Generate header row
-            org.ptolemy.fmi.driver.OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
                     fmiComponent, startTime, file, csvSeparator, Boolean.TRUE);
             // Output the initial values.
-            org.ptolemy.fmi.driver.OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+            OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
                     fmiComponent, startTime, file, csvSeparator, Boolean.FALSE);
 
             // Functions used within the while loop, organized

@@ -27,18 +27,16 @@
  */
 package ecnu.modana.FmiDriver.ptolemy.fmi.driver;
 
-import java.io.PrintStream;
-
-import org.ptolemy.fmi.FMIModelDescription;
-import org.ptolemy.fmi.FMIScalarVariable;
-import org.ptolemy.fmi.FMIScalarVariable.Alias;
-import org.ptolemy.fmi.type.FMIBooleanType;
-import org.ptolemy.fmi.type.FMIIntegerType;
-import org.ptolemy.fmi.type.FMIRealType;
-import org.ptolemy.fmi.type.FMIStringType;
-
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
+import ecnu.modana.FmiDriver.ptolemy.fmi.FMIModelDescription;
+import ecnu.modana.FmiDriver.ptolemy.fmi.FMIScalarVariable;
+import ecnu.modana.FmiDriver.ptolemy.fmi.type.FMIBooleanType;
+import ecnu.modana.FmiDriver.ptolemy.fmi.type.FMIIntegerType;
+import ecnu.modana.FmiDriver.ptolemy.fmi.type.FMIRealType;
+import ecnu.modana.FmiDriver.ptolemy.fmi.type.FMIStringType;
+
+import java.io.PrintStream;
 
 /**
  * Given a fmu component, output the current state.
@@ -96,8 +94,8 @@ public class OutputRow {
      *  names should be printed.
      */
     public static void outputRow(NativeLibrary nativeLibrary,
-            FMIModelDescription fmiModelDescription, Pointer fmiComponent,
-            double time, PrintStream file, char separator, Boolean header) {
+                                 FMIModelDescription fmiModelDescription, Pointer fmiComponent,
+                                 double time, PrintStream file, char separator, Boolean header) {
         int i;
         // fmiReal r;
         // fmiInteger i;
@@ -122,7 +120,7 @@ public class OutputRow {
         // Print all the other columns.
         for (FMIScalarVariable scalarVariable : fmiModelDescription.modelVariables) {
             if (scalarVariable.alias != null
-                    && scalarVariable.alias != Alias.noAlias) {
+                    && scalarVariable.alias != FMIScalarVariable.Alias.noAlias) {
                 // If the scalarVariable has an alias, then skip it.
                 // In bouncingBall.fmu, g has an alias, so it is skipped.
                 continue;

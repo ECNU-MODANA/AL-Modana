@@ -63,7 +63,7 @@ public abstract class FMUDriver {
             System.out.println("FMUModelExchange: about to get the " + name
                     + " function.");
         }
-        return _nativeLibrary.getFunction(_modelIdentifier + name);
+        return _nativeLibrary.getFunction(name);
     }
 
     /** Invoke a function that returns an integer representing the

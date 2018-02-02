@@ -28,14 +28,12 @@
 
 package ecnu.modana.FmiDriver.ptolemy.fmi;
 
+import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
+
 import java.util.HashSet;
 import java.util.Set;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Pointer;
-import org.ptolemy.fmi.FMILibrary;
-import org.ptolemy.fmi.FMULog;
-import org.ptolemy.fmi.NativeSizeT;
 
 /**
  * An interface that is used by Java Native Access (JNA) to handle callbacks.

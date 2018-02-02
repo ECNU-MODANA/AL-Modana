@@ -28,15 +28,14 @@
 
 package ecnu.modana.FmiDriver.ptolemy.fmi;
 
+import com.sun.jna.Structure;
+import ecnu.modana.FmiDriver.ptolemy.fmi.FMILibrary.FMICallbackAllocateMemory;
+import ecnu.modana.FmiDriver.ptolemy.fmi.FMILibrary.FMICallbackFreeMemory;
+import ecnu.modana.FmiDriver.ptolemy.fmi.FMILibrary.FMICallbackLogger;
+import ecnu.modana.FmiDriver.ptolemy.fmi.FMILibrary.FMIStepFinished;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.ptolemy.fmi.FMILibrary.FMICallbackAllocateMemory;
-import org.ptolemy.fmi.FMILibrary.FMICallbackFreeMemory;
-import org.ptolemy.fmi.FMILibrary.FMICallbackLogger;
-import org.ptolemy.fmi.FMILibrary.FMIStepFinished;
-
-import com.sun.jna.Structure;
 
 /**
  * Functional Mock-up Interface (FMI) callback functions needed by
