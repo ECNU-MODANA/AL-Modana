@@ -130,16 +130,17 @@ public class TestSmartBuilding {
 
 
 
-            double classifyResult = w0 * data[0]+
-                    w1 * data[1];
-
-            for(int i=2;i>0;i--){
-                if(classifyResult + w2 * stepSize>0)
-                    break;
-//                System.out.println(classifyResult + "   "+ weight[6] * stepSize);
-                stepSize = stepSize*(9.0/10.0);
-
-            }
+            double classifyResult = -(w0 * data[0]+
+                    w1 * data[1])/w2;
+            stepSize = classifyResult>stepSize? stepSize: classifyResult;
+//
+//            for(int i=2;i>0;i--){
+//                if(classifyResult + w2 * stepSize>0)
+//                    break;
+////                System.out.println(classifyResult + "   "+ weight[6] * stepSize);
+//                stepSize = stepSize*(9.0/10.0);
+//
+//            }
             double tempT = room.temperature;
             room.DoStep(current,stepSize);
             if(-1 !=  heaterController.DoStep(current,stepSize) ) {
@@ -347,16 +348,16 @@ public class TestSmartBuilding {
         Long start2 = System.currentTimeMillis();
         double[][] plot_t_room2 = tsb.fixedStep(0.05,1000);
         System.out.println(System.currentTimeMillis()-start2);
-//        JavaPlot jp = new JavaPlot();
-//        DataSetPlot dsp1 = new DataSetPlot(plot_t_room1);
-//        DataSetPlot dsp2 = new DataSetPlot(plot_t_room2);
-//        jp.addPlot(dsp1);
-//        jp.addPlot(dsp2);
-//        ((AbstractPlot)(jp.getPlots().get(0))).getPlotStyle().setStyle(Style.LINES);
-//        ((AbstractPlot)(jp.getPlots().get(0))).setTitle("Tank 1 height");
-//        ((AbstractPlot)(jp.getPlots().get(1))).setTitle("Tank 2 height");
-//        ((AbstractPlot)(jp.getPlots().get(1))).getPlotStyle().setStyle(Style.LINES);
-//        jp.plot();
+        JavaPlot jp = new JavaPlot();
+        DataSetPlot dsp1 = new DataSetPlot(plot_t_room1);
+        DataSetPlot dsp2 = new DataSetPlot(plot_t_room2);
+        jp.addPlot(dsp1);
+        jp.addPlot(dsp2);
+        ((AbstractPlot)(jp.getPlots().get(0))).getPlotStyle().setStyle(Style.LINES);
+        ((AbstractPlot)(jp.getPlots().get(0))).setTitle("Tank 1 height");
+        ((AbstractPlot)(jp.getPlots().get(1))).setTitle("Tank 2 height");
+        ((AbstractPlot)(jp.getPlots().get(1))).getPlotStyle().setStyle(Style.LINES);
+        jp.plot();
 
     }
 }
