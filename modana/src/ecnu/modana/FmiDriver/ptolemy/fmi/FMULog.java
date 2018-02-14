@@ -28,10 +28,10 @@
 
 package ecnu.modana.FmiDriver.ptolemy.fmi;
 
+import com.sun.jna.Pointer;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
-import com.sun.jna.Pointer;
 
 /**
  * A Functional Mock-up Interface (FMI) log method implementation.
@@ -188,6 +188,9 @@ public class FMULog {
             //System.out.println("Java FMULogger, message0: " + message + " " + parameterList.size() + " " + parameterList);
             System.out.format("Java FMULogger: " + message,
                     parameterList.toArray());
+            System.out.println("");
+        }else {
+            System.err.println("Java FMULogger: " + message);
             System.out.println("");
         }
     }

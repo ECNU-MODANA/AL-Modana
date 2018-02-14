@@ -79,4 +79,28 @@ public abstract class FMIType {
 
     /** The name of the type. */
     public String name;
+
+    public enum fmi2Type {
+        /** The value does not change.
+         */
+        constant,
+        /** The value changes at any moment.  A continuous
+         *  variable must be of type Real.
+         *  The default Variability is "continuous".
+         */
+        continuous,
+        /** The value only changes during initialization
+         *  and at event instances.
+         */
+        discrete,
+        /** The value does not change after initialization.
+         */
+        fixed,
+
+        tunable,
+
+        parameter,
+
+        fmi2CoSimulation
+    }
 }

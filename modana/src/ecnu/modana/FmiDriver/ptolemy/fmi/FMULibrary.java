@@ -147,4 +147,12 @@ public interface FMULibrary extends FMILibrary {
                     + status);
         }
     };
+    public class FMUComponentEnvironment implements FMIComponentEnvironment {
+
+        public Pointer apply(Pointer Object) {
+            // FIXME: More should be done here.
+            System.out.println("componentEnvironment");
+            return Object;
+        }
+    };
 }

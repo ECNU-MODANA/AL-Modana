@@ -169,7 +169,8 @@ public class FMUModelExchange extends FMUDriver {
         FMICallbackFunctions.ByValue callbacks = new FMICallbackFunctions.ByValue(
 	        new FMULibrary.FMULogger(), fmiModelDescription.getFMUAllocateMemory(),
                 new FMULibrary.FMUFreeMemory(),
-                new FMULibrary.FMUStepFinished());
+                new FMULibrary.FMUStepFinished(),
+                new  FMULibrary.FMUComponentEnvironment());
         // Logging tends to cause segfaults because of vararg callbacks.
         byte loggingOn = enableLogging ? (byte) 1 : (byte) 0;
         loggingOn = (byte) 0;

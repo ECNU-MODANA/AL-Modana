@@ -119,9 +119,14 @@ public class FMUCoSimulation extends FMUDriver {
      *  @exception Exception If there is a problem parsing the .fmu file or invoking
      *  the methods in the shared library.
      */
+
     public static void main(String[] args) throws Exception {
 //        FMUDriver._processArgs(args);
-        new FMUCoSimulation().simulate("F:\\ECNU_MODANA\\AL-Modana\\modana\\src\\ecnu\\modana\\FmiDriver\\ptolemy\\fmi\\fmu2\\bouncingBall.fmu", 10, 0.01,
+//        new FMUCoSimulation().simulate("F:\\ECNU\\AL-Modana\\modana\\src\\ecnu\\modana\\FmiDriver\\ptolemy\\fmi\\fmu2\\bouncingBall.fmu", 10, 0.01,
+//                true, _csvSeparator, _outputFileName);
+//        new FMUCoSimulation().simulate("G:\\Downloads\\fmusdk-linux\\fmu\\cs\\bouncingBall.fmu", 10, 0.01,
+//                true, _csvSeparator, _outputFileName);
+        new FMUCoSimulation().simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\bouncingBall.fmu", 10, 0.01,
                 true, _csvSeparator, _outputFileName);
     }
 
@@ -171,27 +176,39 @@ public class FMUCoSimulation extends FMUDriver {
         byte interactive = 0;
 
         // Callbacks
-        FMICallbackFunctions.ByValue callbacks = new FMICallbackFunctions.ByValue(
-		new FMULibrary.FMULogger(), fmiModelDescription.getFMUAllocateMemory(),
+        FMICallbackFunctions.ByReference callbacks = new FMICallbackFunctions.ByReference(
+		new FMULibrary.FMULogger(), new FMULibrary.FMUAllocateMemory(),
                 new FMULibrary.FMUFreeMemory(),
-                new FMULibrary.FMUStepFinished());
+                new FMULibrary.FMUStepFinished(),
+                new FMULibrary.FMUComponentEnvironment());
         // Logging tends to cause segfaults because of vararg callbacks.
         byte loggingOn = enableLogging ? (byte) 1 : (byte) 0;
         loggingOn = (byte) 1;
 
         Function instantiateSlave = getFunction("fmi2Instantiate");
+//        Function instantiateSlave = getFunction("_fmiInstantiateSlave");
         Pointer fmiComponent = (Pointer) instantiateSlave.invoke(Pointer.class,
                 new Object[] { _modelIdentifier, fmiModelDescription.guid,
-                        fmuLocation, mimeType, timeout, visible, interactive,
-                        callbacks, loggingOn });
+                        fmuLocation, callbacks, visible, loggingOn });
+        //c = fmu->instantiate(instanceName, fmi2CoSimulation, guid, fmuResourceLocation,
+                    //&callbacks, visible, loggingOn);
+//        Pointer fmiComponent = (Pointer) instantiateSlave.invoke(Pointer.class,
+//                new Object[] { _modelIdentifier, fmiModelDescription.guid,
+//                        fmuLocation, mimeType, timeout, visible, interactive,
+//                        callbacks, loggingOn });
+
+        //         loggingOn   visible  callbacks  fmuLocation  guid   identifier
+        //fmi1.0   char        char     struct 4     char*      char*  char*
+        //fmi2.0   char        char     struct 5     char*      char*  char*
+        //java
         if (fmiComponent.equals(Pointer.NULL)) {
             throw new RuntimeException("Could not instantiate model.");
         }
 
         double startTime = 0;
-
-        invoke("_fmiInitializeSlave", new Object[] { fmiComponent, startTime,
-                (byte) 1, endTime }, "Could not initialize slave: ");
+//
+//        invoke("fmi2Initialize", new Object[] { fmiComponent, startTime,
+//                (byte) 1, endTime }, "Could not initialize slave: ");
 
         File outputFile = new File(outputFileName);
         PrintStream file = null;
@@ -211,7 +228,7 @@ public class FMUCoSimulation extends FMUDriver {
             // Loop until the time is greater than the end time.
             double time = startTime;
 
-            Function doStep = getFunction("_fmiDoStep");
+            Function doStep = getFunction("fmi2DoStep");
             while (time < endTime) {
                 if (enableLogging) {
                     System.out.println("FMUCoSimulation: about to call "
@@ -229,12 +246,12 @@ public class FMUCoSimulation extends FMUDriver {
                 OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
                         fmiComponent, time, file, csvSeparator, Boolean.FALSE);
             }
-	    invoke("_fmiTerminateSlave", new Object[] { fmiComponent },
+	    invoke("fmi2Terminate", new Object[] { fmiComponent },
 		   "Could not terminate slave: ");
 
 	    // Don't throw an exception while freeing a slave.  Some
 	    // fmiTerminateSlave calls free the slave for us.
-	    Function freeSlave = getFunction("_fmiFreeSlaveInstance");
+	    Function freeSlave = getFunction("fmi2FreeInstance");
 	    int fmiFlag = ((Integer) freeSlave.invoke(Integer.class,
 						      new Object[] { fmiComponent })).intValue();
 	    if (fmiFlag >= FMILibrary.FMIStatus.fmiWarning) {

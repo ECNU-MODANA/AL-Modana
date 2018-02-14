@@ -171,4 +171,7 @@ public interface FMILibrary extends Library {
          */
         void apply(Pointer fmiComponent, int status);
     };
+    public interface FMIComponentEnvironment extends Callback {
+        Pointer apply(Pointer Object);
+    };
 }

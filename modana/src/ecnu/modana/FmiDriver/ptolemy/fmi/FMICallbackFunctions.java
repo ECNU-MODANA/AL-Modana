@@ -90,13 +90,14 @@ public class FMICallbackFunctions extends Structure {
      * (C type: FmiStepFinished)
      */
     public FMICallbackFunctions(FMICallbackLogger logger,
-            FMICallbackAllocateMemory allocateMemory,
-            FMICallbackFreeMemory freeMemory, FMIStepFinished stepFinished) {
+                                FMICallbackAllocateMemory allocateMemory,
+                                FMICallbackFreeMemory freeMemory, FMIStepFinished stepFinished, FMILibrary.FMIComponentEnvironment componentEnvironment) {
         super();
         this.logger = logger;
         this.allocateMemory = allocateMemory;
         this.freeMemory = freeMemory;
         this.stepFinished = stepFinished;
+        this.componentEnvironment = componentEnvironment;
         // Avoid crashes by aligning.
         // See
         // http://today.java.net/article/2009/11/11/simplify-native-code-access-jna
@@ -157,11 +158,21 @@ public class FMICallbackFunctions extends Structure {
          * (C type: FmiStepFinished)
          */
         public ByValue(FMICallbackLogger logger,
-                FMICallbackAllocateMemory allocateMemory,
-                FMICallbackFreeMemory freeMemory, FMIStepFinished stepFinished) {
-            super(logger, allocateMemory, freeMemory, stepFinished);
+                       FMICallbackAllocateMemory allocateMemory,
+                       FMICallbackFreeMemory freeMemory, FMIStepFinished stepFinished,
+                       FMILibrary.FMIComponentEnvironment fmiComponentEnvironment) {
+            super(logger, allocateMemory, freeMemory, stepFinished, fmiComponentEnvironment);
         }
     };
+
+    public static class ByReference extends FMICallbackFunctions implements Structure.ByReference {
+        public ByReference(FMICallbackLogger logger,
+                           FMICallbackAllocateMemory allocateMemory,
+                           FMICallbackFreeMemory freeMemory, FMIStepFinished stepFinished,
+                           FMILibrary.FMIComponentEnvironment fmiComponentEnvironment){
+            super(logger,allocateMemory,freeMemory,stepFinished,fmiComponentEnvironment);
+    }
+    }
 
     /** C type: fmiCallbackLogger. */
     public FMICallbackLogger logger;
@@ -175,13 +186,15 @@ public class FMICallbackFunctions extends Structure {
     /** C type: fiStepFinished. */
     public FMIStepFinished stepFinished;
 
+    public FMILibrary.FMIComponentEnvironment componentEnvironment;
+
     /** Return the field names in the proper order.
      *  <p>This is new in jna-3.5.0.   
      *  @return a list of strings that name the fields in order.
      */
     protected List getFieldOrder() {
         return Arrays.asList(new String[] { "logger", "allocateMemory", "freeMemory",
-                "stepFinished" });
+                "stepFinished", "componentEnvironment" });
     }
 
     /** Set the initialization order of the fields so that the order
@@ -193,6 +206,6 @@ public class FMICallbackFunctions extends Structure {
         // underscore because the name of the protected method in the
         // parent class does not have an underscore.
         setFieldOrder(new String[] { "logger", "allocateMemory", "freeMemory",
-                "stepFinished" });
+                "stepFinished","componentEnvironment" });
     }
 }

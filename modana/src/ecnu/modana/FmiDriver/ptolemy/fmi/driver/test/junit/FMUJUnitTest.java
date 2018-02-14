@@ -30,18 +30,14 @@ package ecnu.modana.FmiDriver.ptolemy.fmi.driver.test.junit;
 
 
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.ptolemy.fmi.driver.FMUCoSimulation;
 import org.ptolemy.fmi.driver.FMUModelExchange;
 
+import java.io.*;
+
 import static org.junit.Assert.assertArrayEquals;
+
 
 ///////////////////////////////////////////////////////////////////
 //// FMUUnitTest

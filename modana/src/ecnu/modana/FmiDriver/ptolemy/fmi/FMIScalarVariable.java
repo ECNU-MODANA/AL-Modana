@@ -142,7 +142,10 @@ public class FMIScalarVariable {
                 variability = Variability.fixed;
             } else if (attribute.equals("tunable")) {
                 variability = Variability.tunable;
-            }  else {
+            } else if (attribute.equals("parameter")) {
+                variability = Variability.parameter;
+            }
+            else {
                 throw new IllegalArgumentException(
                         "variability \""
                                 + attribute
@@ -412,7 +415,9 @@ public class FMIScalarVariable {
          */
         fixed,
 
-        tunable
+        tunable,
+
+        parameter
     }
 
     ///////////////////////////////////////////////////////////////////

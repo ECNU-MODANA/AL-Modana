@@ -92,15 +92,6 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="jna.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/libs/jna.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
       <library name="Jama-1.0.3.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/libs/Jama-1.0.3.jar!/" />
@@ -156,5 +147,9 @@
     </orderEntry>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="library" name="JavaPlot" level="project" />
+    <orderEntry type="library" name="org.junit:junit-commons:5.0.0-ALPHA" level="project" />
+    <orderEntry type="library" scope="TEST" name="junit:junit:4.12" level="application" />
+    <orderEntry type="library" name="junit:junit:4.12" level="application" />
+    <orderEntry type="library" name="com.github.dblock.waffle:waffle-jna:1.5" level="project" />
   </component>
 </module>
