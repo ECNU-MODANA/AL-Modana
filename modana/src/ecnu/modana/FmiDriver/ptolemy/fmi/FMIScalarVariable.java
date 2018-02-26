@@ -505,11 +505,9 @@ public class FMIScalarVariable {
                 throw new RuntimeException("Platform not supported.", e);
             }
             _fmiGetFunction = nativeLibrary
-                    .getFunction(fmiModelDescription.modelIdentifier
-                            + "_fmiGet" + _typeName);
+                    .getFunction("fmi2Get" + _typeName);
             _fmiSetFunction = nativeLibrary
-                    .getFunction(fmiModelDescription.modelIdentifier
-                            + "_fmiSet" + _typeName);
+                    .getFunction("fmi2Set" + _typeName);
         }
         _getOrSetValue(fmiComponent, valueBuffer, typeClass, _fmiGetFunction);
     }

@@ -61,6 +61,8 @@ public class FMULog {
      *  @param message The message in printf format
      *  @param parameters The printf style parameters.
      */
+    public static int eventNum = 0;
+    public static int total = 0;
     public static void log(Pointer fmiComponent, String instanceName,
             int status, String category, String message,
             Pointer /*...*/parameters) {
@@ -75,6 +77,9 @@ public class FMULog {
         // r, i, b or s. To print a #, use ##.
 
         if (parameters != null) {
+            if(message.contains("state event"))
+                eventNum++;
+            total++;
             StringTokenizer tokenizer = new StringTokenizer(message, "%", false /* Return delimiters */);
             ArrayList<Object> parameterList = new ArrayList<Object>();
             //long nativeLong = Pointer.nativeValue(parameters);
@@ -108,6 +113,8 @@ public class FMULog {
                             System.out
                                     .println("FIXME: logger: don't know how to get integers, using 666 instead.");
                         }
+//                        System.out.println(parameters.);
+//                        parameterList.add(Integer.valueOf(parameters.getByteBuffer(offset,));
                         parameterList.add(Integer.valueOf(666));
                         offset += 4;
                         break;
@@ -122,7 +129,7 @@ public class FMULog {
                             System.out
                                     .println("FIXME: logger: don't know how to get doubles, using 666.666 instead.");
                         }
-                        //parameterList.add(Double.valueOf(parameters.getDouble(offset++)));
+//                        parameterList.add(Double.valueOf(parameters.getDouble(offset++)));
                         parameterList.add(Double.valueOf(666.666));
                         offset += 4;
                         break;

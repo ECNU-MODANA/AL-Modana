@@ -126,7 +126,7 @@ public class FMUCoSimulation extends FMUDriver {
 //                true, _csvSeparator, _outputFileName);
 //        new FMUCoSimulation().simulate("G:\\Downloads\\fmusdk-linux\\fmu\\cs\\bouncingBall.fmu", 10, 0.01,
 //                true, _csvSeparator, _outputFileName);
-        new FMUCoSimulation().simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\bouncingBall.fmu", 10, 0.01,
+        new FMUCoSimulation().simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\bouncingBall.fmu", 10, 0.1,
                 true, _csvSeparator, _outputFileName);
     }
 
@@ -206,9 +206,20 @@ public class FMUCoSimulation extends FMUDriver {
         }
 
         double startTime = 0;
-//
-//        invoke("fmi2Initialize", new Object[] { fmiComponent, startTime,
-//                (byte) 1, endTime }, "Could not initialize slave: ");
+        Function setupExperiment = getFunction("fmi2SetupExperiment");
+        Double fmi2Flag = (Double)setupExperiment.invoke(Double.class, new Object[] { fmiComponent,(byte) 1,2, startTime,
+                (byte) 1, endTime });
+        System.err.println(fmi2Flag);
+
+        Function enterInitializationMode = getFunction("fmi2EnterInitializationMode");
+        fmi2Flag = (Double)enterInitializationMode.invoke(Double.class, new Object[] { fmiComponent});
+        System.err.println(fmi2Flag);
+
+        Function exitInitializationMode = getFunction("fmi2ExitInitializationMode");
+        fmi2Flag = (Double)exitInitializationMode.invoke(Double.class, new Object[] { fmiComponent});
+        System.err.println(fmi2Flag);
+
+
 
         File outputFile = new File(outputFileName);
         PrintStream file = null;
@@ -229,6 +240,7 @@ public class FMUCoSimulation extends FMUDriver {
             double time = startTime;
 
             Function doStep = getFunction("fmi2DoStep");
+            Long start = System.currentTimeMillis();
             while (time < endTime) {
                 if (enableLogging) {
                     System.out.println("FMUCoSimulation: about to call "
@@ -236,16 +248,16 @@ public class FMUCoSimulation extends FMUDriver {
                             + "_fmiDoStep(Component, /* time */ " + time
                             + ", /* stepSize */" + stepSize + ", 1)");
                 }
-                Long start = System.currentTimeMillis();
                 invoke(doStep, new Object[] { fmiComponent, time, stepSize,
                         (byte) 1 }, "Could not simulate, time was " + time
                         + ": ");
-                System.out.println("doStep time: "+(System.currentTimeMillis()-start));
+
                 time += stepSize;
                 // Generate a line for this step
                 OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
                         fmiComponent, time, file, csvSeparator, Boolean.FALSE);
             }
+            System.out.println("doStep time: "+(System.currentTimeMillis()-start)+","+FMULog.eventNum+","+ FMULog.total);
 	    invoke("fmi2Terminate", new Object[] { fmiComponent },
 		   "Could not terminate slave: ");
 

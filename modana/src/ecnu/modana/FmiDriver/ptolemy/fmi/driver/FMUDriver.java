@@ -228,7 +228,7 @@ public abstract class FMUDriver {
     /** The output file name.
      *  The initial value is "results.csv".
      */
-    static String _outputFileName = "results.csv";
+    static String _outputFileName = "results2.csv";
 
     /** The step size, in seconds.
      *  The initial default is 0.1 seconds.
