@@ -1,4 +1,4 @@
-package ecnu.modana.FmiDriver.ptolemy.fmi.driver.test;
+package ecnu.modana.FmiDriver.ptolemy.fmi.driver;
 
 import com.panayotis.gnuplot.JavaPlot;
 import com.panayotis.gnuplot.plot.AbstractPlot;
@@ -8,10 +8,9 @@ import com.sun.jna.Function;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import ecnu.modana.FmiDriver.HeaterController;
+import ecnu.modana.FmiDriver.RandomGenerator;
 import ecnu.modana.FmiDriver.Room;
 import ecnu.modana.FmiDriver.ptolemy.fmi.*;
-import ecnu.modana.FmiDriver.ptolemy.fmi.driver.FMUDriver;
-import ecnu.modana.FmiDriver.ptolemy.fmi.driver.OutputRow;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -37,9 +36,9 @@ public class FMUCoSimulationDelta extends FMUDriver{
 //        for(int i = 0;i<5;i++)
 //        fBeta.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuildingOrigin.fmu", 48, 0.001,
 //                false, _csvSeparator, _outputFileName);
-            fBeta.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding.fmu", 48, 0.01,
-                    false, _csvSeparator, _outputFileName);
-        fBeta.simulateDelta("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding.fmu", 48,0.01,
+//            fBeta.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding.fmu", 48, 0.01,
+//                    false, _csvSeparator, _outputFileName);
+        fBeta.simulateDelta("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding_roomA.fmu,E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding_roomB.fmu", 48,0.01,
                 false, _csvSeparator, _outputFileName);
             JavaPlot jp = new JavaPlot();
             for(int i=0;i<2;i++) {
@@ -558,7 +557,7 @@ public class FMUCoSimulationDelta extends FMUDriver{
         FMIModelDescription[] fmiModelDescriptions = new FMIModelDescription[fmuFileNameArray.length];
         for(int i=0;i<fmiModelDescriptions.length;i++)
             fmiModelDescriptions[i] = FMUFile
-                .parseFMUFile(fmuFileNameArray[0]);
+                .parseFMUFile(fmuFileNameArray[i]);
         // Load the shared library.
         NativeLibrary[] nativeLibrary = new NativeLibrary[2];
         for(int i = 0;i<FMUNumbers;i++)
@@ -634,11 +633,17 @@ public class FMUCoSimulationDelta extends FMUDriver{
             Room room = new Room(5);
             room.NewPath();
 
-            FMIScalarVariable roomTemp = fmiModelDescriptions[0].modelVariables.get(0);
-            HeaterController heaterController = new HeaterController(roomTemp.getDouble(fmiComponent[0]));
-            FMIScalarVariable heaterSwitch = fmiModelDescriptions[0].modelVariables.get(2);
+            FMIScalarVariable temperature_roomA = fmiModelDescriptions[0].modelVariables.get(0);
+            FMIScalarVariable A_needB = fmiModelDescriptions[0].modelVariables.get(3);
+            FMIScalarVariable temperature_roomB = fmiModelDescriptions[1].modelVariables.get(0);
+            FMIScalarVariable B_needA = fmiModelDescriptions[1].modelVariables.get(3);
+            HeaterController heaterController_roomA = new HeaterController(temperature_roomA.getDouble(fmiComponent[0]));
+            HeaterController heaterController_roomB = new HeaterController(temperature_roomB.getDouble(fmiComponent[1]));
+            FMIScalarVariable heaterSwitch_roomA = fmiModelDescriptions[0].modelVariables.get(2);
+            FMIScalarVariable heaterSwitch_roomB = fmiModelDescriptions[1].modelVariables.get(2);
+            RandomGenerator randomGenerator = new RandomGenerator(10);
             int badStepNum = 0;
-            List<Double[]> dataSet = new ArrayList<Double[]>();
+            List<Double[][]> dataSet = new ArrayList<Double[][]>();
 
             double pre_Time = 0;
             double pre_t = 0;
@@ -662,31 +667,48 @@ public class FMUCoSimulationDelta extends FMUDriver{
 
 
                 //data exchange
-                heaterController.SetValues("temperatureRoom1",roomTemp.getDouble(fmiComponent[0]));
-                heaterSwitch.setDouble(fmiComponent[0], heaterController.Room1switch);
+                heaterController_roomA.strategy_Room1 = randomGenerator.strategy_RoomA;
+                heaterController_roomB.strategy_Room1 = randomGenerator.strategy_RoomB;
+
+                heaterController_roomA.temperatureRoom1 = temperature_roomA.getDouble(fmiComponent[0]);
+                heaterController_roomB.temperatureRoom1 = temperature_roomB.getDouble(fmiComponent[1]);
+                A_needB.setDouble(fmiComponent[0],temperature_roomB.getDouble(fmiComponent[1]));
+                B_needA.setDouble(fmiComponent[1],temperature_roomA.getDouble(fmiComponent[0]));
+                heaterSwitch_roomA.setDouble(fmiComponent[0], heaterController_roomA.Room1switch);
+                heaterSwitch_roomB.setDouble(fmiComponent[1], heaterController_roomB.Room1switch);
                 current_Time = time;
-                current_t = roomTemp.getDouble(fmiComponent[0]);
-                current_controller_switch = heaterController.Room1switch;
-                current_room_switch = heaterSwitch.getDouble(fmiComponent[0]);
                 //store dataset
 
-                Double[] data = new Double[4];
-                data[0] = roomTemp.getDouble(fmiComponent[0]);
-                data[1] = 0.0;
-                data[2] = time;
+                Double[] data_roomA = new Double[3];
+                Double[] data_roomB = new Double[3];
+                data_roomA[0] = temperature_roomA.getDouble(fmiComponent[0]);
+                data_roomB[0] = temperature_roomB.getDouble(fmiComponent[0]);
+                data_roomA[1] = data_roomB[1] = time;
+                data_roomA[2] = heaterController_roomA.Room1switch;
+                data_roomB[2] = heaterController_roomB.Room1switch;
 //                System.out.println(data[2]+"------------"+data[0]);
                 Function roomDoStep = nativeLibrary[0].getFunction("fmi2DoStep");
                 double controllerFlag = 0;
                 while(true){
+                    boolean tempTriggered = randomGenerator.triggered;
+                    double randomGeneratorFlag = randomGenerator.DoStep(time,stepSize);
                     roomDoStep.invoke(Double.class, new Object[]{fmiComponent[0], time, stepSize,
                             (byte) 1});
-                    heaterController.temperatureRoom1 = roomTemp.getDouble(fmiComponent[0]);
-                    controllerFlag = heaterController.DoStep(time, stepSize);
-                    if(controllerFlag == -1){
-                        heaterController.Room1switch = current_controller_switch;
-                        heaterController.temperatureRoom1 = current_t;
-                        heaterSwitch.setDouble(fmiComponent[0], current_room_switch);
-                        roomTemp.setDouble(fmiComponent[0], current_t);
+                    heaterController_roomA.temperatureRoom1 = temperature_roomA.getDouble(fmiComponent[0]);
+                    double controllerFlag_roomA = heaterController_roomA.DoStep(time, stepSize);
+                    heaterController_roomB.temperatureRoom1 = temperature_roomB.getDouble(fmiComponent[1]);
+                    double controllerFlag_roomB = heaterController_roomB.DoStep(time, stepSize);
+                    System.out.println(randomGenerator.triggered+"=---"+time+"----"+heaterController_roomA.strategy_Room1+"---"+stepSize);
+                    if(controllerFlag_roomB == -1||controllerFlag_roomA == -1 || randomGeneratorFlag == -1){
+                        heaterController_roomA.Room1switch = data_roomA[2];
+                        heaterController_roomB.Room1switch = data_roomB[2];
+                        heaterController_roomA.temperatureRoom1 = data_roomA[0];
+                        heaterController_roomB.temperatureRoom1 = data_roomB[0];
+                        heaterSwitch_roomA.setDouble(fmiComponent[0], data_roomA[2]);
+                        heaterSwitch_roomB.setDouble(fmiComponent[1], data_roomB[2]);
+                        temperature_roomA.setDouble(fmiComponent[0], data_roomA[0]);
+                        temperature_roomB.setDouble(fmiComponent[1], data_roomB[0]);
+                        randomGenerator.triggered = tempTriggered;
                         stepSize *= 0.9;
                         continue;
                     }else
@@ -694,6 +716,9 @@ public class FMUCoSimulationDelta extends FMUDriver{
 
                 }
                     time += stepSize;
+                Double[][] data = new Double[2][];
+                data[0] = data_roomA;
+                data[1] = data_roomB;
                     dataSet.add(data);
                     stepSize = maxStepSize;
 //                    System.out.println(time);
@@ -715,10 +740,16 @@ public class FMUCoSimulationDelta extends FMUDriver{
 
             double[][] plot = new double[dataSet.size()][2];
             for(int i=0;i<dataSet.size();i++){
-                plot[i][0] = dataSet.get(i)[2];
-                plot[i][1] = dataSet.get(i)[0];
+                plot[i][0] = dataSet.get(i)[0][1];
+                plot[i][1] = dataSet.get(i)[0][0];
             }
             plotArray.add(plot);
+            double[][] plot_b = new double[dataSet.size()][2];
+            for(int i=0;i<dataSet.size();i++){
+                plot_b[i][0] = dataSet.get(i)[1][1];
+                plot_b[i][1] = dataSet.get(i)[1][0];
+            }
+            plotArray.add(plot_b);
 //
 //            JavaPlot jp = new JavaPlot();
 //            DataSetPlot dsp1 = new DataSetPlot(plot);
