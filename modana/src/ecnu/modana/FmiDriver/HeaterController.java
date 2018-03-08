@@ -1,61 +1,65 @@
 package ecnu.modana.FmiDriver;
 
-import java.util.Random;
-
 public class HeaterController extends PlugInSlave{
-    double Room1switch,temperatureRoom1;
+    public double Room1switch,temperatureRoom1,pre,assistantVar;
+    public boolean strategy_Room1;
     Room room1 = null;
     @Override
     public void NewPath() {
     }
-    public HeaterController(Room room){
-        room1 = room;
+    public HeaterController(double t){
+        pre = temperatureRoom1 = t;
     }
 
     @Override
     public double DoStep(double curTime, double stepSize) {
+        double offset = 1e-5;
         if(curTime%24 >=5 && curTime%24 <=22) {
-            if(curTime%24+stepSize-22>=0.01)
-                return -1;
-            if (temperatureRoom1 >= 19 && temperatureRoom1 <= 23) {
-                if (Math.abs(room1.temperature - 23) <= 0.01) {
-                    Room1switch = 0;
-                    return stepSize;
-                } else if (room1.temperature > 23) {
+            if(strategy_Room1) {
+                if (curTime % 24 + stepSize - 22 >= offset)
                     return -1;
-                } else if (Math.abs(room1.temperature - 19) <= 0.01) {
-                    Room1switch = 1;
+                if (temperatureRoom1 >= 19 && temperatureRoom1 <= 23) {
                     return stepSize;
-                } else if (room1.temperature < 19) {
-                    return -1;
-                } else
+                } else if (temperatureRoom1 > 23) {
+                    if ((temperatureRoom1 - 23) > offset) {
+                        return -1;
+                    } else
+                        Room1switch = 0.0;
                     return stepSize;
-            } else if (temperatureRoom1 > 23) {
-                if (room1.temperature <= 19) {
-                    return -1;
-                } else
-                    Room1switch = 0.0;
-                return stepSize;
-            } else {
-                if (room1.temperature >= 23)
-                    return -1;
-                else {
-                    Room1switch = 1.0;
-                    return stepSize;
+                } else {
+
+                    if (19 - temperatureRoom1 > offset)
+                        if (pre < 19) {
+                            Room1switch = 1;
+                            return stepSize;
+                        } else
+                            return -1;
+                    else {
+                        Room1switch = 1.0;
+                        return stepSize;
+                    }
                 }
+            }else{
+                Room1switch = 0.0;
+                return stepSize;
             }
         }else if(curTime%24 <5){
-            if(Math.abs(5-(curTime%24+stepSize)) <=0.01){
-                if(room1.temperature < 19){
-                    Room1switch = 1;
+            if(strategy_Room1) {
+                if (Math.abs(5 - (curTime % 24 + stepSize)) <= offset) {
+                    if (temperatureRoom1 < 19) {
+                        Room1switch = 1;
+                        return stepSize;
+                    } else
+                        return 1;
+                } else if (curTime % 24 + stepSize > 5) {
+                    return -2;
+                } else
                     return stepSize;
-                }else
-                    return 1;
-            }else if(curTime%24+stepSize >5){
-                return -1;
-            }else
+            }else {
+                Room1switch = 0;
                 return stepSize;
-        }else{
+                }
+            }else{
             Room1switch = 0;
             return stepSize;
         }

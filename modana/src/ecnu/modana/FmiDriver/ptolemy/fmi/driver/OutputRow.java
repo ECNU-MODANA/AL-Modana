@@ -141,14 +141,7 @@ public class OutputRow {
                     file.format("%c%s", separator, scalarVariable.name);
                 }
             } else {
-                // Output values.
 
-                // The value reference is an internal-use-only integer that
-                // refers to which variable we
-                // are to access.
-                // int valueReference = scalarVariable.valueReference;
-                // IntBuffer valueReferenceIntBuffer =
-                // IntBuffer.allocate(1).put(0, valueReference);
                 if (scalarVariable.type instanceof FMIBooleanType) {
                     boolean result = scalarVariable.getBoolean(fmiComponent);
                     file.format("%c%b", separator, result);
@@ -184,6 +177,11 @@ public class OutputRow {
     /** This class contains only static methods, so there is no public
      * constructor.
      */
-    private OutputRow() {
+    private OutputRow(PrintStream file) {
+
+    }
+
+    public void deleteRow() {
+
     }
 }

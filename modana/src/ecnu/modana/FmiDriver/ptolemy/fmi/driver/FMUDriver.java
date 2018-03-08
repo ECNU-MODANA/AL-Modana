@@ -59,10 +59,10 @@ public abstract class FMUDriver {
      */
     public Function getFunction(String name) {
         // This is syntactic sugar.
-        if (_enableLogging) {
-            System.out.println("FMUModelExchange: about to get the " + name
-                    + " function.");
-        }
+//        if (_enableLogging) {
+//            System.out.println("FMUModelExchange: about to get the " + name
+//                    + " function.");
+//        }
         return _nativeLibrary.getFunction(name);
     }
 
@@ -76,6 +76,10 @@ public abstract class FMUDriver {
      */
     public void invoke(String name, Object[] arguments, String message) {
         Function function = getFunction(name);
+        invoke(function, arguments, message);
+    }
+    public void invoke(String name, Object[] arguments, String message,NativeLibrary n) {
+        Function function = n.getFunction(name);
         invoke(function, arguments, message);
     }
 
@@ -113,7 +117,7 @@ public abstract class FMUDriver {
      *  @exception Exception If there is a problem parsing the .fmu file or invoking
      *  the methods in the shared library.
      */
-    public abstract void simulate(String fmuFileName, double endTime,
+    public abstract long simulate(String fmuFileName, double endTime,
             double stepSize, boolean enableLogging, char csvSeparator,
             String outputFileName) throws Exception;
 

@@ -2,14 +2,6 @@ package ecnu.modana.FmiDriver;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.panayotis.gnuplot.JavaPlot;
-import com.panayotis.gnuplot.plot.AbstractPlot;
-import com.panayotis.gnuplot.plot.DataSetPlot;
-import com.panayotis.gnuplot.style.Style;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class TestSmartBuilding2 {
     public double[] Train(double defaultStep,double trainingTime){
@@ -17,7 +9,7 @@ public class TestSmartBuilding2 {
         double[][] plot = new double[83][2];
         Room room = new Room(5);
         room.NewPath();
-        HeaterController heaterController = new HeaterController(room);
+        HeaterController heaterController = new HeaterController(1);
 
         int i = 0;
         double current = 0.00;
@@ -105,7 +97,7 @@ public class TestSmartBuilding2 {
         double[][] plot = new double[83][2];
         Room room = new Room(5);
         room.NewPath();
-        HeaterController heaterController = new HeaterController(room);
+        HeaterController heaterController = new HeaterController(1);
 
 
 
@@ -280,7 +272,7 @@ public class TestSmartBuilding2 {
         Long start = System.currentTimeMillis();
         Room room = new Room(5);
         room.NewPath();
-        HeaterController heaterController = new HeaterController(room);
+        HeaterController heaterController = new HeaterController(1);
         double current = 0.00;
 
         double stepSize = ss;

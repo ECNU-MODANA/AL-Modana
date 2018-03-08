@@ -30,10 +30,15 @@ package ecnu.modana.FmiDriver.ptolemy.fmi.driver;
 import com.sun.jna.Function;
 import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
+import ecnu.modana.FmiDriver.HeaterController;
+import ecnu.modana.FmiDriver.Room;
 import ecnu.modana.FmiDriver.ptolemy.fmi.*;
+import ecnu.modana.FmiDriver.ptolemy.fmi.type.FMIRealType;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 ///////////////////////////////////////////////////////////////////
@@ -126,8 +131,17 @@ public class FMUCoSimulation extends FMUDriver {
 //                true, _csvSeparator, _outputFileName);
 //        new FMUCoSimulation().simulate("G:\\Downloads\\fmusdk-linux\\fmu\\cs\\bouncingBall.fmu", 10, 0.01,
 //                true, _csvSeparator, _outputFileName);
-        new FMUCoSimulation().simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\bouncingBall.fmu", 10, 0.1,
-                true, _csvSeparator, _outputFileName);
+        FMUCoSimulationBeta fBeta  = new FMUCoSimulationBeta();
+        double timeBeta = 0.0;
+        for(int i = 0;i<5;i++)
+            timeBeta+= fBeta.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding.fmu", 48, 0.05,
+                false, _csvSeparator, _outputFileName);
+        FMUCoSimulation fOrigin  = new FMUCoSimulation();
+        double time = 0.0;
+        for(int i = 0;i<5;i++)
+            time+= fOrigin.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuildingOrigin.fmu", 48, 0.05,
+                    false, _csvSeparator, _outputFileName);
+        System.out.println("fmiOrigin:"+time/10+ ",,,,,FmiBeta"+ timeBeta/10);
     }
 
     /** Perform co-simulation using the named Functional Mock-up Unit (FMU) file.
@@ -141,10 +155,10 @@ public class FMUCoSimulation extends FMUDriver {
      *  @exception Exception If there is a problem parsing the .fmu file or invoking
      *  the methods in the shared library.
      */
-    public void simulate(String fmuFileName, double endTime, double stepSize,
+    public long simulate(String fmuFileName, double endTime, double stepSize,
             boolean enableLogging, char csvSeparator, String outputFileName)
             throws Exception {
-
+        double maxStepSize = stepSize;
         // Avoid a warning from FindBugs.
         FMUDriver._setEnableLogging(enableLogging);
 
@@ -183,7 +197,7 @@ public class FMUCoSimulation extends FMUDriver {
                 new FMULibrary.FMUComponentEnvironment());
         // Logging tends to cause segfaults because of vararg callbacks.
         byte loggingOn = enableLogging ? (byte) 1 : (byte) 0;
-        loggingOn = (byte) 1;
+        loggingOn = (byte) 0;
 
         Function instantiateSlave = getFunction("fmi2Instantiate");
 //        Function instantiateSlave = getFunction("_fmiInstantiateSlave");
@@ -241,6 +255,26 @@ public class FMUCoSimulation extends FMUDriver {
 
             Function doStep = getFunction("fmi2DoStep");
             Long start = System.currentTimeMillis();
+            Room room = new Room(5);
+            room.NewPath();
+
+            FMIScalarVariable roomTemp = fmiModelDescription.modelVariables.get(0);
+            HeaterController heaterController = new HeaterController(roomTemp.getDouble(fmiComponent));
+            FMIScalarVariable heaterSwitch = fmiModelDescription.modelVariables.get(2);
+            int badStepNum = 0;
+            List<Double[]> dataSet = new ArrayList<Double[]>();
+
+            double pre_Time = 0;
+            double pre_t = 0;
+            double pre_controller_switch = 0;
+            double pre_room_switch = 0.0;
+            boolean mark_revision = false;
+            double h_p = 0;
+            double current_Time = 0;
+            double current_t = 0;
+            double current_controller_switch = 0;
+            double current_room_switch = 0.0;
+
             while (time < endTime) {
                 if (enableLogging) {
                     System.out.println("FMUCoSimulation: about to call "
@@ -248,16 +282,79 @@ public class FMUCoSimulation extends FMUDriver {
                             + "_fmiDoStep(Component, /* time */ " + time
                             + ", /* stepSize */" + stepSize + ", 1)");
                 }
-                invoke(doStep, new Object[] { fmiComponent, time, stepSize,
-                        (byte) 1 }, "Could not simulate, time was " + time
-                        + ": ");
 
-                time += stepSize;
-                // Generate a line for this step
-                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
-                        fmiComponent, time, file, csvSeparator, Boolean.FALSE);
+
+
+                //data exchange
+                heaterController.SetValues("temperatureRoom1",roomTemp.getDouble(fmiComponent));
+                heaterSwitch.setDouble(fmiComponent, heaterController.Room1switch);
+                current_Time = time;
+                current_t = roomTemp.getDouble(fmiComponent);
+                current_controller_switch = heaterController.Room1switch;
+                current_room_switch = heaterSwitch.getDouble(fmiComponent);
+                //store dataset
+
+                Double[] data = new Double[4];
+                data[0] = roomTemp.getDouble(fmiComponent);
+                data[1] = 0.0;
+                data[2] = time;
+                double controllerFlag = heaterController.DoStep(time, stepSize);
+                Function roomDoStep = getFunction("fmi2DoStep");
+                double roomFlag = (Double) roomDoStep.invoke(Double.class, new Object[]{fmiComponent, time, stepSize,
+                        (byte) 1});
+                if(controllerFlag==-1){
+                    mark_revision = true;
+                    //bad step size , need step size reversion
+                    //step reversion
+                    heaterController.SetValues("temperatureRoom1",pre_t);
+                    heaterSwitch.setDouble(fmiComponent, pre_room_switch);
+                    roomTemp.setDouble(fmiComponent,pre_t);
+                    time = pre_Time;
+                    badStepNum++;
+                    stepSize = 0.9*h_p;
+                    dataSet.remove(dataSet.size()-1);
+                    h_p = stepSize;
+                    continue;
+                }else {
+                    heaterController.Room1switch = current_controller_switch;
+                    heaterController.temperatureRoom1 = current_t;
+                    heaterSwitch.setDouble(fmiComponent, current_room_switch);
+                    roomTemp.setDouble(fmiComponent, current_t);
+                    //save the valid states
+                    pre_Time = time;
+                    pre_t = roomTemp.getDouble(fmiComponent);
+                    pre_controller_switch = heaterController.Room1switch;
+                    pre_room_switch = heaterSwitch.getDouble(fmiComponent);
+                    time += stepSize;
+
+                    heaterController.DoStep(time, stepSize);
+                    roomFlag = (Double) roomDoStep.invoke(Double.class, new Object[]{fmiComponent, time, stepSize,
+                            (byte) 1});
+
+
+                    // Generate a line for this step
+//                OutputRow.outputRow(_nativeLibrary, fmiModelDescription,
+//                        fmiComponent, time, file, csvSeparator, Boolean.FALSE);
+                    StringBuffer printVariables = new StringBuffer("");
+
+                    //store the "succeful step state";
+                    for (FMIScalarVariable variable : fmiModelDescription.modelVariables) {
+                        if (variable.type instanceof FMIRealType) {
+                            printVariables.append(variable.getDouble(fmiComponent));
+                            printVariables.append(", ");
+                        } else
+                            continue;
+                    }
+                    System.out.println(printVariables + "stepSIze:" + stepSize);
+                    dataSet.add(data);
+                    h_p = stepSize;
+
+
+                    stepSize = maxStepSize;
+
+                }
             }
-            System.out.println("doStep time: "+(System.currentTimeMillis()-start)+","+FMULog.eventNum+","+ FMULog.total);
+
 	    invoke("fmi2Terminate", new Object[] { fmiComponent },
 		   "Could not terminate slave: ");
 
@@ -270,6 +367,21 @@ public class FMUCoSimulation extends FMUDriver {
 		new Exception("Warning: Could not free slave instance: " + fmiFlag)
                     .printStackTrace();
 	    }
+
+//            double[][] plot = new double[dataSet.size()][2];
+//            for(int i=0;i<dataSet.size();i++){
+//                plot[i][0] = dataSet.get(i)[2];
+//                plot[i][1] = dataSet.get(i)[0];
+//            }
+//
+//            JavaPlot jp = new JavaPlot();
+//            DataSetPlot dsp1 = new DataSetPlot(plot);
+//            jp.addPlot(dsp1);
+//            ((AbstractPlot)(jp.getPlots().get(0))).getPlotStyle().setStyle(Style.LINES);
+//            ((AbstractPlot)(jp.getPlots().get(0))).setTitle("Tank 1 height");
+//            jp.plot();
+//            System.out.println(badStepNum+"doStep time: "+(System.currentTimeMillis()-start)+","+FMULog.eventNum+","+ FMULog.total)
+            return (System.currentTimeMillis()-start);
         } finally {
             if (file != null) {
                 file.close();
@@ -279,10 +391,5 @@ public class FMUCoSimulation extends FMUDriver {
 	    }
 	}
 
-        if (enableLogging) {
-            System.out.println("Results are in "
-                    + outputFile.getCanonicalPath());
-	    System.out.flush();
-        }
     }
 }
