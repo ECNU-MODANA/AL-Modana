@@ -1,11 +1,5 @@
 package ecnu.modana.FmiDriver;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 import ecnu.modana.PlotComposer.PlotComposer;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,8 +21,15 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 public class Composer {
 	public static HBox variableBox = null;
+	public static TreeView<String> plotTree = null;
 	//plotComposer=================================================================
 	 public static void initPlotPanel(BorderPane plotRoot) {
    	 //add menu in PlotComposer
@@ -153,7 +154,7 @@ public class Composer {
 		CheckBoxTreeItem<String> checkBoxRootItem = new CheckBoxTreeItem<String>(
 				"Pick Chart");
 		checkBoxRootItem.setExpanded(true);
-		TreeView<String> plotTree = new TreeView<String>(checkBoxRootItem);
+		plotTree = new TreeView<String>(checkBoxRootItem);
 		plotTree.setEditable(true);
 		plotTree.setCellFactory(CheckBoxTreeCell.<String> forTreeView());
 		CheckBoxTreeItem<String> lineChartCheckItem = new CheckBoxTreeItem<String>(
@@ -221,7 +222,7 @@ public class Composer {
 										LineChart<Object, Number> lineChart = plocCom.getLineChart(CoSimulationUI.xAxisField,CoSimulationUI.yAxisField);
 										lineChart.titleProperty().bindBidirectional(CoSimulationUI.TitleField.textProperty());
 										bottomPane.setTop(lineChart);
-
+										CoSimulationUI.downPane.setRight(lineChart);
 									}
 
 									else {

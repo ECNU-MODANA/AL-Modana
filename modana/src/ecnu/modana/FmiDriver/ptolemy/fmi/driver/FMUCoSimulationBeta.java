@@ -35,9 +35,9 @@ public class FMUCoSimulationBeta extends FMUDriver{
 //        for(int i = 0;i<5;i++)
 //        fBeta.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuildingOrigin.fmu", 48, 0.001,
 //                false, _csvSeparator, _outputFileName);
-            fBeta.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding.fmu", 48, 0.01,
+            fBeta.simulate("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding_roomA.fmu", 48, 0.001,
                     false, _csvSeparator, _outputFileName);
-        fBeta.simulateDelta("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding.fmu", 48,0.01,
+        fBeta.simulateDelta("E:\\fmusdk\\fmu20\\fmu\\cs\\smartBuilding_roomA.fmu", 48,0.01,
                 false, _csvSeparator, _outputFileName);
             JavaPlot jp = new JavaPlot();
             for(int i=0;i<2;i++) {
@@ -172,6 +172,7 @@ public class FMUCoSimulationBeta extends FMUDriver{
             HeaterController heaterController = new HeaterController(roomTemp.getDouble(fmiComponent));
             FMIScalarVariable heaterSwitch = fmiModelDescription.modelVariables.get(2);
             int badStepNum = 0;
+            heaterController.strategy_Room1 = true;
             List<Double[]> dataSet = new ArrayList<Double[]>();
 
             double pre_Time = 0;
@@ -636,6 +637,7 @@ public class FMUCoSimulationBeta extends FMUDriver{
             HeaterController heaterController = new HeaterController(roomTemp.getDouble(fmiComponent[0]));
             FMIScalarVariable heaterSwitch = fmiModelDescriptions[0].modelVariables.get(2);
             int badStepNum = 0;
+            heaterController.strategy_Room1 = true;
             List<Double[]> dataSet = new ArrayList<Double[]>();
 
             double pre_Time = 0;

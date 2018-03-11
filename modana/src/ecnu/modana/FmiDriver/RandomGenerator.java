@@ -10,7 +10,7 @@ public class RandomGenerator extends PlugInSlave{
     @Override
     public void NewPath() {
     }
-    public RandomGenerator(int t){
+    public RandomGenerator(Long t){
         this.random = new Random(t);
         this.triggered = false;
         this.strategy_RoomA = false;
@@ -19,7 +19,7 @@ public class RandomGenerator extends PlugInSlave{
 
     @Override
     public double DoStep(double curTime, double stepSize) {
-        double offset = 1e-3;
+        double offset = 1e-2;
 //        if ((curTime + stepSize) % 1 <= offset){
 //                    triggered = true;
 //                    this.strategy_Room1 = (random.nextInt(10) % 2 == 0);
@@ -84,5 +84,11 @@ public class RandomGenerator extends PlugInSlave{
     @Override
     public boolean RollBack(SlaveTrace slaveTrace, State state) {
         return super.RollBack(slaveTrace, state);
+    }
+
+    public void setValues(boolean t1,boolean t2,boolean triggered){
+        this.strategy_RoomA = t1;
+        this.strategy_RoomB = t2;
+        this.triggered = triggered;
     }
 }

@@ -9,6 +9,7 @@ public class HeaterController extends PlugInSlave{
     }
     public HeaterController(double t){
         pre = temperatureRoom1 = t;
+        Room1switch = 0;
     }
 
     @Override
@@ -88,5 +89,11 @@ public class HeaterController extends PlugInSlave{
     @Override
     public boolean RollBack(SlaveTrace slaveTrace, State state) {
         return super.RollBack(slaveTrace, state);
+    }
+
+    public void setRoom1switch(double room1switch,double temperatureRoom1,boolean strategy_Room1) {
+        Room1switch = room1switch;
+        this.Room1switch = room1switch;
+        this.strategy_Room1 = strategy_Room1;
     }
 }

@@ -62,7 +62,7 @@ public class CoSimulationUI {
     Label resultLable = null;
     String markovType = "dtmc";
     Logger logger = Logger.getRootLogger();
-    BorderPane downPane = null;
+    public static BorderPane downPane = null;
     public static Trace trace = null;
     TableView<ObservableList<StringProperty>> simulateTable = null;
     //verifier window================================================================
@@ -140,8 +140,8 @@ public class CoSimulationUI {
         downPane = new BorderPane();
         downPane.setSnapToPixel(true);
 //	        downPane.setStyle("-fx-background: rgb(10,10,10);");
-        resultLable = new Label("Co-simulation result");
-        downPane.setCenter(resultLable);
+//        resultLable = new Label("Co-simulation result");
+//        downPane.setCenter(resultLable);
 
         hBox1.getChildren().addAll(fmuPane, simulatePane);
         ChoiceBox ma = new ChoiceBox(FXCollections.observableArrayList(
@@ -270,8 +270,34 @@ public class CoSimulationUI {
                 simulateTable.getColumns().addAll(cList);
                 simulateTable.setItems(csvData); // finally add data to tableview
 
-                downPane.setTop(simulateTable);
+                downPane.setLeft(simulateTable);
 
+//                PlotComposer plocCom = new PlotComposer();
+//                if(CoSimulationUI.trace == null) {
+//                    Stage errorWindow = new Stage();
+//                    errorWindow.setTitle("error");
+//                    errorWindow.setMinHeight(70);
+//                    errorWindow.setMinWidth(130);
+//                    Button button = new Button("ok");
+//                    button.setOnAction(f -> errorWindow.close());
+//                    Text textField = new Text("please simulate first!");
+//                    VBox vBox  = new VBox();
+//                    vBox.getChildren().addAll(textField,button);
+//                    vBox.setAlignment(Pos.CENTER);
+//                    Scene scene = new Scene(vBox);
+//                    errorWindow.setScene(scene);
+//                    errorWindow.showAndWait();
+//                    return;
+//                }
+//                try {
+//                    List<String> ccList = new ArrayList<String>();
+//                    LineChart<Object, Number> lineChart = plocCom.getLineChart(CoSimulationUI.xAxisField, CoSimulationUI.yAxisField);
+//                    lineChart.titleProperty().bindBidirectional(CoSimulationUI.TitleField.textProperty());
+//                    plocCom.SetXYList(CoSimulationUI.trace, ccList);
+//                    downPane.setRight(lineChart);
+//                }catch (Exception e1){
+//                    e1.printStackTrace();
+//                }
             }
         });
 
@@ -612,7 +638,7 @@ public class CoSimulationUI {
         menuItemAdd.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
-                String file = ChooseFile("F:/ECNU_MODANA/AL-Modana/modana/files/", "FMU(*.fmu)", "*.fmu");
+                String file = ChooseFile("F:/ECNU/AL-Modana/modana/files/", "FMU(*.fmu)", "*.fmu");
                 if (null == file) return;
                 fmuVariables = coSimulation.GetFMUVariables(file);
                 if (null == fmuVariables || fmuVariables.length == 0) return;
