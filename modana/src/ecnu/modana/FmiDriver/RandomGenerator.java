@@ -16,7 +16,9 @@ public class RandomGenerator extends PlugInSlave{
         this.strategy_RoomA = false;
         this.strategy_RoomB = false;
     }
-
+    public double predictStepSize(double curTime){
+        return (1-curTime%1) <1e-5?  1e-5: (1-curTime%1);
+    }
     @Override
     public double DoStep(double curTime, double stepSize) {
         double offset = 1e-2;
@@ -31,8 +33,8 @@ public class RandomGenerator extends PlugInSlave{
             if(!triggered ) {
                 if ((curTime + stepSize) % 1 <= offset){
                     triggered = true;
-                    this.strategy_RoomA = (random.nextInt(10) % 2 == 0);
-                    this.strategy_RoomB = !this.strategy_RoomA;
+                    this.strategy_RoomA = random.nextBoolean();
+                    this.strategy_RoomB = !strategy_RoomA;
                     return stepSize;
                 }else
                     return -1;
@@ -51,8 +53,8 @@ public class RandomGenerator extends PlugInSlave{
             }else{
                 if((curTime + stepSize) % 1 <= offset){
                     triggered = true;
-                    this.strategy_RoomA = (random.nextInt(10) % 2 == 0);
-                    this.strategy_RoomB = !this.strategy_RoomA;
+                    this.strategy_RoomA = random.nextBoolean();
+                    this.strategy_RoomB = !strategy_RoomA;
                     return stepSize;
                 }else if(curTime%1+stepSize>=1)
                     return -1;

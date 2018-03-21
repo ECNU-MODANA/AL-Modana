@@ -1,8 +1,8 @@
 package ecnu.modana.alsmc.main;
 
-import java.util.ArrayList;
-
 import ecnu.modana.alsmc.util.UserFile;
+
+import java.util.ArrayList;
 
 public class State {
 	public double time;
@@ -104,7 +104,6 @@ public class State {
 	public static String[] getValueNames() {
 		if (UserFile.praNameList==null) {
 			return null;
-			
 		}
 		String[] praName = (UserFile.praNameList.trim()).split(";");
 		return praName;

@@ -224,7 +224,7 @@ public abstract class FMUDriver {
     static String _fmuFileName = "";
 
     /** The modelIdentifier from modelDescription.xml. */
-    String _modelIdentifier;
+    public String _modelIdentifier;
 
     /** The NativeLibrary that contains the functions. */
     NativeLibrary _nativeLibrary;

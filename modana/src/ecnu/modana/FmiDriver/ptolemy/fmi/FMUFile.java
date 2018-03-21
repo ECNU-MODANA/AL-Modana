@@ -354,7 +354,7 @@ public class FMUFile {
     private static List<File> _unzip(String zipFileName) throws IOException {
         // FIXME: Use URLs, not files so that we can work from JarZip files.
         BufferedOutputStream destination = null;
-        final int BUFFER = 2048;
+        final int BUFFER = 4096;
         byte data[] = new byte[BUFFER];
 
         // Unzip in a temporary directory.
