@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<pc:plugin-config xmlns:pc="ecnu.modana.pc">
+
+<pc:entry-plugin>
+	<pc:entry-flag>-javafx</pc:entry-flag>
+	<pc:entry-class>plugin.test.JavafxGui</pc:entry-class>
+</pc:entry-plugin>
+
+<pc:entry-plugin>
+	<pc:entry-flag>-swing</pc:entry-flag>
+	<pc:entry-class>plugin.test.SwingGui</pc:entry-class>
+</pc:entry-plugin>
+
+<pc:entry-plugin>
+	<pc:entry-flag>-mui</pc:entry-flag>
+	<pc:entry-class>ecnu.modana.ui.ModanaUI</pc:entry-class>
+</pc:entry-plugin>
+
+<pc:plugin-message>
+
+	<pc:msg name="msg1">
+		<pc:receiver-class>plugin.test.UppaalSimulator</pc:receiver-class>
+	</pc:msg>
+
+	<pc:msg name="msg2">
+		<pc:receiver-class>plugin.test.SMChecker</pc:receiver-class>
+		<pc:data-types>
+			<pc:type>java.lang.Integer</pc:type>
+			<pc:type>java.lang.String</pc:type>
+		</pc:data-types>
+	</pc:msg>
+
+	<pc:msg name="msg3">
+		<pc:receiver-class>plugin.test.UppaalSimulator</pc:receiver-class>
+		<pc:data-types>
+			<pc:type>java.lang.String</pc:type>
+		</pc:data-types>
+	</pc:msg>
+
+</pc:plugin-message>
+
+</pc:plugin-config>
