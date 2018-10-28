@@ -71,10 +71,14 @@ import org.junit.Test;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
+import redis.clients.jedis.Jedis;
+
 import com.google.gson.Gson;
 
 import ecnu.modana.FmiDriver.CosimulationMaster.Exchange;
 import ecnu.modana.ui.MyTextConvertor;
+import ecnu.modana.util.File2Redis;
+import ecnu.modana.util.RESTTool;
 
 /**
  * @author Yi Ao
@@ -240,35 +244,37 @@ public class CoSimulationUIWithoutPrism {
         simulateWork.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<Event>() {
 
             public void handle(Event e) {
-                step++;
-                if (trace == null) {
-                    for (int i = 0; i < FMULists.size(); i++)
-                        System.out.println("currently FMU address are" + FMULists.get(i).getPath().get());
-                    for (int i = 0; i < mappingLists.size(); i++)
-                        System.out.println(mappingLists.get(i).getSource().get() + " =====" + mappingLists.get(i).getTarget().get());
-                    LinkedList<String> fmus = new LinkedList<>();
-                    fmus.add("./files/zeroDetectorNew.fmu");
-                    fmus.add("./files/simpleMath2.fmu");
-                    LinkedHashMap<String, Exchange> mappingMap = new LinkedHashMap<>();
+            	ArrayList<String> fmuList = new ArrayList<String>();
+            	File2Redis file2Redis = new File2Redis();
+            	Jedis jedis = new Jedis("127.0.01", 6379);
+            	for (int i = 0; i < FMULists.size(); i++){
+            		String tempfmuAddress = FMULists.get(i).getPath().get();
+            		System.out.println("currently FMU address are" + tempfmuAddress);
+            		fmuList.add(tempfmuAddress);
+            		//将fmu存入redis
+            		file2Redis.setFile(tempfmuAddress, tempfmuAddress, jedis);
+            	}
+                for (int i = 0; i < mappingLists.size(); i++)
+                    System.out.println(mappingLists.get(i).getSource().get() + " =====" + mappingLists.get(i).getTarget().get());
+
+                    LinkedHashMap<String, String> mappingMap = new LinkedHashMap<>();
                     Exchange exchange = new CosimulationMaster().newEchange();
 
-                    exchange.fromSlave = "simpleMath";
-                    exchange.fromVariable = "y";
-                    exchange.targetSlave = "zeroDetector";
-                    exchange.targetVariable = "i";
-                    mappingMap.put("simpleMath", exchange);
-                    LinkedHashMap<String, String> toolSlave = new LinkedHashMap<String, String>();
-                    long start = System.currentTimeMillis();
-                    ObservableList<Node> oblist = explorationBox.getChildren();
-                    HBox stepsizeBox = (HBox) oblist.get(4);
-                    TextField stepsizetextField = (TextField) stepsizeBox.getChildren().get(1);
-                    double stepsize = Double.parseDouble(stepsizetextField.getText());
-                    trace = cm.CoSimulation(fmus, toolSlave, mappingMap,
-                            0, 20, stepsize, 1, "./files/res.csv");
-                    long end = System.currentTimeMillis();
-                    System.out.println("仿真时间�?" + (end - start));
-                    variableNameList = cm.getFMUVariables(fmus);
-                }
+                ObservableList<Node> oblist = explorationBox.getChildren();
+                HBox stepsizeBox = (HBox) oblist.get(4);
+                TextField stepsizetextField = (TextField) stepsizeBox.getChildren().get(1);
+                Map<String, Object> params = new HashMap<>();
+        	    params.put("fmuList", fmuList);
+        	    HashMap<String,String> dataExchange_map = new HashMap<>();
+        	    params.put("ioMapping",dataExchange_map );
+        	    params.put("simulationTime", 100);
+        	    params.put("stepSize", Double.parseDouble(stepsizetextField.getText()));
+                    
+                ArrayList<State> trace  = RESTTool.generateOneTraceWithPSRMA(params, "http://localhost:8080/psrma");
+                long end = System.currentTimeMillis();
+//                System.out.println("仿真时间" + (end - start));
+//                variableNameList = cm.getFMUVariables(fmus);
+
                 TableView<ObservableList<StringProperty>> simulateTable = new TableView();
                 ArrayList<TableColumn<ObservableList<StringProperty>, String>> cList = new ArrayList<TableColumn<ObservableList<StringProperty>, String>>();
                 Iterator it = cm.fmusMap.entrySet().iterator();
@@ -277,61 +283,35 @@ public class CoSimulationUIWithoutPrism {
                 while (it.hasNext()) {
                     Entry entry = (Map.Entry) it.next();
                     FMUMESlave fmuslave = (FMUMESlave) entry.getValue();
-                    SlaveTrace st = trace.slaveMap.get(fmuslave.fmiModelDescription.modelIdentifier);
-                    for (String vName : st.GetVarNames()) {
-                        vNumber++;
-                        cList.add(createColumn(vNumber, vName));
-                    }
+//                    SlaveTrace st = trace.slaveMap.get(fmuslave.fmiModelDescription.modelIdentifier);
+//                    for (String vName : st.GetVarNames()) {
+//                        vNumber++;
+//                        cList.add(createColumn(vNumber, vName));
+//                    }
                 }
                 ObservableList<ObservableList<StringProperty>> csvData = FXCollections.observableArrayList();
                 SlaveTrace st;
-                for (int i = 0; i < step; i++) {
-                    it = trace.slaveMap.entrySet().iterator();
-                    ObservableList<StringProperty> row = FXCollections.observableArrayList();
-                    while (it.hasNext()) {
-                        Entry entry = (Map.Entry) it.next();
-                        st = (SlaveTrace) entry.getValue();
-                        if (row.size() == 0)
-                            row.add(new SimpleStringProperty(Double.toString(st.statesList.get(i).time)));
-                        for (Object rowData : st.statesList.get(i).values) {
-                            StringProperty sTemp = new SimpleStringProperty();
-                            sTemp.set(rowData.toString());
-                            row.add(sTemp);
-                        }
-                    }
-                    csvData.add(row); // add each row to cvsData
-                }
-                simulateTable.getColumns().addAll(cList);
-                simulateTable.setItems(csvData); // finally add data to tableview
+//                for (int i = 0; i < step; i++) {
+//                    it = trace.slaveMap.entrySet().iterator();
+//                    ObservableList<StringProperty> row = FXCollections.observableArrayList();
+//                    while (it.hasNext()) {
+//                        Entry entry = (Map.Entry) it.next();
+//                        st = (SlaveTrace) entry.getValue();
+//                        if (row.size() == 0)
+//                            row.add(new SimpleStringProperty(Double.toString(st.statesList.get(i).time)));
+//                        for (Object rowData : st.statesList.get(i).values) {
+//                            StringProperty sTemp = new SimpleStringProperty();
+//                            sTemp.set(rowData.toString());
+//                            row.add(sTemp);
+//                        }
+//                    }
+//                    csvData.add(row); // add each row to cvsData
+//                }
+//                simulateTable.getColumns().addAll(cList);
+//                simulateTable.setItems(csvData); // finally add data to tableview
 
                 downPane.setLeft(simulateTable);
 
-//                PlotComposer plocCom = new PlotComposer();
-//                if(CoSimulationUI.trace == null) {
-//                    Stage errorWindow = new Stage();
-//                    errorWindow.setTitle("error");
-//                    errorWindow.setMinHeight(70);
-//                    errorWindow.setMinWidth(130);
-//                    Button button = new Button("ok");
-//                    button.setOnAction(f -> errorWindow.close());
-//                    Text textField = new Text("please simulate first!");
-//                    VBox vBox  = new VBox();
-//                    vBox.getChildren().addAll(textField,button);
-//                    vBox.setAlignment(Pos.CENTER);
-//                    Scene scene = new Scene(vBox);
-//                    errorWindow.setScene(scene);
-//                    errorWindow.showAndWait();
-//                    return;
-//                }
-//                try {
-//                    List<String> ccList = new ArrayList<String>();
-//                    LineChart<Object, Number> lineChart = plocCom.getLineChart(CoSimulationUI.xAxisField, CoSimulationUI.yAxisField);
-//                    lineChart.titleProperty().bindBidirectional(CoSimulationUI.TitleField.textProperty());
-//                    plocCom.SetXYList(CoSimulationUI.trace, ccList);
-//                    downPane.setRight(lineChart);
-//                }catch (Exception e1){
-//                    e1.printStackTrace();
-//                }
             }
         });
 

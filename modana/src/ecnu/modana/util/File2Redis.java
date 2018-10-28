@@ -29,7 +29,7 @@ public class File2Redis {
         try
         {
             in = new BufferedInputStream(new FileInputStream(f));
-            byte[] buffer = new byte[10240];//数组大小应适当大于文件
+            byte[] buffer = new byte[100240];//数组大小应适当大于文件
             int len = 0;
             int i = 0;
             while (-1 != (len = in.read()))//逐个字节读取
