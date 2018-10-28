@@ -1,7 +1,24 @@
 package ecnu.modana.FmiDriver;
 
-import ecnu.modana.FmiDriver.CosimulationMaster.Exchange;
-import ecnu.modana.ui.MyTextConvertor;
+import static ecnu.modana.FmiDriver.Composer.initPlotPanel;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -17,8 +34,22 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -34,18 +65,21 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 import javafx.util.converter.DefaultStringConverter;
+
 import org.apache.log4j.Logger;
+import org.junit.Test;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.File;
-import java.util.*;
-import java.util.Map.Entry;
+import com.google.gson.Gson;
 
-import static ecnu.modana.FmiDriver.Composer.initPlotPanel;
+import ecnu.modana.FmiDriver.CosimulationMaster.Exchange;
+import ecnu.modana.ui.MyTextConvertor;
 
 /**
- * @author JKQ
+ * @author Yi Ao
  *         <p>
- *         2015�?11�?29日下�?3:41:30
+ *         2015�?11�?29日下�?3:41:30
  */
 public class CoSimulationUIWithoutPrism {
     //simulator window=================================================================
@@ -81,7 +115,7 @@ public class CoSimulationUIWithoutPrism {
         this.propertiesStage = plotComposerStage;
         plotComposerStage.initModality(Modality.WINDOW_MODAL);
         plotComposerStage.setOpacity(1);
-        plotComposerStage.setTitle("Modana协同验证�?");
+        plotComposerStage.setTitle("Modana协同验证器");
         plotComposerStage.setWidth(width);
         plotComposerStage.setHeight(height);
         plotComposerStage.centerOnScreen();
@@ -232,7 +266,7 @@ public class CoSimulationUIWithoutPrism {
                     trace = cm.CoSimulation(fmus, toolSlave, mappingMap,
                             0, 20, stepsize, 1, "./files/res.csv");
                     long end = System.currentTimeMillis();
-                    System.out.println("仿真时间�?" + (end - start));
+                    System.out.println("仿真时间�?" + (end - start));
                     variableNameList = cm.getFMUVariables(fmus);
                 }
                 TableView<ObservableList<StringProperty>> simulateTable = new TableView();
@@ -582,7 +616,7 @@ public class CoSimulationUIWithoutPrism {
         //PrismModel prismModel = (PrismModel)ModelManager.getInstance().modelListMap.get(modelTree.getParent().getValue());
         // table view for showing all loaded reward
         TableView<FMUPath> pathTableView = new TableView<FMUPath>();
-        pathTableView.setTooltip(new Tooltip("在表格空白处点击右键，�?�择�?要联合仿真的模型（markov模型，modelica模型�?"));
+        pathTableView.setTooltip(new Tooltip("在表格空白处点击右键，�?�择�?要联合仿真的模型（markov模型，modelica模型�?"));
         pathTableView.setTableMenuButtonVisible(true);
         //rewardTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         pathTableView.setEditable(true);
@@ -707,5 +741,59 @@ public class CoSimulationUIWithoutPrism {
 //			logger.debug("model opened!");
         }
         return null;
+    }
+    
+    
+    @Test
+    public void testResis(){
+//    		Jedis jedis = new Jedis("localhost", 6379);
+//    		jedis.set("test", "test");
+//		System.out.println(jedis.get("test"));
+    		Map<String, Object> params = new HashMap<>();
+    	    params.put("fmuList", "fmuList");
+    	    params.put("simulationTime", new  Integer(1000));
+    	    params.put("stepSize", new Integer(10));
+    	    params.put("redisAddress", "127.0.01");
+    	    params.put("redisPort", 6739);
+    		String url = "http://localhost:8080/psrma";
+    		
+    		try {
+				URL targetUrl = new URL(url);
+				HttpURLConnection httpConnection = (HttpURLConnection)targetUrl.openConnection();
+				httpConnection.setDoOutput(true);
+                httpConnection.setRequestMethod("POST");
+                httpConnection.setRequestProperty("Content-Type", "application/json");
+                Gson gson = new Gson();
+                String input = gson.toJson(params);
+               
+                OutputStream outputStream = httpConnection.getOutputStream();
+                outputStream.write(input.getBytes());
+                outputStream.flush();
+
+                if (httpConnection.getResponseCode() != 200) {
+                       throw new RuntimeException("Failed : HTTP error code : "
+                              + httpConnection.getResponseCode());
+                }
+
+                BufferedReader responseBuffer = new BufferedReader(new InputStreamReader(
+                              (httpConnection.getInputStream())));
+
+                String output;
+                System.out.println("Output from Server:\n");
+                while ((output = responseBuffer.readLine()) != null) {
+                       System.out.println(output);
+                }
+
+                httpConnection.disconnect();
+
+           } catch (MalformedURLException e) {
+
+                e.printStackTrace();
+
+           } catch (IOException e) {
+
+                e.printStackTrace();
+
+          }
     }
 }
