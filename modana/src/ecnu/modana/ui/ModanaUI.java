@@ -1,17 +1,11 @@
 package ecnu.modana.ui;
 
-import ecnu.modana.FmiDriver.CoSimulationUI;
-import ecnu.modana.Modana;
-import ecnu.modana.PlotComposer.PlotComposerUI;
-import ecnu.modana.abstraction.IUserInterface;
-import ecnu.modana.alsmc.generatePA.TreeShow;
-import ecnu.modana.base.PluginMessage;
-import ecnu.modana.model.AbstractModel;
-import ecnu.modana.model.ModelManager;
-import ecnu.modana.model.ModelManager.DiagramType;
-import ecnu.modana.model.ModelManager.ModelType;
-import ecnu.modana.model.PrismModel;
-import ecnu.modana.ui.prism.PrismModule;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
+
 import javafx.application.Application;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -26,8 +20,22 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TreeCell;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -36,15 +44,28 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import javafx.stage.*;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
+
 import org.apache.log4j.Logger;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Set;
+import ecnu.modana.Modana;
+import ecnu.modana.FmiDriver.CoSimulationUI;
+import ecnu.modana.FmiDriver.CoSimulationUIWithoutPrism;
+import ecnu.modana.PlotComposer.PlotComposerUI;
+import ecnu.modana.abstraction.IUserInterface;
+import ecnu.modana.alsmc.generatePA.TreeShow;
+import ecnu.modana.base.PluginMessage;
+import ecnu.modana.model.AbstractModel;
+import ecnu.modana.model.ModelManager;
+import ecnu.modana.model.ModelManager.DiagramType;
+import ecnu.modana.model.ModelManager.ModelType;
+import ecnu.modana.model.PrismModel;
+import ecnu.modana.ui.prism.PrismModule;
 /**
  * Default GUI of Modana Platform
  * @author cb
@@ -141,7 +162,7 @@ public class ModanaUI extends Application implements IUserInterface {
 			primaryStage.setMinWidth(bounds.getWidth());
 			primaryStage.setMinHeight(bounds.getHeight());
 		}
-		primaryStage.setTitle("Modana模型转换器");
+		primaryStage.setTitle("Modana妯″瀷杞崲鍣�");
 		primaryStage.setScene(scene);
 		primaryStage.show();
 
@@ -372,6 +393,7 @@ public class ModanaUI extends Application implements IUserInterface {
         //Co-Simulation
         Menu menuSim = new Menu("CV-SMC");
         addSimulationMenuItem(menuSim);
+        addSimulationMenuItemWithoutPrism(menuSim);
         //Al-Smc Verifier
         Menu alsmc = new Menu("AL-SMC");
         addAlSmcMenuItem(alsmc);
@@ -415,14 +437,14 @@ public class ModanaUI extends Application implements IUserInterface {
         
 		menu.getItems().add(addPropertiesList);
 	}
-	/*private void addPropertiesMenuItem(Menu menuProperties) {
+	private void addSimulationMenuItemWithoutPrism(Menu menu) {
 		// Add Properties
-		MenuItem addPropertiesList = new MenuItem("Add Properties List");
+		MenuItem addPropertiesList = new MenuItem("co-simulation");
 		addPropertiesList.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {	
 				try {
-					new PropertiesUI().start(new Stage());
+					new CoSimulationUIWithoutPrism().start(new Stage());
 				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -430,8 +452,8 @@ public class ModanaUI extends Application implements IUserInterface {
 			}
 		});
         
-		menuProperties.getItems().add(addPropertiesList);
-	}*/
+		menu.getItems().add(addPropertiesList);
+	}
 
 	private void addToolMenuItem(Menu menuTool) {
 		//Create PlotComposer
@@ -858,7 +880,7 @@ public class ModanaUI extends Application implements IUserInterface {
 //			             BufferedReader br=new BufferedReader(new FileReader(file));            
 //			             while((tempstr=br.readLine())!=null)
 //			                 sb.append(tempstr);    
-			             //��һ�ֶ�ȡ��ʽ
+			             //锟斤拷一锟街讹拷取锟斤拷式
 			             FileInputStream fis=new FileInputStream(file);
 			             BufferedReader br=new BufferedReader(new InputStreamReader(fis));
 			             while((tempstr=br.readLine())!=null){
