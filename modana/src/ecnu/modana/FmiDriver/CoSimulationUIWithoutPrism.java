@@ -254,19 +254,20 @@ public class CoSimulationUIWithoutPrism {
             		//将fmu存入redis
             		file2Redis.setFile(tempfmuAddress, tempfmuAddress, jedis);
             	}
-                for (int i = 0; i < mappingLists.size(); i++)
+            	LinkedHashMap<String, String> mappingMap = new LinkedHashMap<>();
+                for (int i = 0; i < mappingLists.size(); i++) {
                     System.out.println(mappingLists.get(i).getSource().get() + " =====" + mappingLists.get(i).getTarget().get());
-
-                    LinkedHashMap<String, String> mappingMap = new LinkedHashMap<>();
-                    Exchange exchange = new CosimulationMaster().newEchange();
+                    mappingMap.put(mappingLists.get(i).getSource().get(), mappingLists.get(i).getTarget().get());
+                }
+  
+                Exchange exchange = new CosimulationMaster().newEchange();
 
                 ObservableList<Node> oblist = explorationBox.getChildren();
                 HBox stepsizeBox = (HBox) oblist.get(4);
                 TextField stepsizetextField = (TextField) stepsizeBox.getChildren().get(1);
                 Map<String, Object> params = new HashMap<>();
         	    params.put("fmuList", fmuList);
-        	    HashMap<String,String> dataExchange_map = new HashMap<>();
-        	    params.put("ioMapping",dataExchange_map );
+        	    params.put("ioMapping",mappingMap);
         	    params.put("simulationTime", 100);
         	    params.put("stepSize", Double.parseDouble(stepsizetextField.getText()));
                     
@@ -283,11 +284,6 @@ public class CoSimulationUIWithoutPrism {
                 while (it.hasNext()) {
                     Entry entry = (Map.Entry) it.next();
                     FMUMESlave fmuslave = (FMUMESlave) entry.getValue();
-//                    SlaveTrace st = trace.slaveMap.get(fmuslave.fmiModelDescription.modelIdentifier);
-//                    for (String vName : st.GetVarNames()) {
-//                        vNumber++;
-//                        cList.add(createColumn(vNumber, vName));
-//                    }
                 }
                 ObservableList<ObservableList<StringProperty>> csvData = FXCollections.observableArrayList();
                 SlaveTrace st;
@@ -657,7 +653,7 @@ public class CoSimulationUIWithoutPrism {
                 fmuVariables = coSimulation.GetFMUVariables(file);
                 if (null == fmuVariables || fmuVariables.length == 0) return;
                 for (int i = 0; i < fmuVariables.length; i++) {
-                    mapNames.add(fmuVariables[i]);
+                    mapNames.add(fmuVariables[i]+"."+i);
                 }
                 FMUPath = file;
                 FMULists.add(new FMUPath(file));
@@ -675,7 +671,7 @@ public class CoSimulationUIWithoutPrism {
                 if (null == markovVariable || markovVariable.length == 0) return;
                 for (int i = 0; i < markovVariable.length; i++) {
                     System.out.println(markovVariable[i]);
-                    mapNames.add(markovVariable[i]);
+                    mapNames.add(i+markovVariable[i]);
                 }
                 prismModelPath = file;
                 FMULists.add(new FMUPath(file));
@@ -721,59 +717,5 @@ public class CoSimulationUIWithoutPrism {
 //			logger.debug("model opened!");
         }
         return null;
-    }
-    
-    
-    @Test
-    public void testResis(){
-//    		Jedis jedis = new Jedis("localhost", 6379);
-//    		jedis.set("test", "test");
-//		System.out.println(jedis.get("test"));
-    		Map<String, Object> params = new HashMap<>();
-    	    params.put("fmuList", "fmuList");
-    	    params.put("simulationTime", new  Integer(1000));
-    	    params.put("stepSize", new Integer(10));
-    	    params.put("redisAddress", "127.0.01");
-    	    params.put("redisPort", 6739);
-    		String url = "http://localhost:8080/psrma";
-    		
-    		try {
-				URL targetUrl = new URL(url);
-				HttpURLConnection httpConnection = (HttpURLConnection)targetUrl.openConnection();
-				httpConnection.setDoOutput(true);
-                httpConnection.setRequestMethod("POST");
-                httpConnection.setRequestProperty("Content-Type", "application/json");
-                Gson gson = new Gson();
-                String input = gson.toJson(params);
-               
-                OutputStream outputStream = httpConnection.getOutputStream();
-                outputStream.write(input.getBytes());
-                outputStream.flush();
-
-                if (httpConnection.getResponseCode() != 200) {
-                       throw new RuntimeException("Failed : HTTP error code : "
-                              + httpConnection.getResponseCode());
-                }
-
-                BufferedReader responseBuffer = new BufferedReader(new InputStreamReader(
-                              (httpConnection.getInputStream())));
-
-                String output;
-                System.out.println("Output from Server:\n");
-                while ((output = responseBuffer.readLine()) != null) {
-                       System.out.println(output);
-                }
-
-                httpConnection.disconnect();
-
-           } catch (MalformedURLException e) {
-
-                e.printStackTrace();
-
-           } catch (IOException e) {
-
-                e.printStackTrace();
-
-          }
     }
 }
