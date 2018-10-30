@@ -1,4 +1,4 @@
-package ecnu.modana.FmiDriver;
+package ecnu.modana.FmiDriver.bean;
 
 import java.util.ArrayList;
 

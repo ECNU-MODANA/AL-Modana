@@ -9,9 +9,9 @@ import org.ptolemy.fmi.FMICallbackFunctions;
 import org.ptolemy.fmi.FMIEventInfo;
 import org.ptolemy.fmi.FMIModelDescription;
 import org.ptolemy.fmi.FMIScalarVariable;
+import org.ptolemy.fmi.FMIScalarVariable.Alias;
 import org.ptolemy.fmi.FMUFile;
 import org.ptolemy.fmi.FMULibrary;
-import org.ptolemy.fmi.FMIScalarVariable.Alias;
 import org.ptolemy.fmi.type.FMIBooleanType;
 import org.ptolemy.fmi.type.FMIIntegerType;
 import org.ptolemy.fmi.type.FMIRealType;
@@ -22,6 +22,7 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.ByteByReference;
 
+import ecnu.modana.FmiDriver.bean.State;
 import ecnu.modana.util.MyLineChart;
 
 public class FMUMESlave extends FMUDriver{

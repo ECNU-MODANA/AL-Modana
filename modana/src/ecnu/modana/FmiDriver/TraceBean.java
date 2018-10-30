@@ -2,6 +2,8 @@ package ecnu.modana.FmiDriver;
 
 import java.util.ArrayList;
 
+import ecnu.modana.FmiDriver.bean.State;
+
 public class TraceBean {
 	
 	ArrayList<State> trace = new ArrayList<State>();

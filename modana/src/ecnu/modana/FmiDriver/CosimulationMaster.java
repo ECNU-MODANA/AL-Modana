@@ -1,8 +1,11 @@
 package ecnu.modana.FmiDriver;
 
-import java.io.File;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.apache.log4j.Logger;
@@ -10,8 +13,8 @@ import org.ptolemy.fmi.FMIModelDescription;
 import org.ptolemy.fmi.FMIScalarVariable;
 
 import com.sun.jna.Pointer;
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 
+import ecnu.modana.FmiDriver.bean.State;
 import ecnu.modana.util.MinaServer;
 import ecnu.modana.util.MyLineChart;
 public class CosimulationMaster extends FMUDriver{

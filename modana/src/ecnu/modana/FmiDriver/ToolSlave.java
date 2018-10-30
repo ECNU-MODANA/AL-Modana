@@ -2,6 +2,8 @@ package ecnu.modana.FmiDriver;
 
 import java.util.ArrayList;
 
+import ecnu.modana.FmiDriver.bean.State;
+
 public abstract class ToolSlave{// extends FMUDriver{
 	public String slaveId="";
 	public String toolPath="";

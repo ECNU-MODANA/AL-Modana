@@ -2,6 +2,8 @@ package ecnu.modana.FmiDriver;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import ecnu.modana.FmiDriver.bean.State;
+
 public class SlaveTrace {	
 	public String slaveName="slaveName";
 //	public ArrayList<String> varNames=new ArrayList<>();

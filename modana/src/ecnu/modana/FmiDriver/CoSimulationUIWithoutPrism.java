@@ -83,7 +83,7 @@ import ecnu.modana.util.RESTTool;
 /**
  * @author Yi Ao
  *         <p>
- *         2015�?11�?29日下�?3:41:30
+ *         
  */
 public class CoSimulationUIWithoutPrism {
     //simulator window=================================================================
@@ -132,7 +132,7 @@ public class CoSimulationUIWithoutPrism {
         SplitPane splitPane = new SplitPane();
         splitPane.setPrefSize(width, height);
         splitPane.setOrientation(Orientation.VERTICAL);
-        splitPane.setDividerPosition(0, 0.38);
+        splitPane.setDividerPosition(0, 0.38); 
         //splitPane.setStyle("-fx-background: rgb(0,0,0);");
 
         int fmuPaneWidth = 500;
@@ -271,7 +271,7 @@ public class CoSimulationUIWithoutPrism {
         	    params.put("simulationTime", 100);
         	    params.put("stepSize", Double.parseDouble(stepsizetextField.getText()));
                     
-                ArrayList<State> trace  = RESTTool.generateOneTraceWithPSRMA(params, "http://localhost:8080/psrma");
+                ecnu.modana.FmiDriver.bean.Trace trace  = RESTTool.generateOneTraceWithPSRMA(params, "http://localhost:8080/psrma");
                 long end = System.currentTimeMillis();
 //                System.out.println("仿真时间" + (end - start));
 //                variableNameList = cm.getFMUVariables(fmus);

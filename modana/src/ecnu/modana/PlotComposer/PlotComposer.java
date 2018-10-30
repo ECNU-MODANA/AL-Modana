@@ -1,17 +1,17 @@
 package ecnu.modana.PlotComposer;
 
-import java.io.File;
-import java.io.PrintStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import ecnu.modana.FmiDriver.SlaveTrace;
-import ecnu.modana.FmiDriver.State;
-import ecnu.modana.FmiDriver.Trace;
-import javafx.beans.property.StringProperty;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.LineChart;
 import javafx.scene.control.TextField;
-import ecnu.modana.PlotComposer.JBarChart;
+import ecnu.modana.FmiDriver.SlaveTrace;
+import ecnu.modana.FmiDriver.Trace;
+import ecnu.modana.FmiDriver.bean.State;
 
 /**
  * @author JKQ

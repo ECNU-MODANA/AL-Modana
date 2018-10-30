@@ -7,14 +7,12 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import ecnu.modana.FmiDriver.State;
+import ecnu.modana.FmiDriver.bean.Trace;
 
 public class RESTTool {
 	
@@ -22,7 +20,7 @@ public class RESTTool {
 	private static String redisAddress = "127.0.0.1";
 	private static int redisPort = 6379;
 	//http://localhost:8080/psrma
-	public static ArrayList<State> generateOneTraceWithPSRMA(Map<String, Object> params,String url){
+	public static Trace generateOneTraceWithPSRMA(Map<String, Object> params,String url){
 		
 
 //    		Jedis jedis = new Jedis("localhost", 6379);
@@ -57,19 +55,21 @@ public class RESTTool {
                 while ((output = responseBuffer.readLine()) != null) {
                        resultString.append(output);
                 }
+                System.out.println(resultString);
                 httpConnection.disconnect();
-                return new Gson().fromJson(resultString.toString(), new TypeToken<ArrayList<State>>() {}.getType());
+                return new Gson().fromJson(resultString.toString(), new TypeToken<Trace>() {}.getType());
 
            } catch (MalformedURLException e) {
 
                 e.printStackTrace();
-                return new ArrayList<State>();
+                return new Trace(null,null);
 
            } catch (IOException e) {
 
                 e.printStackTrace();
-                return new ArrayList<State>();
+                return new Trace(null,null);
           }
+    		
     }
 
 }

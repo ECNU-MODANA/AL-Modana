@@ -2,6 +2,8 @@ package ecnu.modana.FmiDriver;
 
 import java.util.ArrayList;
 
+import ecnu.modana.FmiDriver.bean.State;
+
 /**
  * @Author： oe
  * @Description:
