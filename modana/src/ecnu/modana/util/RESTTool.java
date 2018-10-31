@@ -55,7 +55,6 @@ public class RESTTool {
                 while ((output = responseBuffer.readLine()) != null) {
                        resultString.append(output);
                 }
-                System.out.println(resultString);
                 httpConnection.disconnect();
                 return new Gson().fromJson(resultString.toString(), new TypeToken<Trace>() {}.getType());
 

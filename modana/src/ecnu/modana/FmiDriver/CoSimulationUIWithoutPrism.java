@@ -59,6 +59,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -112,6 +113,8 @@ public class CoSimulationUIWithoutPrism {
     public static TextField xAxisField = null;
     public static TextField yAxisField = null;
     public static List<String> variableNameList = null;
+    TextField stepSizeField = new TextField("1");
+    TextField exStepNumField = new TextField("100");
 
     public void start(Stage plotComposerStage) throws Exception {
         plotComposerStage.getIcons().add(new Image("modana-logo.png"));
@@ -171,10 +174,6 @@ public class CoSimulationUIWithoutPrism {
         BorderPane upPane = new BorderPane();
         upPane.setMinHeight(350);
         upPane.setPrefHeight(350);
-        //leftPane.setStyle("-fx-background-color: #0000AA;");
-        //upPane.getChildren().add(hBox);
-//	        upPane.getChildren().addAll(btnPrism,btnFMU);
-
         downPane = new BorderPane();
         downPane.setSnapToPixel(true);
 //	        downPane.setStyle("-fx-background: rgb(10,10,10);");
@@ -212,7 +211,7 @@ public class CoSimulationUIWithoutPrism {
         Composer.initPlotPanel(plotRoot);
         coPlotTab.setOnSelectionChanged(e -> initPlotPanel(plotRoot));
         perpane.getTabs().addAll(coSimTab, coVerTab, coPlotTab);
-        perpane.getSelectionModel().select(coVerTab);
+        perpane.getSelectionModel().select(coSimTab);
         coSimTab.setContent(splitPane);
         coVerTab.setContent(verifierUI);
         coPlotTab.setContent(plotRoot);
@@ -254,6 +253,23 @@ public class CoSimulationUIWithoutPrism {
             		//将fmu存入redis
             		file2Redis.setFile(tempfmuAddress, tempfmuAddress, jedis);
             	}
+            	if(fmuList.size()<=0 || stepSizeField.getText().equals("") || exStepNumField.getText().equals("")) {
+            		System.out.println(stepSizeField.getText()+"    "+ exStepNumField.getText());
+					Stage errorWindow = new Stage();
+					errorWindow.setTitle("error");
+					errorWindow.setMinHeight(140);
+					errorWindow.setMinWidth(330);
+					Button button = new Button("ok");
+					button.setOnAction(f -> errorWindow.close());
+					Text textField = new Text("no FMU is selected!");
+					VBox vBox  = new VBox();
+					vBox.getChildren().addAll(textField,button);
+					vBox.setAlignment(Pos.CENTER);
+					Scene scene = new Scene(vBox);
+					errorWindow.setScene(scene);
+					errorWindow.showAndWait();
+					return;
+				}
             	LinkedHashMap<String, String> mappingMap = new LinkedHashMap<>();
                 for (int i = 0; i < mappingLists.size(); i++) {
                     System.out.println(mappingLists.get(i).getSource().get() + " =====" + mappingLists.get(i).getTarget().get());
@@ -264,64 +280,33 @@ public class CoSimulationUIWithoutPrism {
 
                 ObservableList<Node> oblist = explorationBox.getChildren();
                 HBox stepsizeBox = (HBox) oblist.get(4);
-                TextField stepsizetextField = (TextField) stepsizeBox.getChildren().get(1);
                 Map<String, Object> params = new HashMap<>();
         	    params.put("fmuList", fmuList);
         	    params.put("ioMapping",mappingMap);
         	    params.put("simulationTime", 100);
-        	    params.put("stepSize", Double.parseDouble(stepsizetextField.getText()));
+        	    params.put("stepSize", Double.parseDouble(stepSizeField.getText()));
                     
                 ecnu.modana.FmiDriver.bean.Trace trace  = RESTTool.generateOneTraceWithPSRMA(params, "http://localhost:8080/psrma");
-                long end = System.currentTimeMillis();
 //                System.out.println("仿真时间" + (end - start));
 //                variableNameList = cm.getFMUVariables(fmus);
 
-                TableView<ObservableList<StringProperty>> simulateTable = new TableView();
-                ArrayList<TableColumn<ObservableList<StringProperty>, String>> cList = new ArrayList<TableColumn<ObservableList<StringProperty>, String>>();
-                Iterator it = cm.fmusMap.entrySet().iterator();
-                int vNumber = 0;
-                cList.add(createColumn(0, "time"));
-                while (it.hasNext()) {
-                    Entry entry = (Map.Entry) it.next();
-                    FMUMESlave fmuslave = (FMUMESlave) entry.getValue();
-                }
-                ObservableList<ObservableList<StringProperty>> csvData = FXCollections.observableArrayList();
-                SlaveTrace st;
-//                for (int i = 0; i < step; i++) {
-//                    it = trace.slaveMap.entrySet().iterator();
-//                    ObservableList<StringProperty> row = FXCollections.observableArrayList();
-//                    while (it.hasNext()) {
-//                        Entry entry = (Map.Entry) it.next();
-//                        st = (SlaveTrace) entry.getValue();
-//                        if (row.size() == 0)
-//                            row.add(new SimpleStringProperty(Double.toString(st.statesList.get(i).time)));
-//                        for (Object rowData : st.statesList.get(i).values) {
-//                            StringProperty sTemp = new SimpleStringProperty();
-//                            sTemp.set(rowData.toString());
-//                            row.add(sTemp);
-//                        }
-//                    }
-//                    csvData.add(row); // add each row to cvsData
-//                }
-//                simulateTable.getColumns().addAll(cList);
-//                simulateTable.setItems(csvData); // finally add data to tableview
-
+//                SlaveTrace st;
+                Stage stage = new Stage();
+                stage.setTitle("仿真结果");
+                NewComposer.initPlotPanel(stage, trace);
                 downPane.setLeft(simulateTable);
-
             }
         });
 
         Label exStepNum = new Label();
         Label exEmptyLable = new Label();
         exStepNum.setText("Step Num");
-        TextField exStepNumField = new TextField();
         exStepNumField.setId("exStepNumField");
         exStepNumField.setMaxWidth(70);
         HBox stepNumBox = new HBox();
         stepNumBox.getChildren().addAll(exStepNum, exStepNumField);
         Label stepSizeLable = new Label();
         stepSizeLable.setText("Step Size");
-        TextField stepSizeField = new TextField();
         stepSizeField.setId("exStepNumField");
         stepSizeField.setMaxWidth(70);
         HBox stepSizeBox = new HBox();
