@@ -16,8 +16,8 @@ import ecnu.modana.FmiDriver.bean.Trace;
 
 public class RESTTool {
 	
-	
-	private static String redisAddress = "127.0.0.1";
+	//配置服务的ip与端口号
+	private static String redisAddress = "47.101.58.16";
 	private static int redisPort = 6379;
 	//http://localhost:8080/psrma
 	public static Trace generateOneTraceWithPSRMA(Map<String, Object> params,String url){

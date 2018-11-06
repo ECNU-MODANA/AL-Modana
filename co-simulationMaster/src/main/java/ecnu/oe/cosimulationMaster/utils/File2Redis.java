@@ -1,17 +1,27 @@
-package ecnu.modana.util;
+package ecnu.oe.cosimulationMaster.utils;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import ecnu.oe.cosimulationMaster.model.FMU;
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
+import redis.clients.jedis.*;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.ShardedJedis;
 
 public class File2Redis {
-
+    public static ShardedJedisPool pool;
+    static {
+        JedisPoolConfig config = new JedisPoolConfig();
+        config.setMaxTotal(100);
+        config.setMaxIdle(50);
+        config.setMaxWaitMillis(3000);
+        JedisShardInfo jedisShardInfo = new JedisShardInfo("47.101.58.16",6379);
+        jedisShardInfo.setPassword("31592653");
+        List<JedisShardInfo> list = new ArrayList<>();
+        list.add(jedisShardInfo);
+        pool = new ShardedJedisPool(config, list);
+    }
     /*
     * 文件转数组
     * */
@@ -145,6 +155,41 @@ public class File2Redis {
             return null;
         }
         return null;
+    }
+
+    public static ArrayList<String> storeFMUtoLocal(ArrayList<FMU> fmuList, ShardedJedis jedis){
+        OutputStream outputStream = null;
+        String localAddressPrefix = System.getProperty("user.dir");
+        ArrayList<String> storedList = new ArrayList<>();
+        for (FMU fmu : fmuList) {
+            String address = fmu.getFMUAddress();
+            try{
+                String storedFile = localAddressPrefix+address.substring(address.lastIndexOf("/"));
+                File localFile = new File(storedFile);
+                if(localFile.exists())
+                    localFile.delete();
+                InputStream inputStream = getInputStream(address, jedis);
+                byte[] buffer = new byte[1024];
+                while (inputStream.read(buffer)!=-1)
+                    FileUtils.writeByteArrayToFile(localFile,buffer,true);
+
+                storedList.add(storedFile);
+
+            }catch (IOException e){
+                e.printStackTrace();
+
+            }
+        }
+        return storedList;
+
+
+    }
+    @Test
+    public void testJedis(){
+
+        ShardedJedis jd = pool.getResource();
+        jd.set("s1", "v1");
+        System.out.println(jd.get("s1"));
     }
 
 

@@ -69,10 +69,9 @@ import javafx.util.converter.DefaultStringConverter;
 
 import org.apache.log4j.Logger;
 import org.junit.Test;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.ShardedJedis;
 
 import com.google.gson.Gson;
 
@@ -80,6 +79,7 @@ import ecnu.modana.FmiDriver.CosimulationMaster.Exchange;
 import ecnu.modana.ui.MyTextConvertor;
 import ecnu.modana.util.File2Redis;
 import ecnu.modana.util.RESTTool;
+import ecnu.modana.util.RedisUtil;
 
 /**
  * @author Yi Ao
@@ -245,7 +245,7 @@ public class CoSimulationUIWithoutPrism {
             public void handle(Event e) {
             	ArrayList<String> fmuList = new ArrayList<String>();
             	File2Redis file2Redis = new File2Redis();
-            	Jedis jedis = new Jedis("127.0.01", 6379);
+            	ShardedJedis jedis = RedisUtil.getJedis();
             	for (int i = 0; i < FMULists.size(); i++){
             		String tempfmuAddress = FMULists.get(i).getPath().get();
             		System.out.println("currently FMU address are" + tempfmuAddress);
@@ -286,7 +286,7 @@ public class CoSimulationUIWithoutPrism {
         	    params.put("simulationTime", 100);
         	    params.put("stepSize", Double.parseDouble(stepSizeField.getText()));
                     
-                ecnu.modana.FmiDriver.bean.Trace trace  = RESTTool.generateOneTraceWithPSRMA(params, "http://localhost:8080/psrma");
+                ecnu.modana.FmiDriver.bean.Trace trace  = RESTTool.generateOneTraceWithPSRMA(params, "http://47.101.58.16:8080/psrma");//127.0.0.1   47.101.58.16
 //                System.out.println("仿真时间" + (end - start));
 //                variableNameList = cm.getFMUVariables(fmus);
 
